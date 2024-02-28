@@ -23,8 +23,8 @@ SRCS = *.c \
 DATARACE = -fsanitize=thread
 SILENT = --no-print-directory
 MAKE_SILENT = @make ${SILENT} -C
-COMPILE = cc ${SRCS} ${CFLAGS} -o
-MAKE_MSG = @printf "\n\t    ${Purple}Makefile : ${RED}${NAME}${DEF}\n\n "
+COMPILE = cc ${SRCS} ${CFLAGS} ${DEBUG} -o
+MAKE_MSG = @printf "\n${Purple}Makefile : ${RED}${NAME}${DEF}\n\n"
 
 NAME = minishell
 DEBUG=  -fsanitize=address
@@ -33,7 +33,7 @@ CFLAGS = -L. -lreadline -g #-Wall -Werror -Wextra ${DEBUG}
 
 ${NAME} : ${SRCS}
 	clear
-	${COMPILE} ${NAME}
+	${COMPILE} ${NAME} 
 	${MAKE_MSG}
 
 ######################################
@@ -50,5 +50,8 @@ fclean : clean
 	@printf "\t\t${Yellow}CLEANED!\n"
 
 re : fclean all
+
+run : re
+	@./${NAME}
 
 .PHONY: all re clean fclean

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/02/23 22:10:35 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/02/28 17:21:33 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,18 @@ typedef struct s_data
 	t_lexer			*lexer_list;
 }					t_data;
 
-void	freetab(char **str);
+// Utils
+void	free_array(char **str);
+void	init_data(t_data *data, t_lexer *lexer_list);
 
 // List
 t_lexer	*ft_lstlex_new(void *word);
 void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
-void add_substr_to_list(char *buff, char *line, int i, int ibis);
 
-#endif
+// Lexer
+void	lexing(t_data *data);
+t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list);
+void add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i, int ibis);
+int	is_token(char *c, int i);
+
+#endif 
