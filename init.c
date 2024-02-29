@@ -6,12 +6,13 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:01:57 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/02/28 17:02:20 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/02/29 11:47:26 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// initialize the structure to avoid segmentation fault
 void	init_data(t_data *data, t_lexer *lexer_list)
 {
 	data->line = malloc(sizeof(char *) + 1);

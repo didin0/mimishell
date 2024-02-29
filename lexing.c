@@ -6,11 +6,16 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/02/28 17:01:50 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/02/29 11:53:45 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+// Split the user input into multiple node and put it in a linked list.
+// The user input is splited in a node when it occur an escape ' '.
+// If the user input contain a special token : '|' or '>' or '<' or '>>' or '<<'
+// the input is splitted and the token is placed in a separated node.
 
 int	is_token(char *c, int i)
 {

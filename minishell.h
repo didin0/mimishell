@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/02/28 17:21:33 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/02/29 11:59:59 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@
 # include <stdio.h>
 # include <stdlib.h>
 
+// linked list to handle user input
 typedef struct s_lexer
 {
 	char			*word;
 	struct s_lexer	*next;
 }					t_lexer;
 
+// GENERAL STRUCT
 typedef struct s_data
 {
 	char			*line;
