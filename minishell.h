@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/02/29 11:59:59 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/01 12:15:47 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,14 @@
 # include <readline/readline.h>
 # include <stdio.h>
 # include <stdlib.h>
+
+// linked list to copy the $ENV variable
+typedef struct s_env
+{
+	char 		*key;
+	char 		*value;
+	struct s_env *next;
+}	t_env;
 
 // linked list to handle user input
 typedef struct s_lexer
