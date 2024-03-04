@@ -8,6 +8,7 @@
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
 /*   Updated: 2024/03/01 16:00:04 by rsainas          ###   ########.fr       */
 /*                                                                            */
+/*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
@@ -17,6 +18,14 @@
 # include <readline/readline.h>
 # include <stdio.h>
 # include <stdlib.h>
+
+// linked list to copy the $ENV variable
+typedef struct s_env
+{
+	char 		*key;
+	char 		*value;
+	struct s_env *next;
+}	t_env;
 
 // linked list to handle user input
 typedef struct s_lexer
