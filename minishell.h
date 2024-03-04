@@ -8,6 +8,7 @@
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
 /*   Updated: 2024/03/02 14:48:28 by rsainas          ###   ########.fr       */
 /*                                                                            */
+/*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
@@ -18,6 +19,14 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>//open
+
+// linked list to copy the $ENV variable
+typedef struct s_env
+{
+	char 		*key;
+	char 		*value;
+	struct s_env *next;
+}	t_env;
 
 // linked list to handle user input
 //type 1 cmd, 2 cmd option, 3 cmd term (grep "AAA"), 
