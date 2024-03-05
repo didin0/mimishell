@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/01 16:11:15 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/05 17:36:36 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,9 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 
 	i = 0;
 	ibis = 0;
+
+	while (line && line[i] == ' ')
+		i++;
 	while (line && line[i])
 	{
 		if (is_token(line, i) || line[i] == '\0')
@@ -74,11 +77,11 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 			if (!buff)
 				return (NULL);
 			ft_lstlex_add_back(lexer_list, ft_lstlex_new(buff));
-			while (line[i + 1] == ' ')
+			while (line[i + 1] == ' ')//spaces after | or redirection token
 				i++;
 			ibis = i + 1;
 		}
-		else if (line[i] == ' ' || line[i + 1] == '\0')
+		else if (line[i] == ' ' || line[i + 1] == '\0')//other tokens appart from | redir 
 		{
 			while (line[i + 1] == ' ')
 				i++;
@@ -89,6 +92,13 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 					return (NULL);
 				break ;
 			}
+//			printf("test ibis\n");
+//			if (line[i] == 34)
+//			{
+//				i++;
+//				printf("test ibis 34\n");
+//				ibis = ibis + 1;
+//			}
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 				return (NULL);
 			ibis = i + 1;
