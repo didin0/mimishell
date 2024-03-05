@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/01 12:15:47 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/05 13:29:57 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	init_data(t_data *data, t_lexer *lexer_list);
 // List
 t_lexer	*ft_lstlex_new(void *word);
 void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
+t_env		get_env_list(char **envp);
 
 // Lexer
 void	lexing(t_data *data);
