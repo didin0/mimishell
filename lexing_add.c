@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/06 09:35:02 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/06 12:08:32 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,12 @@ int	all_tokens_categorized(t_lexer	*temp)
 	return (0);
 }
 
-int	ft_strchr_double(char *s, char c, int i)//find twice
+/*
+@glance			increment the pointer to position i, look for c.
+				return c position + 1.
+*/
+
+int	ft_strchr_from(char *s, char c, int i)
 {	
 	int	j;
 
@@ -72,15 +77,13 @@ int	ft_strchr_double(char *s, char c, int i)//find twice
 		s++;
 		j++;
 	}
-	while (*s != (char)c && *s != 0)//stype of string term
+	while (*s != (char)c && *s != 0)
 	{
 		s++;
 		i++;
 	}
 	if (*s == (char)c)
-	{
-		return (i + 1);//pointer to second "
-	}
+		return (i + 1);
 	else
 		return (0);
 	return (0);
