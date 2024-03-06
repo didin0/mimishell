@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/05 17:36:36 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/06 09:34:39 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 // the input is splitted and the token is placed in a separated node.
 // token here is a redirection or a pipe but not a command
 // @splitting_lexer ibis is the first unporcessed character and 
-// i the last char or a word.
+// i the last char of a word.
 
 int	is_token(char *c, int i)
 {
@@ -55,6 +55,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 
 	i = 0;
 	ibis = 0;
+	buff = NULL;
 
 	while (line && line[i] == ' ')
 		i++;
@@ -83,6 +84,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 		}
 		else if (line[i] == ' ' || line[i + 1] == '\0')//other tokens appart from | redir 
 		{
+			printf("EOL case i %d, ibis %d\n", i, ibis);
 			while (line[i + 1] == ' ')
 				i++;
 			if (line[i + 1] == '\0')
@@ -92,17 +94,25 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 					return (NULL);
 				break ;
 			}
-//			printf("test ibis\n");
-//			if (line[i] == 34)
-//			{
-//				i++;
-//				printf("test ibis 34\n");
-//				ibis = ibis + 1;
-//			}
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 				return (NULL);
 			ibis = i + 1;
 		}
+		else if (line[i] == '"')// && ft_strchr_double(line, '"', i) != 0)//recognize the second "!!
+		{	
+			printf("i before %d, ibis before%d\n", i, ibis);
+			i = ft_strchr_double(line, '"', i);//there is a second "
+			printf("i after %d, ibis here %d\n", i, ibis);
+
+			if (add_substr_to_list(lexer_list, buff, line, i, ibis + 1) != 0)
+				return (NULL);
+			ibis = i + 1;
+			while (line[i] == ' ')
+				i++;
+			ibis = i + 1;
+			printf("second quote found\n");
+		}	
+		printf("i++ case i %d, ibis %d\n", i, ibis);
 		i++;
 	}
 	return (*lexer_list);

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/02 14:48:28 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/05 22:08:03 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /*                                                                            */
 /* ************************************************************************** */
@@ -64,5 +64,6 @@ int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i, int 
 int	is_token(char *c, int i);
 void	token_type(t_data *data);
 int	all_tokens_categorized(t_lexer *temp);
+int	ft_strchr_double(char *s, char c, int i);
 
 #endif 

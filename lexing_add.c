@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   lexing_add.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/05 11:57:56 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/06 09:35:02 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ void	token_type(t_data *data)
 	while (temp != NULL)
 	{
 //		if (t_env cmd access) TODO
-		if (temp->word[0] == '<' && temp->word[1] == '<')
-			temp->type = 400;//input redirection delimiter followwing TODO
-		else if (temp->word[0] == '-')
+		if (temp->word[0] == '-')
 			temp->type = 2;
+		else if (temp->word[0] == '<' && temp->word[1] == '<')
+			temp->type = 400;//input redirection delimiter followwing TODO
 		else if (temp->word[0] == '>' && temp->word[1] == '>')
 			temp->type = 411;
 		else if (temp->word[0] == '<' && temp->word[1] == '\0')
@@ -61,19 +61,27 @@ int	all_tokens_categorized(t_lexer	*temp)
 	}
 	return (0);
 }
-/*
-int	is_redir(char	*token)
-{
-	int	i;
 
-	i = 0;
-	while (token)
+int	ft_strchr_double(char *s, char c, int i)//find twice
+{	
+	int	j;
+
+	j = 0;
+	while (j <= i)
 	{
-		if (token[i] == '|')
-			return (5);
-		if (token[i] == '<' || token[
+		s++;
+		j++;
 	}
-
+	while (*s != (char)c && *s != 0)//stype of string term
+	{
+		s++;
+		i++;
+	}
+	if (*s == (char)c)
+	{
+		return (i + 1);//pointer to second "
+	}
+	else
+		return (0);
+	return (0);
 }
-*/
-
