@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/02/29 11:58:25 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/06 18:09:55 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,11 @@ void	show_list(t_lexer *list)
 	}
 }
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
 	t_data	data;
 	t_lexer	*lexer_list;
+	t_env	*env_list = get_env_to_list(envp);
 
 	while (1)
 	{
@@ -37,6 +38,7 @@ int	main(void)
 		add_history(data.line);	// add_history create and implement an history of commands working with directional key
 		lexing(&data);
 		show_list(data.lexer_list);
+		execution(&data, env_list);
 	}
 	return (0);
 }

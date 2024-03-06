@@ -1,51 +1,53 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/01 12:06:55 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/05 16:52:34 by mabbadi          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+// /* ************************************************************************** */
+// /*                                                                            */
+// /*                                                        :::      ::::::::   */
+// /*   test.c                                             :+:      :+:    :+:   */
+// /*                                                    +:+ +:+         +:+     */
+// /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
+// /*                                                +#+#+#+#+#+   +#+           */
+// /*   Created: 2024/03/01 12:06:55 by mabbadi           #+#    #+#             */
+// /*   Updated: 2024/03/06 11:40:47 by mabbadi          ###   ########.fr       */
+// /*                                                                            */
+// /* ************************************************************************** */
 
-#include "minishell.h"
+// #include "minishell.h"
 
-void	show(t_env *list)
-{
-	while (list)
-	{
-		printf("key = %s value = %s\n", list->key, list->value);
-		list = list->next;
-	}
-}
+// void	show(t_env *list)
+// {
+// 	while (list)
+// 	{
+// 		printf("key = %s value = %s\n", list->key, list->value);
+// 		list = list->next;
+// 	}
+// }
 
-int	main(int argc, char **argv, char **envp)
-{
-    t_env *env_list = NULL; // Initialize env_list
+// char **get_paths(t_env *env_list)
+// {
+//     char **paths;
+//     char *path;
+//     while(env_list->next)
+//     {
+//         if(ft_strncmp(env_list->key, "PATH", 4) == 0)
+//             paths = ft_split(env_list->value, ':');
+//         env_list = env_list->next;
+//     }
+//     return paths;
+// }
 
-    int i = 0;
-    int j = 0;
-    char **str;
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	t_env	*env_list;
 
-    while (envp[i]) {
-        t_env *new_env = malloc(sizeof(t_env));
-        if (new_env == NULL)
-        	return 0;
+// 	env_list = get_env_to_list(envp);
 
-        str = ft_split(envp[i], '=');
-        if (str[0] && str[1])
-		{
-            new_env->key = ft_strdup(str[0]);
-            new_env->value = ft_strdup(str[1]);
+//     char **paths = get_paths(env_list);
+//     int i = 0;
+//     while(paths[i])
+//     {
+//         printf("%s\n", paths[i]);
+//         i++;
+//     }
 
-            new_env->next = env_list;
-            env_list = new_env;
-        }
-
-        i++;
-	};
-    show(env_list);
-    return 0;
-}
+// 	// show(env_list);
+// 	return (0);
+// }
