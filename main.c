@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/06 14:06:55 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/07 12:35:30 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,26 +20,25 @@ void	show_list(t_lexer *list)
 	i = 0;
 	while (list)
 	{
-		printf("list [%d] type (%d) : %s\n", i, list->type, list->word);
+		printf("list [%d] : %s\n", i, list->word);
 		list = list->next;
 		i++;
 	}
 }
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
 	t_data	data;
 	t_lexer	*lexer_list;
+	t_env	*env_list = get_env_to_list(envp);
 
 	while (1)
 	{
 		data.line = readline("minishell :"); // readline return a malloc char *
-		
-		if (ft_strlen(data.line) != 0)
-			add_history(data.line);// add_history create and implement an history of commands working with directional keyi
+		add_history(data.line);	// add_history create and implement an history of commands working with directional key
 		lexing(&data);
-		token_type(&data);
-		show_list(data.lexer_list);
+		// show_list(data.lexer_list);
+		execution(&data, env_list);
 	}
 	return (0);
 }
