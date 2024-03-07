@@ -6,19 +6,20 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/01 16:11:15 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/07 14:33:10 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Split the user input into multiple node and put it in a linked list.
-// The user input is splited in a node when it occur an escape ' '.
-// If the user input contain a special token : '|' or '>' or '<' or '>>' or '<<'
-// the input is splitted and the token is placed in a separated node.
-// token here is a redirection or a pipe but not a command
-// @splitting_lexer ibis is the first unporcessed character and 
-// i the last char or a word.
+/*
+			Split the user input into multiple node and put it in a linked list.
+			The user input is splited in a node when it occur an escape ' '.
+			If the user input contain chars : '|' or '>' or '<' or '>>' or '<<'
+			The input is splitted and the token is placed in a separated node.
+@general	If the token size is known then we use the is_token() else
+			we use splitting_lexer()
+*/
 
 int	is_token(char *c, int i)
 {
@@ -33,6 +34,8 @@ int	is_token(char *c, int i)
 		else
 			return (1);
 	}
+	else if (c[i] == '$' && c[i + 1] == '?')
+		return (2);
 	return (0);
 }
 
@@ -46,6 +49,23 @@ int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i,
 	return (0);
 }
 
+/*
+@glance			loop leading space, loop each char in line.
+				return list of tokens.
+@var			ibis is the first unporcessed character and i the last 
+ 				char of a word.
+@is_token		token here is a redirection or a pipe
+@if is_token	makes list nodes from redirections and pipe
+				ibis !=i ......TODO
+				if redir, store substring to buffer
+@ft_lstlex_		append node with buffer string to the list
+@elseif ' '		space inidcates next token, add to list, deal wiht line end.
+@elseif '"'		makes list node from double quoted token.
+				first and second quote found, 
+				update i to the second quote char.
+@ft_strchr_from	look for second char " in line, return char pos + 1.
+*/
+
 t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 {
 	int		i;
@@ -55,13 +75,20 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 
 	i = 0;
 	ibis = 0;
+	buff = NULL;
+
+	while (line && line[i] == ' ')
+		i++;
 	while (line && line[i])
 	{
 		if (is_token(line, i) || line[i] == '\0')
 		{
 			if (ibis != i)
+			{
+//				printf("node created by ibis != i ???? \", from ibis %d to i %d \n", ibis, i);
 				if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 					return (NULL);
+			}
 			if (is_token(line, i) == 2)
 			{
 				buff = ft_substr(line, i, 2);
@@ -73,27 +100,64 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 				buff = ft_substr(line, i, 1);
 			if (!buff)
 				return (NULL);
+//			printf("node created by is_token, return 1 2, from ibis %d to i %d\n", ibis, i);
 			ft_lstlex_add_back(lexer_list, ft_lstlex_new(buff));
 			while (line[i + 1] == ' ')
 				i++;
 			ibis = i + 1;
 		}
-		else if (line[i] == ' ' || line[i + 1] == '\0')
+		else if (line[i] == ' ' || line[i + 1] == '\0') 
 		{
 			while (line[i + 1] == ' ')
 				i++;
 			if (line[i + 1] == '\0')
 			{
 				i++;
+//				printf("node created by terminator \\0, from ibis %d to i %d \n", ibis, i);
 				if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 					return (NULL);
 				break ;
 			}
+//			printf("node created by space, from ibis %d to i %d \n", ibis, i);
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 				return (NULL);
 			ibis = i + 1;
 		}
-		i++;
+		else if (line[i] == '"' && ft_strchr_from(line, '"', i) != 0)//not working
+		{	
+			if (is_quote_closed(line, '"') != 0)
+				printf("quote not closed!!!!\n");
+//				ft_error(data);TODO exit, further not needed to be handled by subj
+//			in case of grep asd"asd" the ibis < i + 1, so the diff = i + 1 - ibis are
+//			the chars to be pereceeded to the node.
+			i = ft_strchr_from(line, '"', i) + 2;
+//			printf("node created by double \", from ibis %d i %d \n", ibis, i);
+			if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)//+1 shift start
+				return (NULL);
+/*			i++;
+			ibis = i + 1;
+			if (line[ibis] != ' ')
+				ibis--;*/
+			ibis = i + 1;
+		}
+		else if (line[i] == '\'' && ft_strchr_from(line, '\'', i) != 0)//not working
+		{
+			if (is_quote_closed(line, '\'') != 0)
+				printf("quote not closed!!!!\n");
+//				ft_error(data);TODO exit, further not needed to be handled by subj
+			i = ft_strchr_from(line, '\'', i);
+//			printf("node created by single \', from ibis %d to i %d \n", ibis, i - 1);
+			if (add_substr_to_list(lexer_list, buff, line, i, ibis + 1) != 0)
+				return (NULL);
+		}
+		else if (line[i] == '$' && line[i + 1] != '?')//not working
+		{
+			i = ft_strchr_from(line, ' ', i);
+//			printf("node created by dollar sign for env var, from ibis %d to i %d \n", ibis, i - 1);
+			if (add_substr_to_list(lexer_list, buff, line, i, ibis + 1) != 0)
+				return (NULL);
+		}
+		i++;//any other char
 	}
 	return (*lexer_list);
 }

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/01 16:00:04 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/07 14:01:39 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /*                                                                            */
 /* ************************************************************************** */
@@ -16,8 +16,10 @@
 
 # include "libft/libft.h"
 # include <readline/readline.h>
+# include <readline/history.h>//for add_history on linux
 # include <stdio.h>
 # include <stdlib.h>
+# include <fcntl.h>//open
 
 // linked list to copy the $ENV variable
 typedef struct s_env
@@ -28,9 +30,16 @@ typedef struct s_env
 }	t_env;
 
 // linked list to handle user input
+//type 1 cmd, 2 cmd option, 3 cmd term/argument (grep "AAA"), 
+// 31 cmd argument properly double quoted
+// 40 redirect input 41 redirect output 400 redirect input until
+// 411 redirect output in append mode
+// 5 pipe, 6 exit status expansion, 7 env variable, 10 file
+
 typedef struct s_lexer
 {
 	char			*word;
+	short			type;
 	struct s_lexer	*next;
 }					t_lexer;
 
@@ -55,5 +64,9 @@ void	lexing(t_data *data);
 t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list);
 int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i, int ibis);
 int	is_token(char *c, int i);
+void	token_type(t_data *data);
+int	all_tokens_categorized(t_lexer *temp);
+int	ft_strchr_from(char *s, char c, int i);
+int	is_quote_closed(char *s, char c);
 
 #endif 
