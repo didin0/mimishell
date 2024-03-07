@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/06 12:08:32 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/07 09:20:58 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,17 @@ void	token_type(t_data *data)
 			temp->type = 41;
 		else if (temp->word[0] == '|')
 			temp->type = 5;
+		else if (temp->word[0] == '$')
+		{
+			if (temp->word[1] == '?')
+				temp->type = 6;
+			else
+				temp->type = 7;
+		}
 		fd = open(temp->word, O_RDONLY);
 		if (fd != -1)
 		{
-			temp->type = 6;
+			temp->type = 10;
 			close(fd);
 		}
 		else if (temp->type == 0)
@@ -83,7 +90,7 @@ int	ft_strchr_from(char *s, char c, int i)
 		i++;
 	}
 	if (*s == (char)c)
-		return (i + 1);
+		return (i);
 	else
 		return (0);
 	return (0);

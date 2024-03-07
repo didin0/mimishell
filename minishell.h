@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/06 17:19:58 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/07 09:14:37 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /*                                                                            */
 /* ************************************************************************** */
@@ -16,6 +16,7 @@
 
 # include "libft/libft.h"
 # include <readline/readline.h>
+# include <readline/history.h>//for add_history on linux
 # include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>//open
@@ -32,7 +33,7 @@ typedef struct s_env
 //type 1 cmd, 2 cmd option, 3 cmd term/argument (grep "AAA"), 
 // 40 redirect input 41 redirect output 400 redirect input until
 // 411 redirect output in append mode
-// 5 pipe, 6 file. 
+// 5 pipe, 6 exit status expansion, 7 env variable, 10 file
 
 typedef struct s_lexer
 {

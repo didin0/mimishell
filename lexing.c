@@ -6,17 +6,19 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/06 18:31:34 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/07 09:40:35 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-		Split the user input into multiple node and put it in a linked list.
-		The user input is splited in a node when it occur an escape ' '.
-		If the user input contain chars : '|' or '>' or '<' or '>>' or '<<'
-		The input is splitted and the token is placed in a separated node.
+			Split the user input into multiple node and put it in a linked list.
+			The user input is splited in a node when it occur an escape ' '.
+			If the user input contain chars : '|' or '>' or '<' or '>>' or '<<'
+			The input is splitted and the token is placed in a separated node.
+@general	If the token size is known then we use the is_token() else
+			we use splitting_lexer()
 */
 
 int	is_token(char *c, int i)
@@ -32,6 +34,8 @@ int	is_token(char *c, int i)
 		else
 			return (1);
 	}
+	else if (c[i] == '$' && c[i + 1] == '?')
+		return (2);
 	return (0);
 }
 
@@ -81,7 +85,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 		{
 			if (ibis != i)
 			{
-				printf("node created by ibis != i, \", from ibis %d to i %d \n", ibis, i);
+				printf("node created by ibis != i ???? \", from ibis %d to i %d \n", ibis, i);
 				if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 					return (NULL);
 			}
@@ -96,6 +100,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 				buff = ft_substr(line, i, 1);
 			if (!buff)
 				return (NULL);
+			printf("node created by is_token, return 1 2, from ibis %d to i %d\n", ibis, i);
 			ft_lstlex_add_back(lexer_list, ft_lstlex_new(buff));
 			while (line[i + 1] == ' ')
 				i++;
@@ -108,7 +113,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 			if (line[i + 1] == '\0')
 			{
 				i++;
-				printf("node created next, \\0, from ibis %d to i %d \n", ibis, i);
+				printf("node created by terminator \\0, from ibis %d to i %d \n", ibis, i);
 				if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 					return (NULL);
 				break ;
@@ -135,6 +140,16 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 			printf("second single quote found on i %d\n", i);
 			i = ft_strchr_from(line, '\'', i);
 			printf("node created by single \', from ibis %d to i %d \n", ibis, i - 1);
+			if (add_substr_to_list(lexer_list, buff, line, i, ibis + 1) != 0)
+				return (NULL);
+//			i++;
+//			ibis = i + 1;
+		}
+		else if (line[i] == '$' && line[i + 1] != '?')
+		{
+			printf("Dollar sign found on i %d\n", i);
+			i = ft_strchr_from(line, ' ', i);
+			printf("node created by dollar sign for env var, from ibis %d to i %d \n", ibis, i - 1);
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis + 1) != 0)
 				return (NULL);
 //			i++;
