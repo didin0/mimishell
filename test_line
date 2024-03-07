@@ -1,3 +1,4 @@
+a"a"|aaaa loosing aaaa
 "ads"a| loosing |
 
 cat test_line | grep ‘<’ type arg token <
