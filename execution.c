@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/07 14:19:26 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/07 18:11:36 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,11 @@ void	execution(t_data *data, t_env *env_list)
 	pid1 = fork();
 	if (pid1 == 0)
 	{
+		printf("path : |%s|\n", path);
+		printf("cmd[0] : |%s|\n", cmd[0]);
     	execve(path, cmd, NULL);
 	}
+	else
+		waitpid(pid1, NULL, 0);
+	return;
 }
