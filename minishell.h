@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/07 15:03:53 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/07 17:17:24 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ int	is_token(char *c, int i);
 void	token_type(t_data *data);
 int	all_tokens_categorized(t_lexer *temp);
 int	ft_strchr_from(char *s, char c, int i);
+int	ft_strchr_end(char *s, char c, int i);
 int	is_quote_closed(char *s, char c);
 
 #endif 
