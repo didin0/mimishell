@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/07 09:20:58 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/07 14:04:47 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void	token_type(t_data *data)
 //		if (t_env cmd access) TODO
 		if (temp->word[0] == '-')
 			temp->type = 2;
+		else if (temp->word[0] == '"')
+			temp->type = 31;
 		else if (temp->word[0] == '<' && temp->word[1] == '<')
 			temp->type = 400;//input redirection delimiter followwing TODO
 		else if (temp->word[0] == '>' && temp->word[1] == '>')
@@ -94,4 +96,21 @@ int	ft_strchr_from(char *s, char c, int i)
 	else
 		return (0);
 	return (0);
+}
+
+int	is_quote_closed(char *s, char c)
+{
+	int	count;
+
+	count = 0;
+	while (*s != 0)
+	{
+		if (*s == (char)c)
+			count++;
+		s++;
+	}
+	if (count % 2 == 0)
+		return (0);
+	else
+		return (1);
 }

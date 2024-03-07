@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/07 09:14:37 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/07 14:01:39 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /*                                                                            */
 /* ************************************************************************** */
@@ -31,6 +31,7 @@ typedef struct s_env
 
 // linked list to handle user input
 //type 1 cmd, 2 cmd option, 3 cmd term/argument (grep "AAA"), 
+// 31 cmd argument properly double quoted
 // 40 redirect input 41 redirect output 400 redirect input until
 // 411 redirect output in append mode
 // 5 pipe, 6 exit status expansion, 7 env variable, 10 file
@@ -38,7 +39,7 @@ typedef struct s_env
 typedef struct s_lexer
 {
 	char			*word;
-	int				type;
+	short			type;
 	struct s_lexer	*next;
 }					t_lexer;
 
@@ -66,5 +67,6 @@ int	is_token(char *c, int i);
 void	token_type(t_data *data);
 int	all_tokens_categorized(t_lexer *temp);
 int	ft_strchr_from(char *s, char c, int i);
+int	is_quote_closed(char *s, char c);
 
 #endif 

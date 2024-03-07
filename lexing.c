@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/07 09:40:35 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/07 14:33:10 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 		{
 			if (ibis != i)
 			{
-				printf("node created by ibis != i ???? \", from ibis %d to i %d \n", ibis, i);
+//				printf("node created by ibis != i ???? \", from ibis %d to i %d \n", ibis, i);
 				if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 					return (NULL);
 			}
@@ -100,7 +100,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 				buff = ft_substr(line, i, 1);
 			if (!buff)
 				return (NULL);
-			printf("node created by is_token, return 1 2, from ibis %d to i %d\n", ibis, i);
+//			printf("node created by is_token, return 1 2, from ibis %d to i %d\n", ibis, i);
 			ft_lstlex_add_back(lexer_list, ft_lstlex_new(buff));
 			while (line[i + 1] == ' ')
 				i++;
@@ -113,49 +113,51 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 			if (line[i + 1] == '\0')
 			{
 				i++;
-				printf("node created by terminator \\0, from ibis %d to i %d \n", ibis, i);
+//				printf("node created by terminator \\0, from ibis %d to i %d \n", ibis, i);
 				if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 					return (NULL);
 				break ;
 			}
-			printf("node created by space, from ibis %d to i %d \n", ibis, i);
+//			printf("node created by space, from ibis %d to i %d \n", ibis, i);
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 				return (NULL);
 			ibis = i + 1;
 		}
-		else if (line[i] == '"' && ft_strchr_from(line, '"', i) != 0)
+		else if (line[i] == '"' && ft_strchr_from(line, '"', i) != 0)//not working
 		{	
-			i = ft_strchr_from(line, '"', i);
-			printf("node created by double \", from ibis %d i %d \n", ibis + 1, i);
-			if (add_substr_to_list(lexer_list, buff, line, i, ibis + 1) != 0)
+			if (is_quote_closed(line, '"') != 0)
+				printf("quote not closed!!!!\n");
+//				ft_error(data);TODO exit, further not needed to be handled by subj
+//			in case of grep asd"asd" the ibis < i + 1, so the diff = i + 1 - ibis are
+//			the chars to be pereceeded to the node.
+			i = ft_strchr_from(line, '"', i) + 2;
+//			printf("node created by double \", from ibis %d i %d \n", ibis, i);
+			if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)//+1 shift start
 				return (NULL);
-//			if (line[i] != '"')
-//			{
-				i++;
-//			}
+/*			i++;
+			ibis = i + 1;
+			if (line[ibis] != ' ')
+				ibis--;*/
 			ibis = i + 1;
 		}
-		else if (line[i] == '\'' && ft_strchr_from(line, '\'', i) != 0)
+		else if (line[i] == '\'' && ft_strchr_from(line, '\'', i) != 0)//not working
 		{
-			printf("second single quote found on i %d\n", i);
+			if (is_quote_closed(line, '\'') != 0)
+				printf("quote not closed!!!!\n");
+//				ft_error(data);TODO exit, further not needed to be handled by subj
 			i = ft_strchr_from(line, '\'', i);
-			printf("node created by single \', from ibis %d to i %d \n", ibis, i - 1);
+//			printf("node created by single \', from ibis %d to i %d \n", ibis, i - 1);
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis + 1) != 0)
 				return (NULL);
-//			i++;
-//			ibis = i + 1;
 		}
-		else if (line[i] == '$' && line[i + 1] != '?')
+		else if (line[i] == '$' && line[i + 1] != '?')//not working
 		{
-			printf("Dollar sign found on i %d\n", i);
 			i = ft_strchr_from(line, ' ', i);
-			printf("node created by dollar sign for env var, from ibis %d to i %d \n", ibis, i - 1);
+//			printf("node created by dollar sign for env var, from ibis %d to i %d \n", ibis, i - 1);
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis + 1) != 0)
 				return (NULL);
-//			i++;
-//			ibis = i + 1;
 		}
-		i++;
+		i++;//any other char
 	}
 	return (*lexer_list);
 }

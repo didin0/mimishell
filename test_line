@@ -1,11 +1,20 @@
 cat test_line | grep ‘<’ type arg token <
+cat test_line | grep asd"asd” type arg token1 asdasd  ???
+cat test_line | grep "asd1'<""a"sd'>'2 type arg token asd1'<asd>2
 cat test_line | grep “asd1””asd2 undefined/error 
 cat test_line | grep “"asd1asd2"" type arg token asd1asd2
 cat test_line | grep “"""a"sd1asd2" type arg token asd1asd2
-cat test_line | grep “asd1’<” | grep “‘” type arg token1 asd1'< token2 '
+cat test_line | grep “asd1’<” | grep “k"type arg token1 asd1'< token2 '
 cat test_line | grep "asd1'<""a"sd'>'2 type arg token asd1'<asd>2
 “123 567” 10 asd <<>><>|test_line
+
+
+
 Dollar sign
+echo "$USER" token should expand look for the value of var like echo $USER
+echo '$USER' token $USER
+echo "'$USER'" token expands to 'mabbadi'
+echo "asd'$USER'asd" expands to asd'mabbadi'asd
 
 Variable expansion to values
 bash AAA=1000
