@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/06 19:11:40 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/07 12:23:05 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,19 @@ void	execution(t_data *data, t_env *env_list)
 	char	**cmd;
     char    **paths;
     char    *path;
+	pid_t	pid1;
+
+	int code;
 
     paths = get_paths(env_list);
 	cmd = get_cmd(data->lexer_list);
     path = find_good_path(cmd, paths);
-    execve(path, paths, NULL);
-    
+	pid1 = fork();
+	if (pid1 == 0)
+	{
+    	if(execve(path, cmd, NULL) == -1)
+			return;
+	}
+	else
+		return;
 }
