@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/07 15:03:53 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/08 12:19:01 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ char				**get_paths(t_env *env_list);
 
 // Exec
 void    execution(t_data *data, t_env *env_list);
+char    *find_good_path(char **cmd, char **paths);
 
 // Lexer
 void	lexing(t_data *data);
