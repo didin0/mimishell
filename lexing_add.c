@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/07 22:40:51 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:32:57 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,10 @@ void	token_type(t_data *data)
 //		if (t_env cmd access) TODO
 		if (temp->word[0] == '-')
 			temp->type = 2;
-		else if (temp->word[0] == '"')
+		else if (ft_strrchr(temp->word,'"'))//todo
 			temp->type = 31;
+		else if (temp->word[0] == '\'')
+			temp->type = 32;
 		else if (temp->word[0] == '<' && temp->word[1] == '<')
 			temp->type = 400;//input redirection delimiter followwing TODO
 		else if (temp->word[0] == '>' && temp->word[1] == '>')
