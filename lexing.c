@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/07 23:09:30 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/08 17:17:22 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,9 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 	buff = NULL;
 
 //	printf("initial line %s, last char %d\n", line, line[3]);
-	while (line && line[i] == ' ')
+	while (line && line[i] == ' ')	
 		i++;
+	ibis = i;
 	while (line && line[i])
 	{
 		if (is_token(line, i) || line[i] == '\0')
@@ -109,8 +110,16 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 		}
 		else if (line[i] == ' ' || line[i + 1] == '\0') 
 		{
-			while (line[i + 1] == ' ')
+			while (line[i + 1] == ' ')	
+			{
 				i++;
+			}
+/*				if (line[i] == '\0')
+				{
+					i = 2;
+					break;
+				}	
+			}*/
 			if (line[i + 1] == '\0')
 			{
 				i++;//one option is to loop here i to the last " prior pipe
@@ -121,11 +130,11 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 			}
 			printf("node created by space, from ibis %d to i %d \n", ibis, i);
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
-				return (NULL);
+				return (NULL);	
 			ibis = i + 1;
 		}
 		else if (line[i] == '"')
-		{	
+		{	 
 			if (is_quote_closed(line, line[i]) != 0)
 				printf("-------------------quote not closed!!!!----------------\n");
 //				ft_error(data);TODO exit, further not needed to be handled by subj
@@ -159,21 +168,35 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 			{
 				ibis = ibis - 1;
 			}
+			else	
+				printf("BREAK3\n");
+				break;
 			printf("AFTER double \", from ibis %d i %d \n", ibis, i);
 		}
-		else if (line[i] == '\'' && ft_strchr_end(line, line[i], i) != 0)//not working
+/*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''*/
+		else if (line[i] == '\'')// && ft_strchr_end(line, line[i], i) != 0)//not working
 		{
 			if (is_quote_closed(line, '\'') != 0)
 				printf("----------------- quote not closed!!!!-----------------\n");
 //				ft_error(data);TODO exit, further not needed to be handled by subj
-			i = ft_strchr_end(line, line[i], i);
-//			while (is_token(line, i) == 0 || line[i] != ' ')
-//				i++;
+			//check preceeding char??
+			i = ft_strchr_end(line, line[i], i) - 1;
+			while (ibis > 1 && (is_token(line, ibis) == 0 && line[ibis] != ' '))
+				ibis--;
+			while (is_token(line, i) == 0 && (line[i] != ' ' && line[i] != '\0'))//iterate i in case not token or space
+				i++;
 			printf("node created by single \', from ibis %d to i %d \n", ibis, i);
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 				return (NULL);
 			ibis = i + 1;
+			if (is_token(line, i) != 0 || line[i] == ' ')//token or space
+			{
+				ibis--;
+				printf("\' continue\n");
+				continue;
+			}		
 		}
+/*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''*/
 		else if (line[i] == '$' && line[i + 1] != '?')//not working
 		{
 			i = ft_strchr_from(line, ' ', i) + 1;
@@ -181,7 +204,14 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis + 1) != 0)
 				return (NULL);
 		}
+/*		if (line[i + 1] == ' ')
+		{
+			while (line[i + 1] == ' ')
+				i++;
+			ibis = i;
+		}*/
 		i++;//any other char
+		printf("from ibis %d to i %d \n", ibis, i);
 	}
 	return (*lexer_list);
 }

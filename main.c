@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/07 18:37:25 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/08 14:58:53 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	show_list(t_lexer *list)
 	i = 0;
 	while (list)
 	{
-		printf("list [%d] type (%d) :%s\n", i, list->type, list->word);
+		printf("list [%d] type (%d) ft_strlen(list->word) %zu :%s\n", i, list->type, ft_strlen(list->word), list->word);
 		list = list->next;
 		i++;
 	}

@@ -1,5 +1,12 @@
+<a'a'a> works
+< a'a'a > does not\
+
+
+
 a"a"|aaaa loosing aaaa
 "ads"a| loosing |
+CMD with ""
+"ls"
 
 cat test_line | grep ‘<’ type arg token <
 cat test_line | grep asd"asd” type arg token1 asdasd  ???
