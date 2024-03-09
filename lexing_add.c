@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/07 14:04:47 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/08 22:36:57 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	token_type(t_data *data)
 {
 	t_lexer	*temp;
-	int ret;
 	int	fd;
 
 	temp = data->lexer_list;
@@ -25,8 +24,10 @@ void	token_type(t_data *data)
 //		if (t_env cmd access) TODO
 		if (temp->word[0] == '-')
 			temp->type = 2;
-		else if (temp->word[0] == '"')
+		else if (ft_strrchr(temp->word,'"'))//todo
 			temp->type = 31;
+		else if (temp->word[0] == '\'')
+			temp->type = 32;
 		else if (temp->word[0] == '<' && temp->word[1] == '<')
 			temp->type = 400;//input redirection delimiter followwing TODO
 		else if (temp->word[0] == '>' && temp->word[1] == '>')
@@ -71,12 +72,27 @@ int	all_tokens_categorized(t_lexer	*temp)
 	return (0);
 }
 
+int	ft_strchr_end(char *s, char c, int i)//loop until a pipe and then back till the first
+{	
+//	printf("Test %d\n", i);
+	while (s[i] != '|' && s[i] != '\0')
+		i++;
+	while (i >= 0)
+	{
+		if (s[i] == c)
+			return (i);
+//	printf("i looping backwards %d\n", i);
+		i--;
+	}
+	return (0);
+}
+
 /*
 @glance			increment the pointer to position i, look for c.
 				return c position + 1.
 */
 
-int	ft_strchr_from(char *s, char c, int i)
+int	ft_strchr_from(char *s, char c, int i)//TODO rewrite not needing j, in case useful func
 {	
 	int	j;
 
@@ -97,6 +113,8 @@ int	ft_strchr_from(char *s, char c, int i)
 		return (0);
 	return (0);
 }
+
+
 
 int	is_quote_closed(char *s, char c)
 {
