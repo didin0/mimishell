@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/07 14:19:26 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/08 14:49:05 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ char	**get_cmd(t_lexer *lexer_list)
 	char	**cmd;
 	int		i;
 
-	cmd = ft_calloc((list_size(lexer_list)), (sizeof(char *)));
+	cmd = ft_calloc((list_size(lexer_list) + 1), (sizeof(char *)));
 	i = 0;
 	while (lexer_list)
 	{
@@ -89,4 +89,7 @@ void	execution(t_data *data, t_env *env_list)
 	{
     	execve(path, cmd, NULL);
 	}
+	else
+		waitpid(pid1, NULL, 0);
+	return;
 }

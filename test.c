@@ -1,53 +1,54 @@
-// /* ************************************************************************** */
-// /*                                                                            */
-// /*                                                        :::      ::::::::   */
-// /*   test.c                                             :+:      :+:    :+:   */
-// /*                                                    +:+ +:+         +:+     */
-// /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
-// /*                                                +#+#+#+#+#+   +#+           */
-// /*   Created: 2024/03/01 12:06:55 by mabbadi           #+#    #+#             */
-// /*   Updated: 2024/03/06 11:40:47 by mabbadi          ###   ########.fr       */
-// /*                                                                            */
-// /* ************************************************************************** */
+// // /* ************************************************************************** */
+// // /*                                                                            */
+// // /*                                                        :::      ::::::::   */
+// // /*   test.c                                             :+:      :+:    :+:   */
+// // /*                                                    +:+ +:+         +:+     */
+// // /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
+// // /*                                                +#+#+#+#+#+   +#+           */
+// // /*   Created: 2024/03/01 12:06:55 by mabbadi           #+#    #+#             */
+// // /*   Updated: 2024/03/06 11:40:47 by mabbadi          ###   ########.fr       */
+// // /*                                                                            */
+// // /* ************************************************************************** */
 
 // #include "minishell.h"
 
-// void	show(t_env *list)
+// int main(int argc, char **argv, char **envp)
 // {
-// 	while (list)
-// 	{
-// 		printf("key = %s value = %s\n", list->key, list->value);
-// 		list = list->next;
-// 	}
-// }
 
-// char **get_paths(t_env *env_list)
-// {
-//     char **paths;
-//     char *path;
-//     while(env_list->next)
+//     char	**cmd = malloc(5 * sizeof(char *));
+//     char	**cmd2 = malloc(5 * sizeof(char *));
+//     char    **paths;
+//     char    *path;
+//     char    *path2;
+// 	pid_t	pid1;
+//     int     fd[2];
+
+// 	int code;
+
+//     char **splited_paths = ft_split(getenv("PATH"), ':');
+
+// 	cmd[0] = ft_strdup("grep");
+//     cmd[1] = ft_strdup("env");
+
+//     cmd2[0] = ft_strdup("ls");
+//     path = find_good_path(cmd, splited_paths);
+//     path2 = find_good_path(cmd2, splited_paths);
+    
+//     if (pipe(fd) < 0)
+//         return 2;
+//     pid1 = fork();
+//     if (pid1 == 0)
 //     {
-//         if(ft_strncmp(env_list->key, "PATH", 4) == 0)
-//             paths = ft_split(env_list->value, ':');
-//         env_list = env_list->next;
+//         dup2(fd[1], STDOUT_FILENO);
+// 	    // close(fd[1]);
+//         execve(path2, cmd2, NULL);
 //     }
-//     return paths;
-// }
-
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	t_env	*env_list;
-
-// 	env_list = get_env_to_list(envp);
-
-//     char **paths = get_paths(env_list);
-//     int i = 0;
-//     while(paths[i])
+//     else
 //     {
-//         printf("%s\n", paths[i]);
-//         i++;
+//         dup2(fd[0], STDIN_FILENO);
+// 	    // close(fd[0]);
+//         execve(path, cmd, NULL);
+//         waitpid(pid1, NULL, 0);
 //     }
-
-// 	// show(env_list);
-// 	return (0);
+//     return 0;
 // }
