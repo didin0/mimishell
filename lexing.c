@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/08 17:17:22 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/09 11:05:09 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ int	is_token(char *c, int i)
 int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i,
 		int ibis)
 {
+	if (i == ibis)
+		return (0);
 	buff = ft_substr(line, ibis, i - ibis);
 	if (!buff)
 		return (1);
@@ -71,7 +73,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 	int		i;
 	int		ibis;
 	char	*buff;
-	int		aff;
+//	int		aff;
 
 	i = 0;
 	ibis = 0;
@@ -110,19 +112,10 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 		}
 		else if (line[i] == ' ' || line[i + 1] == '\0') 
 		{
-			while (line[i + 1] == ' ')	
-			{
-				i++;
-			}
-/*				if (line[i] == '\0')
-				{
-					i = 2;
-					break;
-				}	
-			}*/
 			if (line[i + 1] == '\0')
 			{
-				i++;//one option is to loop here i to the last " prior pipe
+				if (line[i] != ' ')
+					i++;//to put the last char on line to node
 				printf("node created by terminator \\0, from ibis %d to i %d \n", ibis, i);
 				if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 					return (NULL);
@@ -130,8 +123,12 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 			}
 			printf("node created by space, from ibis %d to i %d \n", ibis, i);
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
-				return (NULL);	
+				return (NULL);
+			while (line [i + 1] == ' ' && line[i + 1] != '\0')//handle preceeding spaces
+				i++;	
 			ibis = i + 1;
+			if (line[i + 1] == ' ')
+				continue;
 		}
 		else if (line[i] == '"')
 		{	 
@@ -140,6 +137,8 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 //				ft_error(data);TODO exit, further not needed to be handled by subj
 //			in case of grep asd"asd" the ibis < i + 1, so the diff = i + 1 - ibis are
 //			the chars to be pereceeded to the node.
+//			
+			printf("entering  double\', ibis %d to i %d \n", ibis, i);
 			i = ft_strchr_end(line, '"', i) - 1;
 			while (is_token(line, i) == 0 && (line[i] != ' ' && line[i] != '\0'))
 				i++;
@@ -169,8 +168,10 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 				ibis = ibis - 1;
 			}
 			else	
+			{
 				printf("BREAK3\n");
 				break;
+			}
 			printf("AFTER double \", from ibis %d i %d \n", ibis, i);
 		}
 /*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''*/
@@ -179,22 +180,14 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 			if (is_quote_closed(line, '\'') != 0)
 				printf("----------------- quote not closed!!!!-----------------\n");
 //				ft_error(data);TODO exit, further not needed to be handled by subj
-			//check preceeding char??
-			i = ft_strchr_end(line, line[i], i) - 1;
-			while (ibis > 1 && (is_token(line, ibis) == 0 && line[ibis] != ' '))
-				ibis--;
-			while (is_token(line, i) == 0 && (line[i] != ' ' && line[i] != '\0'))//iterate i in case not token or space
-				i++;
+			printf("entering  single\', ibis %d to i %d \n", ibis, i);
+			i = ft_strchr_end(line, line[i], i) + 1;
 			printf("node created by single \', from ibis %d to i %d \n", ibis, i);
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 				return (NULL);
 			ibis = i + 1;
-			if (is_token(line, i) != 0 || line[i] == ' ')//token or space
-			{
-				ibis--;
-				printf("\' continue\n");
-				continue;
-			}		
+			if (line[i] == '\0')//quotes case can end the line a'<'\0
+				break;
 		}
 /*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''*/
 		else if (line[i] == '$' && line[i + 1] != '?')//not working

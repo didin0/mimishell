@@ -1,7 +1,12 @@
-<a'a'a> works
-< a'a'a > does not\
-
-
+Quotes tests
+<a'a'a> preceeding chars 
+|<|'a'|>| preceeding pipes and redirs 
+< a'a'a > one space
+<  a'a'a  > several spaces
+a'<'
+a'a'
+a '<'
+'a'a' 
 
 a"a"|aaaa loosing aaaa
 "ads"a| loosing |

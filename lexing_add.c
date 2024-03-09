@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/08 10:32:57 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/08 22:36:57 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	token_type(t_data *data)
 {
 	t_lexer	*temp;
-	int ret;
 	int	fd;
 
 	temp = data->lexer_list;
