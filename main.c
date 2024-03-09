@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/08 22:41:24 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/09 11:51:41 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@ int	main(int argc, char **argv, char **envp)
 
 	while (1)
 	{
-		data.line = readline("minishell :"); // readline return a malloc char *
+		data.line = readline("\033[36mminishell :\033[m "); // readline return a malloc char *
 		add_history(data.line);	// add_history create and implement an history of commands working with directional key
 		lexing(&data);
 		token_type(&data);
-		show_list(data.lexer_list);
-//		execution(&data, env_list);
+		// show_list(data.lexer_list);
+		execution(&data, env_list);
 	}
 	return (0);
 }
