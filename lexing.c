@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/09 11:46:21 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/09 12:38:54 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 		{
 			if (is_quote_closed(line, '\'') != 0)
 				// printf("----------------- quote not closed!!!!-----------------\n");
-//				ft_error(data);TODO exit, further not needed to be handled by subj
+				// ft_error(data);TODO exit, further not needed to be handled by subj
 			// printf("entering  single\', ibis %d to i %d \n", ibis, i);
 			i = ft_strchr_end(line, line[i], i) + 1;
 			// printf("node created by single \', from ibis %d to i %d \n", ibis, i);

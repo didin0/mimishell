@@ -1,0 +1,6 @@
+#ignore the vscode folder
+minishell.dSYM/
+
+#ignore compiled files
+a.out
+minishell
