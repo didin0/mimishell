@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/11 10:42:30 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/11 19:16:39 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,10 @@ int	list_size(t_lexer *lexer_list)
 	}
 	return (i);
 }
+
+/*
+@dev		cmd[] array has all node, thus should have one cmd and its args
+ * */
 
 char	**get_cmd(t_lexer *lexer_list)
 {
@@ -90,12 +94,14 @@ void	execution(t_data *data, t_env *env_list)
     paths = get_paths(env_list);
 	cmd = get_cmd(data->lexer_list);
     path = find_good_path(cmd, paths);
-	pid1 = fork();
+//	printf("number of pipes %d\n", count_tokens(data, PIPE));//number times the exec loops need to run
+	pid1 = fork();//TODO protect fork return -1 
 	if (pid1 == 0)
 	{
     	execve(path, cmd, NULL);
 	}
 	else
-		waitpid(pid1, NULL, 0);
+		stat_from_waitpid(data, pid1);
+//	printf("Exit status cmd %d\n", data->exit_status);
 	return;
 }

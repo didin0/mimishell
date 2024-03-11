@@ -6,13 +6,13 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/08 22:36:57 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/11 14:11:46 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	token_type(t_data *data)
+void	token_type(t_data *data, t_env *env_list)
 {
 	t_lexer	*temp;
 	int	fd;
@@ -21,7 +21,8 @@ void	token_type(t_data *data)
 	fd = 0;
 	while (temp != NULL)
 	{
-//		if (t_env cmd access) TODO
+		if (!is_cmd(temp, env_list))
+		   	temp->type = 1;
 		if (temp->word[0] == '-')
 			temp->type = 2;
 		else if (ft_strrchr(temp->word,'"'))//todo

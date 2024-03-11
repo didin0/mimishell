@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/09 11:39:03 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/11 19:11:47 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>//open
+
+#define PIPE 5
 
 // linked list to copy the $ENV variable
 typedef struct s_env
@@ -48,6 +50,7 @@ typedef struct s_data
 {
 	char			*line;
 	t_lexer			*lexer_list;
+	int		exit_status;
 }					t_data;
 
 // Utils
@@ -66,13 +69,16 @@ char				**get_paths(t_env *env_list);
 // Exec
 void    execution(t_data *data, t_env *env_list);
 char    *find_good_path(char **cmd, char **paths);
+int	count_tokens(t_data *data, int token);
+void	stat_from_waitpid(t_data *data, pid_t pid1);
 
 // Lexer
 void	lexing(t_data *data);
 t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list);
 int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i, int ibis);
 int	is_token(char *c, int i);
-void	token_type(t_data *data);
+void	token_type(t_data *data, t_env *env_list);
+int	is_cmd(t_lexer *token, t_env *env_list);
 int	all_tokens_categorized(t_lexer *temp);
 int	ft_strchr_from(char *s, char c, int i);
 int	ft_strchr_end(char *s, char c, int i);

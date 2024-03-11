@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/09 19:13:50 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/11 14:01:06 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 		{
 			if (ibis != i)
 			{
-				printf("node created by ibis != i ???? \", from ibis %d to i %d \n", ibis, i);
+//				printf("node created by ibis != i ???? \", from ibis %d to i %d \n", ibis, i);
 				if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 					return (NULL);
 			}
@@ -104,7 +104,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 				buff = ft_substr(line, i, 1);
 			if (!buff)
 				return (NULL);
-			printf("node created by is_token, return 1 2, from ibis %d to i %d\n", ibis, i);
+//			printf("node created by is_token, return 1 2, from ibis %d to i %d\n", ibis, i);
 			ft_lstlex_add_back(lexer_list, ft_lstlex_new(buff));
 			while (line[i + 1] == ' ')
 				i++;
@@ -116,12 +116,12 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 			{
 				if (line[i] != ' ')
 					i++;//to put the last char on line to node
-				printf("node created by terminator \\0, from ibis %d to i %d \n", ibis, i);
+//				printf("node created by terminator \\0, from ibis %d to i %d \n", ibis, i);
 				if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 					return (NULL);
 				break ;
 			}
-			printf("node created by space, from ibis %d to i %d \n", ibis, i);
+//			printf("node created by space, from ibis %d to i %d \n", ibis, i);
 			if (add_substr_to_list(lexer_list, buff, line, i, ibis) != 0)
 				return (NULL);
 			while (line [i + 1] == ' ' && line[i + 1] != '\0')//handle preceeding spaces
@@ -156,7 +156,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 				ibis = i + 1;// all other cases where I return to main loop "a"> asd
 		}
 		i++;//any other char
-		printf("main loop ibis %d to i %d -- %d \n", ibis, i, line[i]);
+//		printf("main loop ibis %d to i %d -- %d \n", ibis, i, line[i]);
 	}
 	return (*lexer_list);
 }
