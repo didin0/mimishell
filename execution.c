@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/08 14:49:05 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/11 10:42:30 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	**get_paths(t_env *env_list)
 	while (env_list->next)
 	{
 		if (ft_strncmp(env_list->key, "PATH", 4) == 0)
-			paths = ft_split(env_list->value, ':');
+			paths = ft_split(env_list->value, ':');//ft_split return char **
 		env_list = env_list->next;
 	}
 	return (paths);
@@ -44,21 +44,27 @@ char	**get_cmd(t_lexer *lexer_list)
 	char	**cmd;
 	int		i;
 
-	cmd = ft_calloc((list_size(lexer_list) + 1), (sizeof(char *)));
+	cmd = ft_calloc((list_size(lexer_list) + 1), (sizeof(char *)));//TODO calloc fail
 	i = 0;
 	while (lexer_list)
 	{
-		cmd[i] = ft_strdup(lexer_list->word);
+		cmd[i] = ft_strdup(lexer_list->word);//ft_strdup need here, lexer_list is on heap
 		lexer_list = lexer_list->next;
 		i++;
 	}
 	return (cmd);
 }
+
+/*
+@glance		loop all env PATH paths with all lexer list words TODO
+ *
+ * */
 char    *find_good_path(char **cmd, char **paths)
 {
-    char *path = malloc(sizeof(char *));
-    char *tmp = malloc(sizeof(char *));
+    char *path = malloc(sizeof(char *));//TODO fail, assign
+    char *tmp = malloc(sizeof(char *));//TODO fail, assign
     int i = 0;
+
     while(paths[i])
     {
         tmp = ft_strjoin("/", cmd[0]);
@@ -69,7 +75,7 @@ char    *find_good_path(char **cmd, char **paths)
             free(path);
         i++;
     }
-    return NULL;
+    return NULL;//TODO free tmp;
 }
 
 void	execution(t_data *data, t_env *env_list)

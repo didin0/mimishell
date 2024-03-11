@@ -6,11 +6,16 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:00:26 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/06 11:20:52 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/11 10:12:19 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*
+@glance		ft_strdup here assures the env valiables are put on heap.
+			This helps to maintain stability and predictability of the program.
+*/
 
 t_env	*create_env_node(char *key, char *value)
 {
@@ -22,7 +27,7 @@ t_env	*create_env_node(char *key, char *value)
 		perror("Memory allocation failed");
 		exit(EXIT_FAILURE);
 	}
-	new_env->key = ft_strdup(key);
+	new_env->key = ft_strdup(key);//TODO in case key = strdup(key) then calloc failed
 	new_env->value = ft_strdup(value);
 	new_env->next = NULL;
 	return (new_env);
@@ -52,7 +57,7 @@ void	split_and_add(char *env_var, t_env **head)
 	char	**str;
 	t_env	*new_node;
 
-	str = ft_split(env_var, '=');
+	str = ft_split(env_var, '=');//TOOD ft_split calloc failure
 	if (str[0] && str[1])
 	{
 		new_node = create_env_node(str[0], str[1]);
