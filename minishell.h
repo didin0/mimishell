@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/09 11:39:03 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/12 18:23:05 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,5 +77,8 @@ int	all_tokens_categorized(t_lexer *temp);
 int	ft_strchr_from(char *s, char c, int i);
 int	ft_strchr_end(char *s, char c, int i);
 int	is_quote_closed(char *s, char c);
+
+// Parser
+t_lexer *parsing(t_data *data, t_env *env_list);
 
 #endif 

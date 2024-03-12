@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/09 19:03:15 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/12 18:59:59 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,34 +53,79 @@ char	*clean_quote(char *str)
 	return (result);
 }
 
+char *find_key_in_str(char *str, t_env *env_list)
+{
+    while (env_list)
+    {
+        int size = ft_strlen(env_list->key);
+        char *presult = ft_strnstr(str, env_list->key, size);
+        if (presult != NULL) // should add a check if there is a single quote ' to not expand the $variable OR check directly on the call of expander
+        {
+            int pos = presult - str;
+            char *new_value = env_list->value;
+            int new_value_len = ft_strlen(new_value);
+            int remaining_len = ft_strlen(presult + size);
+            int total_len = pos + new_value_len + remaining_len;
+            char *modified_str = malloc(total_len + 1);
+            if (modified_str == NULL)
+                return NULL;
+            ft_strlcpy(modified_str, str, pos);
+            ft_strlcat(modified_str, new_value, total_len + 1);
+            ft_strlcat(modified_str, presult + size, total_len + 1);
+            free(str);
+            return modified_str;
+        }
+		// else ...... if the $variable is not found it should put nothing instead of the "$variable"
+        env_list = env_list->next;
+    }
+    return NULL;
+}
+
 char *expander(char *str, t_env *env_list)
 {
     int i = 0;
     int j = 0;
     char *result = malloc(sizeof(char *) + 1);
+	char **tmp;
     while(str[i])
     {
         if(str[i] == '$')
         {
-            
+			result = find_key_in_str(str, env_list);
+			if(result)
+				return result;
         }
         i++;
     }
-    return result;
+    return str;
 }
-
-int	main(int argc, char **argv, char **envp)
+t_lexer *parsing(t_data *data, t_env *env_list)
 {
-	char *str;
-	char *cleaned_str = malloc(sizeof(char *));
-	char *expended_str = malloc(sizeof(char *));
-    t_env	*env_list = get_env_to_list(envp);
+    t_lexer *head = data->lexer_list;
+    t_lexer *tmp = head;
 
-	str = ft_strdup("\'\"he\'l\'lo\"\'");
-	printf("%s\n", str);
-	cleaned_str = clean_quote(str);
-	// expended_str = expander(cleaned_str, env_list);
-	printf("%s\n", cleaned_str);
-
-	return (0);
+    while (tmp)
+    {
+        tmp->word = clean_quote(tmp->word);
+        tmp->word = expander(tmp->word, env_list);
+        tmp = tmp->next;
+    }
+    data->lexer_list = head;
+    return data->lexer_list;
 }
+
+
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	char *str;
+//     t_env	*env_list = get_env_to_list(envp);
+
+// 	str = ft_strdup("hello ciao");
+// 	printf("%s\n", str);
+// 	str = clean_quote(str);
+// 	str = expander(str, env_list);
+// 	printf("%s\n", str);
+// 	// printf("%s\n", expended_str);
+
+// 	return (0);
+// }

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/09 11:51:41 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/12 18:39:15 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int	main(int argc, char **argv, char **envp)
 		add_history(data.line);	// add_history create and implement an history of commands working with directional key
 		lexing(&data);
 		token_type(&data);
+		parsing(&data, env_list);
 		// show_list(data.lexer_list);
 		execution(&data, env_list);
 	}
