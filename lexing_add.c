@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/11 14:11:46 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/12 18:41:14 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,11 @@ void	token_type(t_data *data, t_env *env_list)
 	fd = 0;
 	while (temp != NULL)
 	{
-		if (!is_cmd(temp, env_list))
+		if (is_builtin(data, temp->word) == 1)
+			temp->type = 0;
+		else if (!is_cmd(temp, env_list))
 		   	temp->type = 1;
-		if (temp->word[0] == '-')
+		else if (temp->word[0] == '-')
 			temp->type = 2;
 		else if (ft_strrchr(temp->word,'"'))//todo
 			temp->type = 31;
@@ -46,6 +48,8 @@ void	token_type(t_data *data, t_env *env_list)
 			else
 				temp->type = 7;
 		}
+		else if (is_builtin(data, temp->word))
+			temp->type = 8;
 		fd = open(temp->word, O_RDONLY);
 		if (fd != -1)
 		{
@@ -57,6 +61,7 @@ void	token_type(t_data *data, t_env *env_list)
 		temp = temp->next;
 	}
 	temp = data->lexer_list;
+
 	if (all_tokens_categorized(temp) == 1)
 //   	ft_error(data);
 		printf("token error\n");	
@@ -66,7 +71,7 @@ int	all_tokens_categorized(t_lexer	*temp)
 {
 	while (temp != NULL)
 	{
-		if (temp->type == 0)
+		if (temp->type == -1)
 			return (1);
 		temp = temp->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/16 15:49:53 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/11 10:25:35 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/12 17:27:10 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ t_lexer	*ft_lstlex_new(void *word)
 	if (!result)
 		return (NULL);
 	result->word = word;
-	result->type = 0;
+	result->type = -1;
 	result->next = NULL;
 	return (result);
 }
