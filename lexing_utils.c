@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:11:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/12 18:52:25 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/13 10:01:59 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,22 +35,25 @@ int	is_builtin(t_data *data, char *word)
 	char **builtin_names;
 	int	i;
 
-	builtin_names = (char **)malloc(sizeof(char *) * 3 + 1);
+	builtin_names = (char **)malloc(sizeof(char *) * 8 + 1);
 	if (!builtin_names)
 		printf("malloc fail\n");
 //		ft_error(data);//TODO
 	builtin_names[0] = ft_strdup("echo");	
 	builtin_names[1] = ft_strdup("cd");
 	builtin_names[2] = ft_strdup("pwd");
+	builtin_names[3] = ft_strdup("export");	
+	builtin_names[4] = ft_strdup("unset");	
+	builtin_names[5] = ft_strdup("env");
+	builtin_names[6] = ft_strdup("exit");
+	builtin_names[7] = NULL;
 	i = 0;
-	while (i < 3)
+	while (i < 7)
 	{
-		printf("names %s\n", builtin_names[i]);
-		printf("node->word %s\n", word);
 		if (ft_strncmp(word, builtin_names[i], ft_strlen(word)) == 0)
 			return (1);
 		i++;
 	}
-	free(builtin_names);
+	free_array(builtin_names);
 	return (0);
 }

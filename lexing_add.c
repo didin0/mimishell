@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/12 18:41:14 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/13 10:05:16 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@ void	token_type(t_data *data, t_env *env_list)
 		   	temp->type = 1;
 		else if (temp->word[0] == '-')
 			temp->type = 2;
-		else if (ft_strrchr(temp->word,'"'))//todo
+		else if (ft_strrchr(temp->word,'"'))
 			temp->type = 31;
 		else if (temp->word[0] == '\'')
 			temp->type = 32;
 		else if (temp->word[0] == '<' && temp->word[1] == '<')
-			temp->type = 400;//input redirection delimiter followwing TODO
+			temp->type = 400;
 		else if (temp->word[0] == '>' && temp->word[1] == '>')
 			temp->type = 411;
 		else if (temp->word[0] == '<' && temp->word[1] == '\0')
@@ -48,16 +48,14 @@ void	token_type(t_data *data, t_env *env_list)
 			else
 				temp->type = 7;
 		}
-		else if (is_builtin(data, temp->word))
-			temp->type = 8;
 		fd = open(temp->word, O_RDONLY);
 		if (fd != -1)
 		{
 			temp->type = 10;
 			close(fd);
 		}
-		else if (temp->type == 0)
-			temp->type = 3;//cmd term
+		else if (temp->type == -1)
+			temp->type = 3;
 		temp = temp->next;
 	}
 	temp = data->lexer_list;
@@ -97,7 +95,7 @@ int	ft_strchr_end(char *s, char c, int i)//loop until a pipe and then back till 
 @glance			increment the pointer to position i, look for c.
 				return c position + 1.
 */
-
+/*
 int	ft_strchr_from(char *s, char c, int i)//TODO rewrite not needing j, in case useful func
 {	
 	int	j;
@@ -119,7 +117,7 @@ int	ft_strchr_from(char *s, char c, int i)//TODO rewrite not needing j, in case 
 		return (0);
 	return (0);
 }
-
+*/
 
 
 int	is_quote_closed(char *s, char c)

@@ -1,4 +1,9 @@
 Quotes tests
+
+"a"
+
+
+
 'a' a one space between
 'a'b space in the end loose char
 b' a a 'b

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/11 14:01:06 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/13 10:05:48 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i,
 @elseif '"'		makes list node from double quoted token.
 				first and second quote found, 
 				update i to the second quote char.
-@ft_strchr_from	look for second char " in line, return char pos + 1.
+@ft_strchr_end	look for second char " or ' in line, return char pos.
 */
 
 t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
