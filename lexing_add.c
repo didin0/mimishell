@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/13 10:05:16 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/13 19:19:32 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,50 +75,24 @@ int	all_tokens_categorized(t_lexer	*temp)
 	}
 	return (0);
 }
+/*
+@glance 	loop until the next pipe of redirection
+			loop back until the closing quote
+			return closing quote position.
+*/
 
-int	ft_strchr_end(char *s, char c, int i)//loop until a pipe and then back till the first
+int	ft_strchr_end(char *s, char c, int i)
 {	
-//	printf("Test %d\n", i);
-	while (s[i] != '|' && s[i] != '\0')
+	while (is_token(s, i) == 0 && s[i] != '\0')
 		i++;
 	while (i >= 0)
 	{
 		if (s[i] == c)
 			return (i);
-//	printf("i looping backwards %d\n", i);
 		i--;
 	}
 	return (0);
 }
-
-/*
-@glance			increment the pointer to position i, look for c.
-				return c position + 1.
-*/
-/*
-int	ft_strchr_from(char *s, char c, int i)//TODO rewrite not needing j, in case useful func
-{	
-	int	j;
-
-	j = 0;
-	while (j <= i)
-	{
-		s++;
-		j++;
-	}
-	while (*s != (char)c && *s != 0)
-	{
-		s++;
-		i++;
-	}
-	if (*s == (char)c)
-		return (i);
-	else
-		return (0);
-	return (0);
-}
-*/
-
 
 int	is_quote_closed(char *s, char c)
 {
