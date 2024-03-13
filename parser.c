@@ -99,6 +99,19 @@ char *expander(char *str, t_env *env_list)
     }
     return str;
 }
+
+int check_sq(char *str)
+{
+    int i = 0;
+    while(str[i])
+    {
+        if(str[i] == '\'')
+            return 1;
+        i++;
+    }
+    return 0;
+}
+
 t_lexer *parsing(t_data *data, t_env *env_list)
 {
     t_lexer *head = data->lexer_list;
@@ -107,7 +120,12 @@ t_lexer *parsing(t_data *data, t_env *env_list)
     while (tmp)
     {
         tmp->word = clean_quote(tmp->word);
-        tmp->word = expander(tmp->word, env_list);
+        printf("type : %d\n", tmp->type);
+        if(tmp->type == 7)
+        {
+            if(check_sq(tmp->word))
+                tmp->word = expander(tmp->word, env_list);
+        }
         tmp = tmp->next;
     }
     data->lexer_list = head;

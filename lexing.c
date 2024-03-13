@@ -44,9 +44,10 @@ int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i,
 {
 	if (i == ibis)
 		return (0);
-	buff = ft_substr(line, ibis, i - ibis);
+	if(line)
+		buff = ft_substr(line, ibis, i - ibis);
 	if (!buff)
-		return (1);
+		return (0);
 	ft_lstlex_add_back(lexer_list, ft_lstlex_new(buff));
 	return (0);
 }
@@ -190,13 +191,13 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list)
 				break;
 		}
 /*'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''*/
-		else if (line[i] == '$' && line[i + 1] != '?')//not working
-		{
-			i = ft_strchr_from(line, ' ', i) + 1;
-			// printf("node created by dollar sign for env var, from ibis %d to i %d \n", ibis, i - 1);
-			if (add_substr_to_list(lexer_list, buff, line, i, ibis + 1) != 0)
-				return (NULL);
-		}
+		// else if (line[i] == '$' && line[i + 1] == '?')//not working
+		// {
+		// 	i = ft_strchr_from(line, ' ', i) + 1;
+		// 	// printf("node created by dollar sign for env var, from ibis %d to i %d \n", ibis, i - 1);
+		// 	if (add_substr_to_list(lexer_list, buff, line, i, ibis + 1) != 0)
+		// 		return (NULL);
+		// }
 /*		if (line[i + 1] == ' ')
 		{
 			while (line[i + 1] == ' ')

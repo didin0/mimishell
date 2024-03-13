@@ -19,6 +19,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>//open
+# include <sys/wait.h>
 
 // linked list to copy the $ENV variable
 typedef struct s_env
