@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/12 17:32:17 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/13 09:15:22 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>//open
+# include <sys/wait.h>//for waitpid on linux
 
 #define PIPE 5
 
@@ -42,7 +43,7 @@ typedef struct s_env
 typedef struct s_lexer
 {
 	char			*word;
-	short			type;
+	int				type;
 	struct s_lexer	*next;
 }					t_lexer;
 
