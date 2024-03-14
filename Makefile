@@ -27,7 +27,7 @@ COMPILE = cc ${SRCS} ${CFLAGS} ${DEBUG} -o
 MAKE_MSG = @printf "\n${Purple}Makefile : ${RED}${NAME}${DEF}\n\n"
 
 NAME = minishell
-DEBUG=  -fsanitize=address
+DEBUG=#  -fsanitize=address
 CFLAGS = -L. -lreadline -g #-Wall -Werror -Wextra ${DEBUG}
  
 
