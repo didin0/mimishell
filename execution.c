@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/11 19:16:39 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/14 12:46:00 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ char    *find_good_path(char **cmd, char **paths)
     {
         tmp = ft_strjoin("/", cmd[0]);
         path = ft_strjoin(paths[i], tmp);
+		free(tmp);
         if(access(path, F_OK) == 0)
             return path;
         else

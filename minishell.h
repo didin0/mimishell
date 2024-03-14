@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/13 09:15:22 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/14 12:50:04 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,9 @@ int	ft_strchr_from(char *s, char c, int i);
 int	ft_strchr_end(char *s, char c, int i);
 int	is_quote_closed(char *s, char c);
 int is_builtin(t_data *data, char *word);
+
+
+// Parser
+t_lexer *parsing(t_data *data, t_env *env_list);
 
 #endif 

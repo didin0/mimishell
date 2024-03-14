@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:56:32 by mabbadi           #+#    #+#             */
-/*   Updated: 2023/04/11 15:32:23 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/12 13:00:01 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 			&& ft_strncmp(haystack, needle, needle_len) == 0)
 			return ((char *) haystack);
 		haystack++;
-		len--;
 	}
 	return (NULL);
 }
