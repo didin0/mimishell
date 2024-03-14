@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/12 18:59:59 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/14 12:04:20 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ char	*clean_quote(char *str)
 				dq = 1;
 			else
 				sq = 1;
-		}
+		} 
 		else
 			result[j++] = str[i];
 		i++;
@@ -99,7 +99,6 @@ char *expander(char *str, t_env *env_list)
     }
     return str;
 }
-
 int check_sq(char *str)
 {
     int i = 0;
@@ -119,13 +118,10 @@ t_lexer *parsing(t_data *data, t_env *env_list)
 
     while (tmp)
     {
-        tmp->word = clean_quote(tmp->word);
         printf("type : %d\n", tmp->type);
-        if(tmp->type == 7)
-        {
-            if(check_sq(tmp->word))
-                tmp->word = expander(tmp->word, env_list);
-        }
+        if(!check_sq(tmp->word))
+            tmp->word = expander(tmp->word, env_list);
+        tmp->word = clean_quote(tmp->word);
         tmp = tmp->next;
     }
     data->lexer_list = head;
