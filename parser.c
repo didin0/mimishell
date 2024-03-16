@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/15 18:38:45 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/16 14:24:39 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,9 @@ char *expander(char *str, t_env *env_list)
     int i = 0;
     int j = 0;
     char *result = malloc(sizeof(char *) + 1);
-	char **tmp;
+    char *tmp;
     int variables = count_$(str);
+    int size = ft_strlen(str);
     while(str[i])
     {
         if(str[i] == '$')
@@ -143,8 +144,15 @@ char *expander(char *str, t_env *env_list)
                         if(check_dq(str))
                         {
                             result = ft_substr(str, 0, i);
-                            // TODO :
-                            // Need to add to result what is after the quote " 
+                            j = i;
+                            while(str[j])
+                            {
+                                j++;
+                                if(str[j] == '\"' || str[j] == ' ')
+                                    break;
+                            }
+                            tmp = ft_substr(str, j, size - j);
+                            ft_strlcat(result, tmp, (ft_strlen(result) + ft_strlen(tmp) + 1));
                             return (result);
                         }
                         return (ft_substr(str, 0, i));
