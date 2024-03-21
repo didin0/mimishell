@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/21 09:12:47 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/21 15:00:35 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ char	**get_cmd(t_data *data, t_lexer *lexer_list)
 	{
 		cmd[i] = ft_strdup(cur_node->word);
 	}
-	keep_cur_node(cur_node, 0);
+	keep_cur_node(cur_node, ASSIGN);
 	return (cmd);
 }
 
@@ -113,17 +113,20 @@ void	execution(t_data *data, t_env *env_list)
 
     paths = get_paths(env_list);
 	cmd = get_cmd(data, data->lexer_list);	
-	cur_node = keep_cur_node(data->lexer_list, 1);
+	cur_node = keep_cur_node(data->lexer_list, ASK);
 	pid1 = fork();//TODO protect fork return -1 
 	if (pid1 == 0)
 	{
-		if (cur_node->type == REDIR_OUT)
-			exec_redir_out(data, cur_node);
+		if (cur_node->type == REDIR_OUT || cur_node->type == REDIR_OUT_APP
+		|| cur_node->type == REDIR_IN)
+			redir_fd(data, cur_node);
+		else if (cur_node->type == HERE_DOC)
+			here_doc_in(data, cur_node);
 		path = find_good_path(cmd, paths);
 		execve(path, cmd, NULL);
 	}
 	else
 		stat_from_waitpid(data, pid1);
-	keep_cur_node(data->lexer_list, 0);//reset static variable
+	keep_cur_node(data->lexer_list, ASSIGN);//reset static variable
 	return;
 }

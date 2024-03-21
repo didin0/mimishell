@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/21 09:41:08 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/21 15:02:02 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ t_lexer	*keep_cur_node(t_lexer *cur_node, int i)
 {
 	static t_lexer *temp = NULL;
 
-	if (i == 0)
+	if (i == ASSIGN)
 		temp = cur_node;
 	return (temp);
 }

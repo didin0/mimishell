@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/20 12:26:05 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/21 14:59:28 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,13 @@
 # include <sys/wait.h>//for waitpid on linux
 
 #define PIPE 5
+#define REDIR_IN 40
+#define HERE_DOC 400
 #define REDIR_OUT 41
+#define REDIR_OUT_APP 411
 #define	F_FILE 10
+#define	ASSIGN 0
+#define	ASK 1
 
 // linked list to copy the $ENV variable
 typedef struct s_env
@@ -38,7 +43,7 @@ typedef struct s_env
 //type 1 cmd, 2 cmd option, 3 cmd term/argument grep AAA grep a"asd 1"a
 // 31 cmd argument properly double quoted grep "AAA"
 // 32 cmd argument properly single quoted grep '<' 
-// 40 redirect input 41 redirect output 400 redirect input until
+// 40 redirect input 41 redirect output 400 heredoc redirect input between
 // 411 redirect output in append mode
 // 5 pipe, 6 exit status expansion, variable to be expanded, 10 file
 
@@ -98,7 +103,7 @@ int is_builtin(t_data *data, char *word);
 t_lexer *parsing(t_data *data, t_env *env_list);
 
 //Redirections
-void	exec_redir_out(t_data *data, t_lexer *node);
-void	redir_out(t_data *data, char **cmd, t_lexer *next);
+void	redir_fd(t_data *data, t_lexer *node);
 void	create_empty_file(t_data *data, char *name);
+void	here_doc_in(t_data *data, t_lexer *node);
 #endif 

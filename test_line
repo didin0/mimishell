@@ -1,6 +1,11 @@
+Redirection out append mode
+echo a1 >> f1 a2 >> f2 a3 >> f3 creates all 3 files and 
+ALL have a1 a2 a3\n in it.
+
 Redirection out
 echo a1 > f1 a2 > f2 a3 > f3 creates all 3 files and 
 the last one has a1 a2 a3\n in it, other files  empty.
+Has an edge case in case one of the files exists.
 
 Quotes tests
 
