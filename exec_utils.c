@@ -6,12 +6,13 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/21 09:12:47 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/21 09:41:08 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 /*
+@dev		does not have a purpose
 @glance		number of commands = number of pipes - 1
 */
 
