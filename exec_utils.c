@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/11 19:15:44 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/21 09:12:47 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,43 @@ int	count_tokens(t_data *data, int token)
 		temp = temp->next;
 	}
 	return (count);
+}
+/*
+@glance		keeps the offset in linked list to seperate string arrays
+			for execution() while loop.
+*/
+
+t_lexer	*keep_cur_node(t_lexer *cur_node, int i)
+{
+	static t_lexer *temp = NULL;
+
+	if (i == 0)
+		temp = cur_node;
+	return (temp);
+}
+
+/*
+@dev		debugging function
+@glance		print a non terminated string array
+*/
+
+void	print_str_array(char **array, int len)
+{
+	int	i;
+
+	if (array)
+	{
+		i = 0;
+		write(1, "String array:\n", 13); 
+		while (i < len)
+		{
+			write(1, array[i], ft_strlen(array[i]));//TODO return -1
+			write(1, "--", 2);
+			i++;
+		}
+		write(1, "\n", 1);
+	}
+	return;
 }
 
 /*

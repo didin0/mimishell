@@ -1,3 +1,7 @@
+Redirection out
+echo a1 > f1 a2 > f2 a3 > f3 creates all 3 files and 
+the last one has a1 a2 a3\n in it, other files  empty.
+
 Quotes tests
 
 "a"  a  "a" goes into one node

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/13 09:15:22 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/20 12:26:05 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include <sys/wait.h>//for waitpid on linux
 
 #define PIPE 5
+#define REDIR_OUT 41
+#define	F_FILE 10
 
 // linked list to copy the $ENV variable
 typedef struct s_env
@@ -63,6 +65,8 @@ void	ft_error(t_data *data);
 // List
 t_lexer				*ft_lstlex_new(void *word);
 void				ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
+void	show_list(t_lexer *lexer_list);
+int	peek_list_from(t_lexer *node);
 
 // Env
 t_env				*get_env_to_list(char **envp);
@@ -73,6 +77,8 @@ void    execution(t_data *data, t_env *env_list);
 char    *find_good_path(char **cmd, char **paths);
 int	count_tokens(t_data *data, int token);
 void	stat_from_waitpid(t_data *data, pid_t pid1);
+t_lexer	*keep_cur_node(t_lexer *cur_node, int i);
+void	print_str_array(char **array, int len);
 
 // Lexer
 void	lexing(t_data *data);
@@ -87,4 +93,12 @@ int	ft_strchr_end(char *s, char c, int i);
 int	is_quote_closed(char *s, char c);
 int is_builtin(t_data *data, char *word);
 
+
+// Parser
+t_lexer *parsing(t_data *data, t_env *env_list);
+
+//Redirections
+void	exec_redir_out(t_data *data, t_lexer *node);
+void	redir_out(t_data *data, char **cmd, t_lexer *next);
+void	create_empty_file(t_data *data, char *name);
 #endif 

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/13 19:19:51 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/14 12:47:38 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,10 @@ int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i,
 {
 	if (i == ibis)
 		return (0);
-	buff = ft_substr(line, ibis, i - ibis);
+	if(line)
+		buff = ft_substr(line, ibis, i - ibis);
 	if (!buff)
-		return (1);
+		return (0);
 	ft_lstlex_add_back(lexer_list, ft_lstlex_new(buff));
 	return (0);
 }
