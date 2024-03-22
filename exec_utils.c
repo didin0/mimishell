@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/21 15:02:02 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/22 14:20:29 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 @glance		number of commands = number of pipes - 1
 */
 
-int	count_tokens(t_data *data, int token)
+int	count_tokens(t_data *data)
 {
 	t_lexer	*temp;
 	int	count;
@@ -25,7 +25,7 @@ int	count_tokens(t_data *data, int token)
 	count = 0;
 	while (temp != NULL)
 	{
-		if (temp->type == token)
+		if (is_token(temp->word, 0))
 			count++;
 		temp = temp->next;
 	}

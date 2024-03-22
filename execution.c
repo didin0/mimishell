@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/21 15:00:35 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/22 14:44:52 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,11 +117,8 @@ void	execution(t_data *data, t_env *env_list)
 	pid1 = fork();//TODO protect fork return -1 
 	if (pid1 == 0)
 	{
-		if (cur_node->type == REDIR_OUT || cur_node->type == REDIR_OUT_APP
-		|| cur_node->type == REDIR_IN)
-			redir_fd(data, cur_node);
-		else if (cur_node->type == HERE_DOC)
-			here_doc_in(data, cur_node);
+		if (is_token(cur_node->word, 0))
+				make_redirections(data, cur_node);
 		path = find_good_path(cmd, paths);
 		execve(path, cmd, NULL);
 	}

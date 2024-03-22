@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:04:51 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/21 16:38:10 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/22 14:44:52 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,10 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	while (1)
 	{
 		here_line = readline("\033[37mheredoc> \033[m ");
-		write(fd, here_line, ft_strlen(here_line));
-		write(fd, "\n", 1);
 		if (!ft_strncmp(here_line, delimiter, ft_strlen(here_line)))
 			break;
+		write(fd, here_line, ft_strlen(here_line));
+		write(fd, "\n", 1);
 	}
 	fd = -1;
 	fd = open("here_doc_temp", O_RDONLY);
@@ -87,9 +87,30 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	  	ft_error(data);//TODO
 	if (dup2(fd, STDIN_FILENO) == -1)
 		ft_error(data);//TODO
-	close(fd);
 	if (unlink("here_doc_temp") == -1)
 		ft_error(data);//TODO
 	//TODO free readline memory?
+	close(fd);
 }
 
+/*
+@ glance	loop the token count times, call redirection functions
+*/
+
+void	make_redirections(t_data *data, t_lexer *cur_node)
+{
+	int	count;
+
+	count = count_tokens(data);
+	while (cur_node->next && count > 0)
+	{
+		if (cur_node->type == REDIR_OUT || cur_node->type == REDIR_OUT_APP
+		|| cur_node->type == REDIR_IN)
+			redir_fd(data, cur_node);
+		else if (cur_node->type == HERE_DOC)
+			here_doc_in(data, cur_node);
+		if (cur_node->next->next && is_token(cur_node->next->next->word, 0))
+			cur_node = cur_node->next->next;
+		count--;	
+	}
+}

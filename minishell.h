@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/21 14:59:28 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/22 14:20:28 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char				**get_paths(t_env *env_list);
 // Exec
 void    execution(t_data *data, t_env *env_list);
 char    *find_good_path(char **cmd, char **paths);
-int	count_tokens(t_data *data, int token);
+int	count_tokens(t_data *data);
 void	stat_from_waitpid(t_data *data, pid_t pid1);
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i);
 void	print_str_array(char **array, int len);
@@ -103,6 +103,7 @@ int is_builtin(t_data *data, char *word);
 t_lexer *parsing(t_data *data, t_env *env_list);
 
 //Redirections
+void	make_redirections(t_data *data, t_lexer *node);
 void	redir_fd(t_data *data, t_lexer *node);
 void	create_empty_file(t_data *data, char *name);
 void	here_doc_in(t_data *data, t_lexer *node);
