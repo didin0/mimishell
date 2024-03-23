@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/22 14:20:28 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/23 06:47:16 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@
 # include <stdlib.h>
 # include <fcntl.h>//open
 # include <sys/wait.h>//for waitpid on linux
+#include <errno.h>//error number codes
 
+#define BUILTIN 0
 #define PIPE 5
 #define REDIR_IN 40
 #define HERE_DOC 400
@@ -45,7 +47,7 @@ typedef struct s_env
 // 32 cmd argument properly single quoted grep '<' 
 // 40 redirect input 41 redirect output 400 heredoc redirect input between
 // 411 redirect output in append mode
-// 5 pipe, 6 exit status expansion, variable to be expanded, 10 file
+// 5 pipe, 6 exit status expansion, 7 variable to be expanded, 10 file
 
 typedef struct s_lexer
 {
@@ -66,7 +68,8 @@ typedef struct s_data
 void	free_array(char **str);
 void	init_data(t_data *data, t_lexer *lexer_list);
 void	ft_error(t_data *data);
-
+void	ft_error_errno(t_data *data, char *cmd);
+	
 // List
 t_lexer				*ft_lstlex_new(void *word);
 void				ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
@@ -78,7 +81,7 @@ t_env				*get_env_to_list(char **envp);
 char				**get_paths(t_env *env_list);
 
 // Exec
-void    execution(t_data *data, t_env *env_list);
+int    execution(t_data *data, t_env *env_list);
 char    *find_good_path(char **cmd, char **paths);
 int	count_tokens(t_data *data);
 void	stat_from_waitpid(t_data *data, pid_t pid1);
@@ -107,4 +110,8 @@ void	make_redirections(t_data *data, t_lexer *node);
 void	redir_fd(t_data *data, t_lexer *node);
 void	create_empty_file(t_data *data, char *name);
 void	here_doc_in(t_data *data, t_lexer *node);
+
+//Builtins
+int	exec_builtin(t_data *data, char **cmd);
+
 #endif 

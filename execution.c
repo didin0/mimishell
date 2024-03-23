@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/22 14:44:52 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/23 06:48:57 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	list_size(t_lexer *lexer_list)
 
 /*
 @glance		cmd[] array takes in all node words up until redir or pipe
- * */
+*/
 
 char	**get_cmd(t_data *data, t_lexer *lexer_list)
 {
@@ -79,8 +79,8 @@ char	**get_cmd(t_data *data, t_lexer *lexer_list)
 
 /*
 @glance		loop all env PATH paths with all lexer list words TODO
- *
- * */
+*/
+
 char    *find_good_path(char **cmd, char **paths)
 {
     char *path = malloc(sizeof(char *));//TODO fail, assign
@@ -101,7 +101,7 @@ char    *find_good_path(char **cmd, char **paths)
     return NULL;//TODO free tmp;
 }
 
-void	execution(t_data *data, t_env *env_list)
+int	execution(t_data *data, t_env *env_list)
 {
 	char	**cmd;
     char    **paths;
@@ -120,10 +120,16 @@ void	execution(t_data *data, t_env *env_list)
 		if (is_token(cur_node->word, 0))
 				make_redirections(data, cur_node);
 		path = find_good_path(cmd, paths);
-		execve(path, cmd, NULL);
+		if (is_builtin(data, cmd[0]))
+			exec_builtin(data, cmd);
+		else
+		{
+			if (execve(path, cmd, NULL) == -1)
+				ft_error_errno(data, cmd[0]);
+		}
 	}
 	else
 		stat_from_waitpid(data, pid1);
 	keep_cur_node(data->lexer_list, ASSIGN);//reset static variable
-	return;
+	return (0);
 }
