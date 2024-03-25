@@ -1,11 +1,54 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/15 18:38:45 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/25 15:49:25 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-	@@ -52,94 +52,128 @@ char	*clean_quote(char *str)
+#include "minishell.h"
+
+// Clean all quotes of the same type and expend if you meet double quote
+char	*clean_quote(char *str)
+{
+	int		i;
+	int		j;
+	char	*result;
+	short	dq;
+	short	sq;
+
+	i = 0;
+	dq = 0;
+	sq = 0;
+	i = 0;
+	j = 0;
+	result = malloc(ft_strlen(str) + 1);
+	if (!result)
+		return (NULL);
+	dq = 0, sq = 0;
+	while (str[i])
+	{
+		if ((str[i] == '\"' && !sq) || (str[i] == '\'' && !dq))
+		{
+			if ((dq && str[i] == '\'') || (sq && str[i] == '\"'))
+			{
+				result[j++] = str[i];
+				dq = 0;
+				sq = 0;
+			}
+			else if (str[i] == '\"')
+				dq = 1;
+			else
+				sq = 1;
+		} 
+		else
+			result[j++] = str[i];
+		i++;
+	}
 	result[j] = '\0';
 	return (result);
 }
@@ -86,8 +129,9 @@ char *expander(char *str, t_env *env_list)
     int i = 0;
     int j = 0;
     char *result = malloc(sizeof(char *) + 1);
-	char **tmp;
+    char *tmp;
     int variables = count_$(str);
+    int size = ft_strlen(str);
     while(str[i])
     {
         if(str[i] == '$')
@@ -100,8 +144,15 @@ char *expander(char *str, t_env *env_list)
                         if(check_dq(str))
                         {
                             result = ft_substr(str, 0, i);
-                            // TODO :
-                            // Need to add to result what is after the quote " 
+                            j = i;
+                            while(str[j])
+                            {
+                                j++;
+                                if(str[j] == '\"' || str[j] == ' ')
+                                    break;
+                            }
+                            tmp = ft_substr(str, j, size - j);
+                            ft_strlcat(result, tmp, (ft_strlen(result) + ft_strlen(tmp) + 1));
                             return (result);
                         }
                         return (ft_substr(str, 0, i));
@@ -122,7 +173,7 @@ t_lexer *parsing(t_data *data, t_env *env_list)
         int j = 0;
         if(!check_sq(tmp->word))
         {
-            while(j < variables)
+            while(j < 2)
             {
                 tmp->word = expander(tmp->word, env_list);
                 j++;

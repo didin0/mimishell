@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/25 16:12:37 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/25 16:29:46 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,13 +120,13 @@ int	execution(t_data *data, t_env *env_list)
 		if (is_token(cur_node->word, 0))
 				make_redirections(data, cur_node);
 		path = find_good_path(cmd, paths);
-		if (is_builtin(data, cmd[0]))
-			exec_builtin(data, cmd, env_list);
-		else
-		{
+		// if (is_builtin(data, cmd[0]))
+		// 	exec_builtin(data, cmd, env_list);
+		// else
+		// {
 			if (execve(path, cmd, NULL) == -1)
 				ft_error_errno(data, cmd[0]);
-		}
+		// }
 	}
 	else
 		stat_from_waitpid(data, pid1);
