@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/14 12:04:20 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/25 16:14:41 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ t_lexer *parsing(t_data *data, t_env *env_list)
 
     while (tmp)
     {
-        printf("type : %d\n", tmp->type);
+//        printf("type : %d\n", tmp->type);
         if(!check_sq(tmp->word))
             tmp->word = expander(tmp->word, env_list);
         tmp->word = clean_quote(tmp->word);
