@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/23 06:47:16 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/24 14:59:01 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,9 @@ void	create_empty_file(t_data *data, char *name);
 void	here_doc_in(t_data *data, t_lexer *node);
 
 //Builtins
-int	exec_builtin(t_data *data, char **cmd);
+int	exec_builtin(t_data *data, char **cmd, t_env *env_list);
+void	pwd_builtin(t_data *data, t_env *env_list);
+void	env_builtin(t_data *data, t_env *env_list);
+void	cd_builtin(t_data *data, char **cmd, t_env *env_list);
 
 #endif 

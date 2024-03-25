@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/23 07:13:42 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/24 14:59:47 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,26 @@ static	void	echo_builtin(t_data *data, char **cmd)
 @glance		check string array cmd and call for a builtin function
 */
 
-int	exec_builtin(t_data *data, char **cmd)
+int	exec_builtin(t_data *data, char **cmd, t_env *env_list)
 {
 	if (!ft_strncmp(cmd[0], "echo", ft_strlen(cmd[0])))
 	{
 		echo_builtin(data, cmd);
+		return (0);
+	}
+	if (!ft_strncmp(cmd[0], "pwd", ft_strlen(cmd[0])))
+	{
+		pwd_builtin(data, env_list);
+		return (0);
+	}
+	if (!ft_strncmp(cmd[0], "env", ft_strlen(cmd[0])))
+	{
+		env_builtin(data, env_list);
+		return (0);
+	}
+	if (!ft_strncmp(cmd[0], "cd", ft_strlen(cmd[0])))
+	{
+		cd_builtin(data, cmd,  env_list);
 		return (0);
 	}
 	return (1);
