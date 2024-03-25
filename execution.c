@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/14 12:46:00 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/03/25 16:12:37 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,29 +40,47 @@ int	list_size(t_lexer *lexer_list)
 }
 
 /*
-@dev		cmd[] array has all node, thus should have one cmd and its args
- * */
+@glance		cmd[] array takes in all node words up until redir or pipe
+*/
 
-char	**get_cmd(t_lexer *lexer_list)
+char	**get_cmd(t_data *data, t_lexer *lexer_list)
 {
 	char	**cmd;
 	int		i;
+	t_lexer *cur_node;
 
-	cmd = ft_calloc((list_size(lexer_list) + 1), (sizeof(char *)));//TODO calloc fail
+	cur_node = lexer_list;
+	cmd = ft_calloc((list_size(cur_node) + 1), (sizeof(t_lexer *)));//TODO calloc fail
 	i = 0;
-	while (lexer_list)
+	while (cur_node->next)
 	{
-		cmd[i] = ft_strdup(lexer_list->word);//ft_strdup need here, lexer_list is on heap
-		lexer_list = lexer_list->next;
+		if (is_token(cur_node->word, 0) && peek_list_from(cur_node)
+				&& cur_node->next->next)//in case more 
+		{
+			if (cur_node->type == REDIR_OUT)
+				create_empty_file(data, cur_node->next->word);
+			cur_node = cur_node->next->next;//traverse 2 nodes
+		}
+		else if (is_token(cur_node->word, 0))//in case token
+			break;
+		cmd[i] = ft_strdup(cur_node->word);
+		cur_node = cur_node->next;
 		i++;
 	}
+	if (cur_node && !is_token(cur_node->word, 0))//in case only one token in cmd
+		cmd[i] = ft_strdup(cur_node->word);
+	if (!is_token(cur_node->word, 0))
+	{
+		cmd[i] = ft_strdup(cur_node->word);
+	}
+	keep_cur_node(cur_node, ASSIGN);
 	return (cmd);
 }
 
 /*
 @glance		loop all env PATH paths with all lexer list words TODO
- *
- * */
+*/
+
 char    *find_good_path(char **cmd, char **paths)
 {
     char *path = malloc(sizeof(char *));//TODO fail, assign
@@ -83,26 +101,35 @@ char    *find_good_path(char **cmd, char **paths)
     return NULL;//TODO free tmp;
 }
 
-void	execution(t_data *data, t_env *env_list)
+int	execution(t_data *data, t_env *env_list)
 {
 	char	**cmd;
     char    **paths;
     char    *path;
 	pid_t	pid1;
 
+	t_lexer	*cur_node;//TODO sone too many
 	int code;
 
     paths = get_paths(env_list);
-	cmd = get_cmd(data->lexer_list);
-    path = find_good_path(cmd, paths);
-//	printf("number of pipes %d\n", count_tokens(data, PIPE));//number times the exec loops need to run
+	cmd = get_cmd(data, data->lexer_list);	
+	cur_node = keep_cur_node(data->lexer_list, ASK);
 	pid1 = fork();//TODO protect fork return -1 
 	if (pid1 == 0)
 	{
-    	execve(path, cmd, NULL);
+		if (is_token(cur_node->word, 0))
+				make_redirections(data, cur_node);
+		path = find_good_path(cmd, paths);
+		if (is_builtin(data, cmd[0]))
+			exec_builtin(data, cmd, env_list);
+		else
+		{
+			if (execve(path, cmd, NULL) == -1)
+				ft_error_errno(data, cmd[0]);
+		}
 	}
 	else
 		stat_from_waitpid(data, pid1);
-//	printf("Exit status cmd %d\n", data->exit_status);
-	return;
+	keep_cur_node(data->lexer_list, ASSIGN);//reset static variable
+	return (0);
 }
