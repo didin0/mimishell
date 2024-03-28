@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/25 16:13:54 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/27 04:22:18 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <fcntl.h>//open
 # include <sys/wait.h>//for waitpid on linux
 #include <errno.h>//error number codes
+#include <limits.h>//PATH_MAX
 
 #define BUILTIN 0
 #define PIPE 5

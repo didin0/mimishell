@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/23 06:47:16 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/25 16:34:09 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ void	ft_error(t_data *data)
 
 void	ft_error_errno(t_data *data, char *cmd)
 {
-	write(STDOUT_FILENO, cmd, ft_strlen(cmd));
-	write(STDOUT_FILENO, ": command not found\n", 20);
 	write(STDERR_FILENO, cmd, ft_strlen(cmd));
 	write(STDERR_FILENO, ": command not found\n", 20);
 	exit(EXIT_FAILURE);//TODO free data
