@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:00:26 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/11 10:12:19 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/29 12:30:16 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	split_and_add(char *env_var, t_env **head)
 		new_node = create_env_node(str[0], str[1]);
 		add_to_end(head, new_node);
 	}
+	free(str);
 }
 
 t_env	*get_env_to_list(char **envp)

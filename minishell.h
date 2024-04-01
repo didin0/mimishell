@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/27 04:22:18 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/01 11:15:37 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,12 @@ int	peek_list_from(t_lexer *node);
 // Env
 t_env				*get_env_to_list(char **envp);
 char				**get_paths(t_env *env_list);
+void	split_and_add(char *env_var, t_env **head);
+t_env	*create_env_node(char *key, char *value);
+void	add_to_end(t_env **head, t_env *new_node);
 
 // Exec
-int    execution(t_data *data, t_env *env_list);
+int    execution(t_data *data, t_env *env_list, char **envp);
 char    *find_good_path(char **cmd, char **paths);
 int	count_tokens(t_data *data);
 void	stat_from_waitpid(t_data *data, pid_t pid1);
@@ -113,9 +116,10 @@ void	create_empty_file(t_data *data, char *name);
 void	here_doc_in(t_data *data, t_lexer *node);
 
 //Builtins
-int	exec_builtin(t_data *data, char **cmd, t_env *env_list);
+int	exec_builtin(t_data *data, char **cmd, t_env *env_list, char **envp);
 void	pwd_builtin(t_data *data, t_env *env_list);
 void	env_builtin(t_data *data, t_env *env_list);
 void	cd_builtin(t_data *data, char **cmd, t_env *env_list);
+void	export_builtin(t_data *data, char **cmd, t_env *env_list, char **envp);
 
 #endif 

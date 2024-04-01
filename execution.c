@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/26 09:56:48 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/03/29 08:49:28 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ char    *find_good_path(char **cmd, char **paths)
     return NULL;//TODO free tmp;
 }
 
-int	execution(t_data *data, t_env *env_list)
+int	execution(t_data *data, t_env *env_list, char **envp)
 {
 	char	**cmd;
     char    **paths;
@@ -121,7 +121,7 @@ int	execution(t_data *data, t_env *env_list)
 				make_redirections(data, cur_node);
 		path = find_good_path(cmd, paths);
 		if (is_builtin(data, cmd[0]))
-			exec_builtin(data, cmd, env_list);
+			exec_builtin(data, cmd, env_list, envp);
 		else
 		{
 		 if (execve(path, cmd, NULL) == -1)
