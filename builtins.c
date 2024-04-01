@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/29 09:03:20 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/01 14:27:50 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,21 @@ static	void	echo_builtin(t_data *data, char **cmd)
 @glance		check string array cmd and call for a builtin function
 */
 
+static int	exec_buitin_add(t_data *data, char **cmd, t_env *env_list, char **envp)
+{
+	if (!ft_strncmp(cmd[0], "export", ft_strlen(cmd[0])))
+	{
+		export_builtin(data, cmd,  env_list, envp);
+		return (0);
+	}
+	if (!ft_strncmp(cmd[0], "unset", ft_strlen(cmd[0])))
+	{
+		unset_builtin(data, cmd,  env_list, envp);
+		return (0);
+	}
+	return (1);
+}
+
 int	exec_builtin(t_data *data, char **cmd, t_env *env_list, char **envp)
 {
 	if (!ft_strncmp(cmd[0], "echo", ft_strlen(cmd[0])))
@@ -95,10 +110,7 @@ int	exec_builtin(t_data *data, char **cmd, t_env *env_list, char **envp)
 		cd_builtin(data, cmd,  env_list);
 		return (0);
 	}
-	if (!ft_strncmp(cmd[0], "export", ft_strlen(cmd[0])))
-	{
-		export_builtin(data, cmd,  env_list, envp);
+	if (!exec_buitin_add(data, cmd, env_list, envp))
 		return (0);
-	}
 	return (1);
 }

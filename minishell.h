@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/01 11:15:37 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/01 14:27:04 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,5 +121,6 @@ void	pwd_builtin(t_data *data, t_env *env_list);
 void	env_builtin(t_data *data, t_env *env_list);
 void	cd_builtin(t_data *data, char **cmd, t_env *env_list);
 void	export_builtin(t_data *data, char **cmd, t_env *env_list, char **envp);
+void	unset_builtin(t_data *data, char **cmd, t_env *env_list, char **envp);
 
 #endif 
