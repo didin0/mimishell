@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/29 08:49:28 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/01 21:59:24 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ int	execution(t_data *data, t_env *env_list, char **envp)
 
     paths = get_paths(env_list);
 	cmd = get_cmd(data, data->lexer_list);	
+	exit_builtin(data, cmd);
 	cur_node = keep_cur_node(data->lexer_list, ASK);
 	pid1 = fork();//TODO protect fork return -1 
 	if (pid1 == 0)
