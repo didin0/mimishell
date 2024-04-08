@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/29 08:55:52 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/08 18:32:32 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ void	show_list(t_lexer *list)
 	}
 }
 
+/*
+@if		handle ctrl-D signal in shell interactive mode with exit message
+*/
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_data	data;
@@ -34,7 +38,14 @@ int	main(int argc, char **argv, char **envp)
 
 	while (1)
 	{
+		init_signals();
 		data.line = readline("\033[36mminishell :\033[m "); // readline return a malloc char *
+		if (!data.line)
+		{
+			if (ft_putstr_fd("exit\n", 1) < -1)
+				ft_error(&data);	
+			break;
+		}
 		add_history(data.line);
 		lexing(&data);
 		token_type(&data, env_list);
@@ -42,5 +53,6 @@ int	main(int argc, char **argv, char **envp)
 //		// show_list(data.lexer_list);
 		execution(&data, env_list, envp);
 	}
+	free(data.line);
 	return (0);
 }

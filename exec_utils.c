@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/01 11:37:14 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/03 15:13:45 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,9 @@ void stat_from_waitpid(t_data *data, pid_t pid1)
 	data->exit_status = 127;
 //	printf("Exit init status cmd %d\n", data->exit_status);
 	if ((waitpid(pid1, &status, WUNTRACED)) == -1)
-		printf("Error: waitpid() failed\n");
-//		ft_error(data);//TODOi
+		perror("waitpid");
+//		printf("Error: waitpid() failed\n");
+//		ft_error(data);//TODO
 	else
 	{
 		if (WIFEXITED(status))

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/01 21:29:26 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/08 14:25:27 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@
 # include <fcntl.h>//open
 # include <sys/wait.h>//for waitpid on linux
 #include <errno.h>//error number codes
-#include <limits.h>//PATH_MAX
+#include <limits.h>//PATH_MAXi
+#include <signal.h>//signal
+#include <curses.h>//using terminal capabilities
+#include <term.h>//using terminal capabilities
 
 #define BUILTIN 0
 #define PIPE 5
@@ -32,6 +35,8 @@
 #define	F_FILE 10
 #define	ASSIGN 0
 #define	ASK 1
+
+extern pid_t global_child_pid;
 
 // linked list to copy the $ENV variable
 typedef struct s_env
@@ -124,4 +129,8 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list, char **envp);
 void	unset_builtin(t_data *data, char **cmd, t_env *env_list, char **envp);
 void	exit_builtin(t_data *data, char **cmd);
 
+//Signals
+void	init_signals();
+void	sigint_handler(int signum);
+void	reset_terminal();
 #endif 

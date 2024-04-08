@@ -1,3 +1,11 @@
+signals
+interactive mode ctrl-c reads new line
+interactive mode ctrl-d stdout "exit\n" and exits minishell
+interactive mode ctrl-\ no actions, ignored
+non-interactive mode ctrl-c reads new line
+non-interactive mode ctrl-d stdout "exit\n" and exits minishell
+non-interactive mode ctrl-\ core dumped unclean exit.
+
 export builtin tests:
 export a=   creates an env
 export a =1 error

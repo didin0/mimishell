@@ -6,11 +6,13 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/01 21:59:24 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/08 11:49:43 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+pid_t global_child_pid = -1;
 
 char	**get_paths(t_env *env_list)
 {
@@ -101,6 +103,15 @@ char    *find_good_path(char **cmd, char **paths)
     return NULL;//TODO free tmp;
 }
 
+/*
+@glance			excecute with token char array in child process to have
+				excecutables terminate but keeping the parent process ie
+				our shell running.
+@global			store child pid in parent process and
+				restore child pid after child terminated.
+@stat_from		call custom waitpid to store exit statuses. more in signals.c
+*/
+
 int	execution(t_data *data, t_env *env_list, char **envp)
 {
 	char	**cmd;
@@ -108,8 +119,7 @@ int	execution(t_data *data, t_env *env_list, char **envp)
     char    *path;
 	pid_t	pid1;
 
-	t_lexer	*cur_node;//TODO sone too many
-	int code;
+	t_lexer	*cur_node;//TODO one too many variables
 
     paths = get_paths(env_list);
 	cmd = get_cmd(data, data->lexer_list);	
@@ -130,7 +140,11 @@ int	execution(t_data *data, t_env *env_list, char **envp)
 		}
 	}
 	else
+	{
+		global_child_pid = pid1;
 		stat_from_waitpid(data, pid1);
+	}
+	global_child_pid = -1;
 	keep_cur_node(data->lexer_list, ASSIGN);//reset static variable
 	return (0);
 }
