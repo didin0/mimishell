@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/08 14:25:27 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/10 11:27:12 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
-# include <readline/readline.h>
+#include <readline/readline.h>
 # include <readline/history.h>//for add_history on linux
 # include <stdio.h>
 # include <stdlib.h>

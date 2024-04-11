@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 09:20:38 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/28 15:55:38 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/10 11:03:04 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static char *expand_tilde(t_data *data, char **cmd, t_env *env_list)
 				|| !ft_strncmp(cmd[1], "~/.", 3))
 		{
 			home = our_get_env(env_list, "HOME");
-			char *new_path = malloc(strlen(home) + strlen(cmd[1]));
+			char *new_path = malloc(ft_strlen(home) + ft_strlen(cmd[1]));
 			if (!new_path)
 				ft_error(data);//TODO malloc failure
 			new_len = ft_strlen(home) + ft_strlen(cmd[1]);

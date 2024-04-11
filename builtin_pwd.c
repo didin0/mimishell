@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 07:38:24 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/08 18:35:02 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/10 12:51:44 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	pwd_builtin(t_data *data, t_env *env_list)
 		if (ft_putchar_fd('\n', 1) < 0)
 			ft_error(data);//TODO message write failed
 	}
-	reset_terminal();
+//	reset_terminal();
 }
 
 /*

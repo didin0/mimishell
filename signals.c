@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 11:32:00 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/08 18:35:11 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/11 18:04:39 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,22 +96,20 @@ void	init_signals()
 
 void	sigint_handler(int signum)
 {
-//	reset_terminal();
-	if (signum == SIGINT)
-	{
+	static int	i = 0;
+
+	i++;
+	printf("Singnal count %d PID %d\n", i, getpid());
 		if (global_child_pid > 0)
 		{
-			kill(global_child_pid, SIGINT);
+//			kill(global_child_pid, SIGINT);
 			write(STDOUT_FILENO, "\n", 1);
 		}
 		else
 		{
-			rl_replace_line("", 0);
+//			rl_replace_line("", 0);
 			write(STDOUT_FILENO, "\n", 1);
 			rl_on_new_line();
 			rl_redisplay();
 		}
-	}
-//	fflush(stdout);
-//	reset_terminal();
 }

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/08 11:49:43 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/11 15:53:00 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,8 @@ int	execution(t_data *data, t_env *env_list, char **envp)
 	else
 	{
 		global_child_pid = pid1;
-		stat_from_waitpid(data, pid1);
+		wait(&pid1);	
+	//	stat_from_waitpid(data, pid1);
 	}
 	global_child_pid = -1;
 	keep_cur_node(data->lexer_list, ASSIGN);//reset static variable
