@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/12 17:45:53 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 20:50:33 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,9 @@ int	execution(t_data *data, t_env *env_list, char **envp)
     paths = get_paths(env_list);
 	cmd = get_cmd(data, data->lexer_list);	
 	data->cmd = cmd;
+	printf("cmd gets $? %s\n", cmd[0]);
 	cur_node = keep_cur_node(data->lexer_list, ASK);
+	printf("cur node has$? %s type %d\n", cur_node->word, cur_node->type);//word not written node
 	pid1 = fork();//TODO protect fork return -1 
 
 	if (pid1 == 0)

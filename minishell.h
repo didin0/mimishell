@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/12 18:09:40 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 20:21:43 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 #define HERE_DOC 400
 #define REDIR_OUT 41
 #define REDIR_OUT_APP 411
+#define EXP_STATUS 6
 #define	F_FILE 10
 #define	ASSIGN 0
 #define	ASK 1

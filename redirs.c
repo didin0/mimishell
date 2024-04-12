@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:04:51 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/22 14:44:52 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 20:57:13 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,16 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	close(fd);
 }
 
+static	void	expand_status(t_data *datai, t_lexer *lexer_list)
+{
+
+	if (ft_putstr_fd(ft_itoa(data->exit_status), 1) < 0)
+		ft_error(data);//TODO msg write failed
+	if (ft_putstr_fd(": command not found\n", 1) < 0)
+		ft_error(data);//TODO msg write failed
+	exit(data->exit_status);
+}
+
 /*
 @ glance	loop the token count times, call redirection functions
 */
@@ -102,11 +112,14 @@ void	make_redirections(t_data *data, t_lexer *cur_node)
 	int	count;
 
 	count = count_tokens(data);
+	printf("cur node %s, type %d\n", cur_node->word, cur_node->type);
 	while (cur_node->next && count > 0)
 	{
 		if (cur_node->type == REDIR_OUT || cur_node->type == REDIR_OUT_APP
 		|| cur_node->type == REDIR_IN)
 			redir_fd(data, cur_node);
+		if (cur_node->type == EXP_STATUS)
+			expand_status(data, cur_node);
 		else if (cur_node->type == HERE_DOC)
 			here_doc_in(data, cur_node);
 		if (cur_node->next->next && is_token(cur_node->next->next->word, 0))
