@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/11 15:53:00 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 09:53:27 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,10 +126,11 @@ int	execution(t_data *data, t_env *env_list, char **envp)
 	exit_builtin(data, cmd);
 	cur_node = keep_cur_node(data->lexer_list, ASK);
 	pid1 = fork();//TODO protect fork return -1 
+
 	if (pid1 == 0)
 	{
 		if (is_token(cur_node->word, 0))
-				make_redirections(data, cur_node);
+			make_redirections(data, cur_node);
 		path = find_good_path(cmd, paths);
 		if (is_builtin(data, cmd[0]))
 			exec_builtin(data, cmd, env_list, envp);
@@ -142,8 +143,7 @@ int	execution(t_data *data, t_env *env_list, char **envp)
 	else
 	{
 		global_child_pid = pid1;
-		wait(&pid1);	
-	//	stat_from_waitpid(data, pid1);
+		stat_from_waitpid(data, pid1);
 	}
 	global_child_pid = -1;
 	keep_cur_node(data->lexer_list, ASSIGN);//reset static variable

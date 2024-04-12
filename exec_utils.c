@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/11 18:04:46 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 09:08:52 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,10 @@ void stat_from_waitpid(t_data *data, pid_t pid1)
  * consider looping through waitpid() with a PID of -1 
  * and the WNOHANG option until it returns 0 or -1, 
  * indicating no more child processes to wait for.*/
-	while ((waitpid(-1, &status, WNOHANG)) > 0)
-		printf("Looping\n");
-//	if ((waitpid(pid1, &status, WUNTRACED)) == -1)
-//		perror("waitpid");
+//	while ((waitpid(-1, &status, WNOHANG)) > 0)
+//		printf("Looping\n");
+	if ((waitpid(pid1, &status, WUNTRACED)) == -1)
+		perror("waitpid");
 //		printf("No Error: waitpid() worked\n");
 //		ft_error(data);//TODO
 //	else

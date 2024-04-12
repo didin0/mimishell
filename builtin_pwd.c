@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 07:38:24 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/10 12:51:44 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 09:05:36 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 void	pwd_builtin(t_data *data, t_env *env_list)
 {
 	t_env	*temp;
+	int	status;
 
 	temp = env_list;
 	while (temp->next)
@@ -39,6 +40,7 @@ void	pwd_builtin(t_data *data, t_env *env_list)
 		if (ft_putchar_fd('\n', 1) < 0)
 			ft_error(data);//TODO message write failed
 	}
+	exit(status);
 //	reset_terminal();
 }
 
