@@ -6,12 +6,13 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 11:32:00 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/12 09:16:04 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 13:00:29 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/*
 int ft_putchar(int c)
 {
     return (write(STDOUT_FILENO, &c, 1));  // Simple wrapper around write for a single char
@@ -32,16 +33,15 @@ void reset_terminal()
         tputs(reset_cmd, 30, ft_putchar);  // Execute the reset command
 			printf("reset test\n");
     }
-}
+}*/
 
 /*
 @glance			initate signals prior readline()
 @ft_memset		set signas struct memory to '\0', avoid garbadge
-@sa->sa			point signal handler function
-@sa->sa_flags	pause everithing when signal recieived and restart after
-@sigemptyset	takes an empty list on signals, all signals can interfere
-				handler.
-@sigaddset		in this empty set start listening for SIGINT
+@sa.sa			point signal handler function
+@sa.sa_flags	pause everithing when signal recieived and restart after
+@sigemptyset	takes an empty list on signals, no additional signals can 
+				interfere handler.
 @if	SIGINT		in case SIGINT signal received, do what is instructed 
 				in sa struct. check sigaction call failure, 
 				ignore signal in interactive mode.
@@ -77,37 +77,24 @@ void	init_signals()
 @glance				prepare Minishell for the next readline() call, 
 					act upon SIGINT. readline() handles SIGINT internally, 
 					so need to manage the promt with rl_() functions. 
-@global variable	in non-interactive mode the shell sends SIGINT only to
-					foreground processes. Use global variable to get child pid 
-					and send SIGINT to child process (kill). 
-					Also to differenciate promt line cleanup ie rl_redisplay 
+@global variable	to differenciate promt line cleanup ie rl_redisplay 
 					is coditional for interactive shell mode only.
-@kill				terminate the child process.
 @rl_replace_line	clear current input line.
 @rl_on_new_line		tell readline() I am on a new line.
 @rl_redisplay		request readline to redisplay the prompt.
-@global variable	in non-interactive mode the shell sends SIGINT only to
-					foreground processes. Use global variable to get child pid 
-					and send SIGINT to child process (kill). 
-					Also to differenciate promt line cleanup ie rl_redisplay 
-					is coditional for interactive shell mode only.
-@write				not fail protected, signal handler speed overweighs that.
+@write				not fail protected, signal handler speed 
+					and atomic-ness overweighs that.
 */
 
 void	sigint_handler(int signum)
 {
-//	static int	i = 0;
-
-//	i++;
-//	printf("Singnal count %d PID %d\n", i, getpid());
 		if (global_child_pid > 0)
 		{
-//			kill(global_child_pid, SIGINT);
 			write(STDOUT_FILENO, "\n", 1);
 		}
 		else
 		{
-			rl_replace_line("", 0);
+//			rl_replace_line("", 0);
 			write(STDOUT_FILENO, "\n", 1);
 			rl_on_new_line();
 			rl_redisplay();

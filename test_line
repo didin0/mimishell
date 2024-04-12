@@ -1,3 +1,12 @@
+exit builtin
+exit | ls  status 0, does not exit nor print
+ls | exit status 0, does not exit nor print
+ls | exit 12 keeps status 12 does not exit nor print exit to stdout
+ls | exit 12 asd failure status 1 does not exit, stdout exit: too many arguments
+ls | exit 1a failure status 255 does not exit, stdout exit: numeric arguments requiered
+
+
+
 signals
 interactive mode ctrl-c reads new line
 interactive mode ctrl-d stdout "exit\n" and exits minishell

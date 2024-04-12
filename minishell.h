@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/10 11:27:12 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 18:09:40 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,13 @@ typedef struct s_data
 	char			*line;
 	t_lexer			*lexer_list;
 	int		exit_status;
+	int		exit_flag;
+	char	**cmd;
 }					t_data;
 
 // Utils
 void	free_array(char **str);
-void	init_data(t_data *data, t_lexer *lexer_list);
+void	init_data(t_data *data);
 void	ft_error(t_data *data);
 void	ft_error_errno(t_data *data, char *cmd);
 	
@@ -127,10 +129,12 @@ void	env_builtin(t_data *data, t_env *env_list);
 void	cd_builtin(t_data *data, char **cmd, t_env *env_list);
 void	export_builtin(t_data *data, char **cmd, t_env *env_list, char **envp);
 void	unset_builtin(t_data *data, char **cmd, t_env *env_list, char **envp);
+int		ft_isdigit_sign(char *str);
 void	exit_builtin(t_data *data, char **cmd);
+void	shell_exit(t_data *data);
 
 //Signals
 void	init_signals();
 void	sigint_handler(int signum);
-void	reset_terminal();
+//void	reset_terminal();
 #endif 

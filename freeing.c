@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/25 16:34:09 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 18:29:46 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,25 @@ void	ft_error_errno(t_data *data, char *cmd)
 	write(STDERR_FILENO, cmd, ft_strlen(cmd));
 	write(STDERR_FILENO, ": command not found\n", 20);
 	exit(EXIT_FAILURE);//TODO free data
+}
+
+/*
+ * does the string array contain exit token, what are the following arguments
+ *
+ * */
+
+void	shell_exit(t_data *data)
+{
+	if (data->cmd[0])
+	{
+		if (data->cmd[1])
+		{
+			if (!ft_strncmp(data->cmd[0], "exit", ft_strlen(data->cmd[0]))
+				&& !data->cmd[2])
+				exit(data->exit_status);
+		}
+		else if (!ft_strncmp(data->cmd[0], "exit", ft_strlen(data->cmd[0]))
+				&& !data->cmd[1])
+				exit(data->exit_status);
+	}
 }

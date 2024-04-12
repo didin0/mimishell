@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/08 14:17:26 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 13:50:38 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,11 @@ static int	exec_buitin_add(t_data *data, char **cmd, t_env *env_list, char **env
 		unset_builtin(data, cmd,  env_list, envp);
 		return (0);
 	}
-	reset_terminal();
+	if (!ft_strncmp(cmd[0], "exit", ft_strlen(cmd[0])))
+	{
+		exit_builtin(data, cmd);
+		return (0);
+	}
 	return (1);
 }
 
