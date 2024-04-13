@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/12 13:00:23 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/13 18:04:31 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,6 @@ void stat_from_waitpid(t_data *data, pid_t pid1)
 {
 	int	status;
 
-//	data->exit_status = 127;
-//	printf("Exit init status cmd %d\n", data->exit_status);
 	if ((waitpid(pid1, &status, WUNTRACED)) == -1)
 		perror("waitpid");
 //		ft_error(data);//TODO
@@ -91,11 +89,11 @@ void stat_from_waitpid(t_data *data, pid_t pid1)
 	{
 		if (WIFEXITED(status))
 		{
-			data->exit_status = WEXITSTATUS(status);
+			data->exit_status = WEXITSTATUS(status);	
 		}
 		else if (WIFSIGNALED(status))
 		{
-			data->exit_status = 128 + WTERMSIG(status);//TODO testing if signals impl
+			data->exit_status = 128 + WTERMSIG(status);
 		}
 	}
 	return;

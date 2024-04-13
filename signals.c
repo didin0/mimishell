@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 11:32:00 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/12 13:00:29 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/13 18:19:38 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void	sigint_handler(int signum)
 		if (global_child_pid > 0)
 		{
 			write(STDOUT_FILENO, "\n", 1);
+			printf("child enterd handler with pid %d\n", global_child_pid);
 		}
 		else
 		{
@@ -98,5 +99,6 @@ void	sigint_handler(int signum)
 			write(STDOUT_FILENO, "\n", 1);
 			rl_on_new_line();
 			rl_redisplay();
+			printf("parent entered handler with pid %d\n", global_parent_pid);
 		}
 }

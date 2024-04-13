@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/12 22:42:37 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/13 18:12:55 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 #define	ASK 1
 
 extern pid_t global_child_pid;
+extern pid_t global_parent_pid;//dev
 
 // linked list to copy the $ENV variable
 typedef struct s_env

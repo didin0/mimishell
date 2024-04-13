@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/12 22:11:13 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/13 18:29:05 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ int	main(int argc, char **argv, char **envp)
 	t_lexer	*lexer_list;
 	t_env	*env_list = get_env_to_list(envp);
 
+	init_data(&data);
 	while (1)
 	{
 		init_signals();
@@ -46,14 +47,14 @@ int	main(int argc, char **argv, char **envp)
 				ft_error(&data);	
 			break;
 		}
-		printf("line %s\n", data.line);
-		init_data(&data);
-		lexing(&data);
-		token_type(&data, env_list);
+//		printf("line %s\n", data.line);
+//		add_history(data.line);
+//		lexing(&data);
+//		token_type(&data, env_list);
 //		parsing(&data, env_list);
-		show_list(data.lexer_list);
-		execution(&data, env_list, envp);
-		shell_exit(&data);
+//		show_list(data.lexer_list);
+//		execution(&data, env_list, envp);
+//		shell_exit(&data);
 	}
 	free(data.line);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:04:51 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/12 22:51:41 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/13 18:22:57 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,7 @@ void	here_doc_in(t_data *data, t_lexer *node)
 
 void	expand_status(t_data *data)
 {
-	if (ft_putstr_fd(ft_itoa(data->exit_status), 1) < 0)
-		ft_error(data);//TODO msg write failed
+	ft_putnbr_fd(data->exit_status, 1);
 	if (ft_putstr_fd(": command not found\n", 1) < 0)
 		ft_error(data);//TODO msg write failed
 }
@@ -110,7 +109,7 @@ void	make_redirections(t_data *data, t_lexer *cur_node)
 	int	count;
 
 	count = count_tokens(data);
-	printf("cur node %s, type %d\n", cur_node->word, cur_node->type);
+//	printf("cur node %s, type %d\n", cur_node->word, cur_node->type);
 	while (cur_node->next && count > 0)
 	{
 		if (cur_node->type == REDIR_OUT || cur_node->type == REDIR_OUT_APP

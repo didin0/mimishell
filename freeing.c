@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/12 22:52:03 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/13 17:18:04 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	shell_exit(t_data *data)
 				&& !data->cmd[1])
 				exit(data->exit_status);
 	}
-	else if (!ft_strncmp(data->lexer_list->word, "$?",
-				ft_strlen(data->lexer_list->word)) && !data->lexer_list->next)
+	if (!ft_strncmp(data->lexer_list->word, "$?",
+		ft_strlen(data->lexer_list->word)) && !data->lexer_list->next)
 				expand_status(data);
 }

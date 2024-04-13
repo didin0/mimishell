@@ -6,13 +6,14 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/12 22:43:35 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/13 18:20:22 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 pid_t global_child_pid = -1;
+pid_t global_parent_pid = -2;//dev
 
 char	**get_paths(t_env *env_list)
 {
@@ -120,32 +121,37 @@ int	execution(t_data *data, t_env *env_list, char **envp)
 	pid_t	pid1;
 
 	t_lexer	*cur_node;//TODO one too many variables
-// same here!!!
-    paths = get_paths(env_list);
+    
+	paths = get_paths(env_list);
 	cmd = get_cmd(data, data->lexer_list);	
 	data->cmd = cmd;
-	printf("cmd gets $? %s\n", cmd[0]);
+//	printf("cmd gets $? %s\n", cmd[0]);
 	cur_node = keep_cur_node(data->lexer_list, ASK);
-	printf("cur node has$? %s type %d\n", cur_node->word, cur_node->type);//word not written node
-	pid1 = fork();//TODO protect fork return -1 
-
-	if (pid1 == 0)
+//	printf("cur node has$? %s type %d\n", cur_node->word, cur_node->type);//word not written node
+	if (ft_strncmp(data->lexer_list->word, "$?",
+				ft_strlen(data->lexer_list->word)))//do not for in case $?
+//else the $? is sent to execve and it trigers a SIGSEV signal
 	{
-		if (is_token(cur_node->word, 0))
-			make_redirections(data, cur_node);// same here!!!
-		path = find_good_path(cmd, paths);
-		if (is_builtin(data, cmd[0]))
-			exec_builtin(data, cmd, env_list, envp);//not checking return!!!
+		pid1 = fork();//TODO protect fork return -1 
+		if (pid1 == 0)
+		{
+			if (is_token(cur_node->word, 0))
+				make_redirections(data, cur_node);// same here!!!
+			path = find_good_path(cmd, paths);
+			if (is_builtin(data, cmd[0]))
+				exec_builtin(data, cmd, env_list, envp);//not checking return!!!
+			else
+			{
+			 if (execve(path, cmd, NULL) == -1)
+			 	ft_error_errno(data, cmd[0]);
+			}
+		}
 		else
 		{
-		 if (execve(path, cmd, NULL) == -1)
-		 	ft_error_errno(data, cmd[0]);//child process exit parent does not see status.
+			global_child_pid = pid1;
+			stat_from_waitpid(data, pid1);
+			global_parent_pid = getpid();
 		}
-	}
-	else
-	{
-		global_child_pid = pid1;
-		stat_from_waitpid(data, pid1);
 	}
 	global_child_pid = -1;
 	keep_cur_node(data->lexer_list, ASSIGN);//reset static variable
