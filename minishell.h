@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/12 20:21:43 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 22:42:37 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ typedef struct s_data
 	char			*line;
 	t_lexer			*lexer_list;
 	int		exit_status;
-	int		exit_flag;
 	char	**cmd;
 }					t_data;
 
@@ -133,6 +132,7 @@ void	unset_builtin(t_data *data, char **cmd, t_env *env_list, char **envp);
 int		ft_isdigit_sign(char *str);
 void	exit_builtin(t_data *data, char **cmd);
 void	shell_exit(t_data *data);
+void	expand_status(t_data *data);
 
 //Signals
 void	init_signals();

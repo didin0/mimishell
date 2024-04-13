@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 21:22:37 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/12 18:37:24 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 22:43:58 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,7 @@ void	exit_builtin(t_data *data, char  **cmd)
 			if (ft_putstr_fd("exit: numeric argument required\n", 1) < 0)	
 				ft_error(data);//TODO msg write failed
 			else
-			{	
-				data->exit_flag = 1;
 				exit(EXIT_FAILURE);
-			}
 		}	
 		data->exit_status = ft_atoi(cmd[1]) % 256;
 	}

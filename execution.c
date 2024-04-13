@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/12 20:50:33 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 22:43:35 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int	execution(t_data *data, t_env *env_list, char **envp)
 	pid_t	pid1;
 
 	t_lexer	*cur_node;//TODO one too many variables
-
+// same here!!!
     paths = get_paths(env_list);
 	cmd = get_cmd(data, data->lexer_list);	
 	data->cmd = cmd;
@@ -132,14 +132,14 @@ int	execution(t_data *data, t_env *env_list, char **envp)
 	if (pid1 == 0)
 	{
 		if (is_token(cur_node->word, 0))
-			make_redirections(data, cur_node);
+			make_redirections(data, cur_node);// same here!!!
 		path = find_good_path(cmd, paths);
 		if (is_builtin(data, cmd[0]))
-			exec_builtin(data, cmd, env_list, envp);
+			exec_builtin(data, cmd, env_list, envp);//not checking return!!!
 		else
 		{
 		 if (execve(path, cmd, NULL) == -1)
-		 	ft_error_errno(data, cmd[0]);
+		 	ft_error_errno(data, cmd[0]);//child process exit parent does not see status.
 		}
 	}
 	else

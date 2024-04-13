@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/12 18:29:46 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/12 22:52:03 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	ft_error(t_data *data)
 
 void	ft_error_errno(t_data *data, char *cmd)
 {
+
 	write(STDERR_FILENO, cmd, ft_strlen(cmd));
 	write(STDERR_FILENO, ": command not found\n", 20);
 	exit(EXIT_FAILURE);//TODO free data
@@ -62,8 +63,11 @@ void	shell_exit(t_data *data)
 				&& !data->cmd[2])
 				exit(data->exit_status);
 		}
-		else if (!ft_strncmp(data->cmd[0], "exit", ft_strlen(data->cmd[0]))
+		if (!ft_strncmp(data->cmd[0], "exit", ft_strlen(data->cmd[0]))
 				&& !data->cmd[1])
 				exit(data->exit_status);
 	}
+	else if (!ft_strncmp(data->lexer_list->word, "$?",
+				ft_strlen(data->lexer_list->word)) && !data->lexer_list->next)
+				expand_status(data);
 }
