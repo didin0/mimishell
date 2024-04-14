@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 11:32:00 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/13 18:19:38 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/14 10:12:57 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,14 @@ void reset_terminal()
 @if	SIGINT		in case SIGINT signal received, do what is instructed 
 				in sa struct. check sigaction call failure, 
 				ignore signal in interactive mode.
-@SIG_IGN		reassign the handler for SIGQUIT to SIG_IGN. Changing sa 
+@SIG_IGN		reassign the handler for SIGQUIT ctrl-\ to SIG_IGN. Changing sa 
 				afterward and applying it to SIGQUIT configures SIGQUIT 
 				independently of SIGINT.
 @if SIGQUIT		in case SIGQUIT signal received,
 				check sigaction call failure, ignore signal in interactive mode
 */
 
-void	init_signals()
+void	init_signals(void)
 {
 	struct sigaction sa;
 
@@ -88,17 +88,19 @@ void	init_signals()
 
 void	sigint_handler(int signum)
 {
-		if (global_child_pid > 0)
+		if (g_child_pid > 0)
 		{
-			write(STDOUT_FILENO, "\n", 1);
-			printf("child enterd handler with pid %d\n", global_child_pid);
+			if (g_child_pid != 2147483647)// I need more info inside the handler
+				write(STDOUT_FILENO, "\n", 1);//not needed in case of heredoc
+//		printf("child entered handler with pid %d\n", global_child_pid);
 		}
 		else
 		{
-//			rl_replace_line("", 0);
+			rl_replace_line("", 0);
 			write(STDOUT_FILENO, "\n", 1);
 			rl_on_new_line();
 			rl_redisplay();
-			printf("parent entered handler with pid %d\n", global_parent_pid);
+//			printf("parent entered handler with pid %d\n", global_parent_pid);
 		}
+//		printf("no coditions, just passing signal handler\n");
 }

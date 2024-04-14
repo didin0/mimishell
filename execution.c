@@ -6,14 +6,14 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/13 18:20:22 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/14 10:12:46 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-pid_t global_child_pid = -1;
-pid_t global_parent_pid = -2;//dev
+pid_t g_child_pid = -1;
+//pid_t g_parent_pid = -2;//dev
 
 char	**get_paths(t_env *env_list)
 {
@@ -108,6 +108,7 @@ char    *find_good_path(char **cmd, char **paths)
 @glance			excecute with token char array in child process to have
 				excecutables terminate but keeping the parent process ie
 				our shell running.
+@400			special case to handle SIGINT inside heredoc
 @global			store child pid in parent process and
 				restore child pid after child terminated.
 @stat_from		call custom waitpid to store exit statuses. more in signals.c
@@ -148,12 +149,15 @@ int	execution(t_data *data, t_env *env_list, char **envp)
 		}
 		else
 		{
-			global_child_pid = pid1;
+			if (data->lexer_list->type == 400)
+				g_child_pid = 2147483647;
+			else
+				g_child_pid = pid1;
 			stat_from_waitpid(data, pid1);
-			global_parent_pid = getpid();
+//			g_parent_pid = getpid();//dev
 		}
 	}
-	global_child_pid = -1;
+	g_child_pid = -1;
 	keep_cur_node(data->lexer_list, ASSIGN);//reset static variable
 	return (0);
 }

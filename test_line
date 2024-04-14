@@ -1,19 +1,28 @@
+
+
 exit builtin
 exit | ls  status 0, does not exit nor print
 ls | exit status 0, does not exit nor print
 ls | exit 12 keeps status 12 does not exit nor print exit to stdout
 ls | exit 12 asd failure status 1 does not exit, stdout exit: too many arguments
 ls | exit 1a failure status 255 does not exit, stdout exit: numeric arguments requiered
+exit 1a
+exit 1 1
+exit -255
+exit +266
 
-
-
-signals
+signal
 interactive mode ctrl-c reads new line
 interactive mode ctrl-d stdout "exit\n" and exits minishell
 interactive mode ctrl-\ no actions, ignored
 non-interactive mode ctrl-c reads new line
 non-interactive mode ctrl-d stdout "exit\n" and exits minishell
 non-interactive mode ctrl-\ core dumped unclean exit.
+
+signals inside a heredoc
+ctrl-C line in interactive mode, sig handler handles the STDOUT
+ctrl-D in case middle of a line is ignored, beginning of a line errors
+bash: warning: here-document at line 13 delimited by end-of-file (wanted `EOF')
 
 export builtin tests:
 export a=   creates an env

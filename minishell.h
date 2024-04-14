@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/13 18:12:55 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/14 10:16:56 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
-#include <readline/readline.h>
+# include <readline/readline.h>
 # include <readline/history.h>//for add_history on linux
 # include <stdio.h>
 # include <stdlib.h>
 # include <fcntl.h>//open
 # include <sys/wait.h>//for waitpid on linux
-#include <errno.h>//error number codes
-#include <limits.h>//PATH_MAXi
-#include <signal.h>//signal
-#include <curses.h>//using terminal capabilities
-#include <term.h>//using terminal capabilities
+# include <errno.h>//error number codes
+# include <limits.h>//PATH_MAXi
+# include <signal.h>//signal
+# include <curses.h>//using terminal capabilities
+# include <term.h>//using terminal capabilities
 
 #define BUILTIN 0
 #define PIPE 5
@@ -37,8 +37,8 @@
 #define	ASSIGN 0
 #define	ASK 1
 
-extern pid_t global_child_pid;
-extern pid_t global_parent_pid;//dev
+extern pid_t g_child_pid;
+//extern pid_t g_parent_pid;//dev
 
 // linked list to copy the $ENV variable
 typedef struct s_env
@@ -136,7 +136,7 @@ void	shell_exit(t_data *data);
 void	expand_status(t_data *data);
 
 //Signals
-void	init_signals();
+void	init_signals(void);
 void	sigint_handler(int signum);
 //void	reset_terminal();
 #endif 

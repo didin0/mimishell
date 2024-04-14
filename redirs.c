@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:04:51 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/13 18:22:57 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/14 08:33:51 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,12 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	while (1)
 	{
 		here_line = readline("\033[37mheredoc> \033[m ");
+		if (!here_line)//EOF ctrl-D case
+		{	
+			if (ft_putchar_fd('\n', 1) < 0)
+					ft_error(data);//TODO message write failed, clean, exit
+			break;
+		}
 		if (!ft_strncmp(here_line, delimiter, ft_strlen(here_line)))
 			break;
 		write(fd, here_line, ft_strlen(here_line));

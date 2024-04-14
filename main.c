@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/13 18:29:05 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/14 10:25:21 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	show_list(t_lexer *list)
 }
 
 /*
-@if		handle ctrl-D signal in shell interactive mode with exit message
+@if		handle ctrl-D EOF (signal/char) in shell interactive mode with exit message
 */
 
 int	main(int argc, char **argv, char **envp)
@@ -47,14 +47,19 @@ int	main(int argc, char **argv, char **envp)
 				ft_error(&data);	
 			break;
 		}
-//		printf("line %s\n", data.line);
-//		add_history(data.line);
-//		lexing(&data);
-//		token_type(&data, env_list);
-//		parsing(&data, env_list);
+		if (!ft_strncmp(data.line, "", ft_strlen(data.line)))
+		{
+//			ft_free some sort TODO
+			continue;
+		}	
+
+		add_history(data.line);
+		lexing(&data);
+		token_type(&data, env_list);
+		parsing(&data, env_list);
 //		show_list(data.lexer_list);
-//		execution(&data, env_list, envp);
-//		shell_exit(&data);
+		execution(&data, env_list, envp);
+		shell_exit(&data);
 	}
 	free(data.line);
 	return (0);

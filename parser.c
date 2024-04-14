@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/25 15:49:25 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/04/13 21:54:31 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,11 +163,19 @@ char *expander(char *str, t_env *env_list)
     return str;
 }
 
+/*
+@1rst if		return in case of $? as a special case of expansion
+*/
+
 t_lexer *parsing(t_data *data, t_env *env_list)
 {
     t_lexer *head = data->lexer_list;
     t_lexer *tmp = head;
-    while (tmp)
+
+	if (!ft_strncmp(data->lexer_list->word, "$?",
+		ft_strlen(data->lexer_list->word)))
+		return (NULL);
+	while (tmp)
     {
         int variables = count_$(tmp->word);
         int j = 0;
