@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/14 10:25:21 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/16 17:52:00 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	main(int argc, char **argv, char **envp)
 		parsing(&data, env_list);
 //		show_list(data.lexer_list);
 		execution(&data, env_list, envp);
-		shell_exit(&data);
+//		shell_exit(&data);
 	}
 	free(data.line);
 	return (0);

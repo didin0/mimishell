@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/13 21:47:30 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/16 18:03:16 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ void	ft_error(t_data *data)
 			could be becuase we are running a shell with a shell.
 */
 
-void	ft_error_errno(t_data *data, char *cmd)
+void	ft_error_errno(t_data *data, char **cmd)
 {
 
-	write(STDERR_FILENO, cmd, ft_strlen(cmd));
+	write(STDERR_FILENO, *cmd, ft_strlen(*cmd));
 	write(STDERR_FILENO, ": command not found\n", 20);
 	exit(EXIT_FAILURE);//TODO free data
 }
@@ -52,7 +52,7 @@ void	ft_error_errno(t_data *data, char *cmd)
  * does the string array contain exit token, what are the following arguments
  *
  * */
-
+/*
 void	shell_exit(t_data *data)
 {
 	if (data->cmd[0])
@@ -70,4 +70,4 @@ void	shell_exit(t_data *data)
 	if (!ft_strncmp(data->lexer_list->word, "$?",
 		ft_strlen(data->lexer_list->word)) && !data->lexer_list->next)
 				expand_status(data);
-}
+}*/

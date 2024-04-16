@@ -6,13 +6,37 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/13 18:04:31 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/16 17:49:29 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 /*
-@dev		does not have a purpose
+@glance		number of commands = number of pipes - 1
+*/
+
+int	count_token_type(t_data *data, int	type1, int type2)
+{
+	t_lexer	*temp;
+	int	count;
+
+	temp = data->lexer_list;
+	count = 0;
+	while (temp->next)
+	{
+		if (temp->type == type1 || temp->type == type2)
+			count++;
+		temp = temp->next;
+	}
+	if (temp->type == type1 || temp->type == type2)
+		count++;
+	return (count);
+}
+
+
+/*
+ * !!!!!! DOES NOT CHECK THE LAST NODE TODO
 @glance		number of commands = number of pipes - 1
 */
 
@@ -78,6 +102,29 @@ void	print_str_array(char **array, int len)
 @W IFSIGLAED		was the child killed by a signal, add 128 to status
 */
 
+void stat_from_waitpid(t_data *data, pid_t *pids)
+{
+	int i;
+	int	status;
+	int	cmd_count;
+
+	cmd_count = count_token_type(data, BUILTIN, COMMAND); 
+	i = 0;
+	while (i < cmd_count)
+	{	
+		if ((waitpid(pids[i], &status, WUNTRACED)) == -1)
+			perror("waitpid");
+//		ft_error(data);//TODO
+		i++;
+	}
+	if (WIFEXITED(status))
+		data->exit_status = WEXITSTATUS(status);	
+	else if (WIFSIGNALED(status))
+		data->exit_status = 128 + WTERMSIG(status);
+	free(pids);
+	return;//redundant TODO;
+}
+/*
 void stat_from_waitpid(t_data *data, pid_t pid1)
 {
 	int	status;
@@ -97,4 +144,4 @@ void stat_from_waitpid(t_data *data, pid_t pid1)
 		}
 	}
 	return;
-}
+}*/

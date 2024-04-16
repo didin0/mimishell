@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/14 10:16:56 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/16 18:03:13 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <term.h>//using terminal capabilities
 
 #define BUILTIN 0
+#define COMMAND 1
 #define PIPE 5
 #define REDIR_IN 40
 #define HERE_DOC 400
@@ -36,6 +37,9 @@
 #define	F_FILE 10
 #define	ASSIGN 0
 #define	ASK 1
+#define	EMPTY 10000
+
+#define MAX_ARGS_CMD 10
 
 extern pid_t g_child_pid;
 //extern pid_t g_parent_pid;//dev
@@ -70,14 +74,14 @@ typedef struct s_data
 	char			*line;
 	t_lexer			*lexer_list;
 	int		exit_status;
-	char	**cmd;
+	char	***cmd;
 }					t_data;
 
 // Utils
 void	free_array(char **str);
 void	init_data(t_data *data);
 void	ft_error(t_data *data);
-void	ft_error_errno(t_data *data, char *cmd);
+void	ft_error_errno(t_data *data, char **cmd);
 	
 // List
 t_lexer				*ft_lstlex_new(void *word);
@@ -93,10 +97,18 @@ t_env	*create_env_node(char *key, char *value);
 void	add_to_end(t_env **head, t_env *new_node);
 
 // Exec
+char ***allocate_cmd(t_data *data);
+int	count_token_type(t_data *data, int	type1, int type2);
+int	**create_pipes(t_data *data);
 int    execution(t_data *data, t_env *env_list, char **envp);
+pid_t	*alloc_pids(t_data *data);
+void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids);
+void	parent_close_all_fds(t_data *data, int **pipefd);
+void	redirect_close_fds(int **pipefd, int cmd_count, int i);
+void	close_unused_fds(int **pipefd, int cmd_count, int i);
 char    *find_good_path(char **cmd, char **paths);
 int	count_tokens(t_data *data);
-void	stat_from_waitpid(t_data *data, pid_t pid1);
+void	stat_from_waitpid(t_data *data, pid_t *pids);
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i);
 void	print_str_array(char **array, int len);
 

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/16 10:00:29 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/16 18:03:54 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,34 @@ int	list_size(t_lexer *lexer_list)
 @glance		cmd[] array takes in all node words up until redir or pipe
 */
 
+char	***get_cmd(t_data *data)//nameming init cmd
+{
+	char	***cmd;
+	int		i;
+	int		j;
+	t_lexer *node;
+
+	node = data->lexer_list;
+	cmd = allocate_cmd(data);
+	i = 0;
+	while (node)
+	{
+		j = 0;
+		while (node->type != PIPE)
+		{
+			cmd[i][j] = node->word; 
+			j++;
+			node = node->next;
+		}
+		node = node->next;
+		i++;
+	}
+//	j = 0;
+//	cmd[i][j] = node->word;
+	return (cmd);
+}
+
+/*	
 char	**get_cmd(t_data *data, t_lexer *lexer_list)
 {
 	char	**cmd;
@@ -67,7 +95,7 @@ char	**get_cmd(t_data *data, t_lexer *lexer_list)
 		else if (is_token(cur_node->word, 0))//in case token
 			break;
 		cmd[i] = ft_strdup(cur_node->word);
-		printf("char **cmd where I look at cmd[i] %c \n", cmd[i][2]); 
+//		printf("char **cmd where I look at cmd[i] %c \n", cmd[i][2]); 
 		cur_node = cur_node->next;
 		i++;
 	}
@@ -80,7 +108,7 @@ char	**get_cmd(t_data *data, t_lexer *lexer_list)
 	keep_cur_node(cur_node, ASSIGN);
 	return (cmd);
 }
-
+*/
 /*
 @glance		loop all env PATH paths with all lexer list words TODO
 */
@@ -104,7 +132,6 @@ char    *find_good_path(char **cmd, char **paths)
     }
     return NULL;//TODO free tmp;
 }
-
 /*
 @glance			excecute with token char array in child process to have
 				excecutables terminate but keeping the parent process ie
@@ -115,6 +142,79 @@ char    *find_good_path(char **cmd, char **paths)
 @stat_from		call custom waitpid to store exit statuses. more in signals.c
 */
 
+int	execution(t_data *data, t_env *env_list, char **envp)
+{
+	char	***cmd;
+    char    *path;
+	pid_t	*pids;
+
+	cmd = get_cmd(data);//nameming init cmd
+	data->cmd = cmd;//is this still needed??
+	if (ft_strncmp(data->lexer_list->word, "$?",
+				ft_strlen(data->lexer_list->word)))//do not for in case $?
+//else the $? is sent to execve and it trigers a SIGSEV signal
+	pids = alloc_pids(data);
+	exec_child(cmd, env_list, data, pids);
+	stat_from_waitpid(data, pids);
+	g_child_pid = -1;
+	return (0);
+}
+
+void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids)
+{	
+	int	cmd_count;
+	int	i;
+	char **paths;
+	char *path;
+	int		**pipefd;
+
+	pipefd = create_pipes(data);
+	cmd_count = count_token_type(data, BUILTIN, COMMAND); 	
+	paths = get_paths(env_list);
+//	path = find_good_path(cmd, paths);//took it out of the child TODO
+	i = 0;
+	while (i < cmd_count) 
+	{
+		pids[i] = fork();//TODO protection needed
+		if (pids[i] == 0) 
+		{
+			redirect_close_fds(pipefd, cmd_count, i);//no pipe???
+			close_unused_fds(pipefd, cmd_count, i);
+//			if (is_token(cur_node->word, 0))//redir does not have a node pointed
+//				make_redirections(data, cur_node);// same here!!!
+//			if (is_builtin(data, cmd[0]))
+//				exec_builtin(data, cmd[i], env_list, envp);//not checking return!!
+//			else
+//			{
+			 if (execve(path, cmd[i], NULL) == -1)
+			 	ft_error_errno(data, cmd[i]);
+//			}
+		}
+		else if (pids[i] < 0)
+		{
+			perror("fork");
+			exit(EXIT_FAILURE);
+		}
+		i++;
+	}
+	parent_close_all_fds(data, pipefd);
+	if (data->lexer_list->type == 400)
+			g_child_pid = 2147483647;
+		else
+			g_child_pid = pids[i];//TODO need incrementation, chech signals
+}
+
+
+/*
+@glance			excecute with token char array in child process to have
+				excecutables terminate but keeping the parent process ie
+				our shell running.
+@400			special case to handle SIGINT inside heredoc
+@global			store child pid in parent process and
+				restore child pid after child terminated.
+@stat_from		call custom waitpid to store exit statuses. more in signals.c
+*/
+/*
 int	execution(t_data *data, t_env *env_list, char **envp)
 {
 	char	**cmd;
@@ -161,4 +261,4 @@ int	execution(t_data *data, t_env *env_list, char **envp)
 	g_child_pid = -1;
 	keep_cur_node(data->lexer_list, ASSIGN);//reset static variable
 	return (0);
-}
+}*/
