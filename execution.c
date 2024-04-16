@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/14 10:12:46 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/16 10:00:29 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ char	**get_cmd(t_data *data, t_lexer *lexer_list)
 		else if (is_token(cur_node->word, 0))//in case token
 			break;
 		cmd[i] = ft_strdup(cur_node->word);
+		printf("char **cmd where I look at cmd[i] %c \n", cmd[i][2]); 
 		cur_node = cur_node->next;
 		i++;
 	}

@@ -1,4 +1,4 @@
-
+echo "apple banana apple orange banana apple cherry orange banana cherry apple" | tr ' ' '\n' | sort | uniq -c | sort -nr | head -n 5
 
 exit builtin
 exit | ls  status 0, does not exit nor print
