@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/16 18:03:13 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/17 20:22:34 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,9 @@
 #define	ASK 1
 #define	EMPTY 10000
 
-#define MAX_ARGS_CMD 10
+#define MAX_ARGS_CMD 100
 
 extern pid_t g_child_pid;
-//extern pid_t g_parent_pid;//dev
 
 // linked list to copy the $ENV variable
 typedef struct s_env
@@ -100,13 +99,14 @@ void	add_to_end(t_env **head, t_env *new_node);
 char ***allocate_cmd(t_data *data);
 int	count_token_type(t_data *data, int	type1, int type2);
 int	**create_pipes(t_data *data);
+char **organize_good_paths(char ***cmd, t_data *data, t_env *env_list);
 int    execution(t_data *data, t_env *env_list, char **envp);
 pid_t	*alloc_pids(t_data *data);
 void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids);
 void	parent_close_all_fds(t_data *data, int **pipefd);
-void	redirect_close_fds(int **pipefd, int cmd_count, int i);
-void	close_unused_fds(int **pipefd, int cmd_count, int i);
-char    *find_good_path(char **cmd, char **paths);
+void	redirect_close_fds(t_data *data, int **pipefd, int i);
+void	close_unused_fds(t_data *data, int **pipefd, int i);
+char    *find_good_path(char *cmd, char **paths);
 int	count_tokens(t_data *data);
 void	stat_from_waitpid(t_data *data, pid_t *pids);
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i);
@@ -118,7 +118,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list);
 int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i, int ibis);
 int	is_token(char *c, int i);
 void	token_type(t_data *data, t_env *env_list);
-int	is_cmd(t_lexer *token, t_env *env_list);
+int	is_cmd(t_data *data, t_lexer *token, t_env *env_list);
 int	all_tokens_categorized(t_lexer *temp);
 int	ft_strchr_from(char *s, char c, int i);
 int	ft_strchr_end(char *s, char c, int i);
@@ -151,4 +151,5 @@ void	expand_status(t_data *data);
 void	init_signals(void);
 void	sigint_handler(int signum);
 //void	reset_terminal();
+void	show_cmd(char ***cmd, t_data *data);
 #endif 

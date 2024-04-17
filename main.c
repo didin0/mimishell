@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/16 17:52:00 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/17 16:37:59 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,27 @@ void	show_list(t_lexer *list)
 		i++;
 	}
 }
+
+void	show_cmd(char ***cmd, t_data *data)
+{
+	int i;
+	int j;
+	int	cmd_count;
+
+	cmd_count = count_token_type(data, BUILTIN, COMMAND);
+	i = 0;
+	while (i < cmd_count)
+	{
+		j = 0;
+		while (cmd[i][j])
+		{
+			printf("cmd [%d] [%d] %s\n", i, j, cmd[i][j]);
+			j++;
+		}
+		i++;
+	}
+}
+
 
 /*
 @if		handle ctrl-D EOF (signal/char) in shell interactive mode with exit message

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/16 19:30:38 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/17 16:35:26 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	count_token_type(t_data *data, int	type1, int type2)
 	}
 	if (temp->type == type1 || temp->type == type2)
 		count++;
-	return (count +1);
+	return (count);
 }
 
 

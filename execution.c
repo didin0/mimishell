@@ -6,28 +6,13 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/16 18:03:54 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/17 20:21:56 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 pid_t g_child_pid = -1;
-//pid_t g_parent_pid = -2;//dev
-
-char	**get_paths(t_env *env_list)
-{
-	char	**paths;
-	char	*path;
-
-	while (env_list->next)
-	{
-		if (ft_strncmp(env_list->key, "PATH", 4) == 0)
-			paths = ft_split(env_list->value, ':');//ft_split return char **
-		env_list = env_list->next;
-	}
-	return (paths);
-}
 
 int	list_size(t_lexer *lexer_list)
 {
@@ -43,10 +28,11 @@ int	list_size(t_lexer *lexer_list)
 }
 
 /*
+ * 			put everithing in the list exept the pipes
 @glance		cmd[] array takes in all node words up until redir or pipe
 */
 
-char	***get_cmd(t_data *data)//nameming init cmd
+static	char	***init_cmd(t_data *data)
 {
 	char	***cmd;
 	int		i;
@@ -56,20 +42,26 @@ char	***get_cmd(t_data *data)//nameming init cmd
 	node = data->lexer_list;
 	cmd = allocate_cmd(data);
 	i = 0;
-	while (node)
+	while (node && node->next)
 	{
 		j = 0;
-		while (node->type != PIPE)
+		while (node && node->type != PIPE)
 		{
 			cmd[i][j] = node->word; 
 			j++;
 			node = node->next;
 		}
-		node = node->next;
-		i++;
+		if (node)
+		{
+			node = node->next;
+			i++;
+		}
 	}
-//	j = 0;
-//	cmd[i][j] = node->word;
+	if (node)
+	{
+		j = 0;
+		cmd[i][j] = node->word;
+	}
 	return (cmd);
 }
 
@@ -110,29 +102,6 @@ char	**get_cmd(t_data *data, t_lexer *lexer_list)
 }
 */
 /*
-@glance		loop all env PATH paths with all lexer list words TODO
-*/
-
-char    *find_good_path(char **cmd, char **paths)
-{
-    char *path = malloc(sizeof(char *));//TODO fail, assign
-    char *tmp = malloc(sizeof(char *));//TODO fail, assign
-    int i = 0;
-
-    while(paths[i])
-    {
-        tmp = ft_strjoin("/", cmd[0]);
-        path = ft_strjoin(paths[i], tmp);
-		free(tmp);
-        if(access(path, F_OK) == 0)
-            return path;
-        else
-            free(path);
-        i++;
-    }
-    return NULL;//TODO free tmp;
-}
-/*
 @glance			excecute with token char array in child process to have
 				excecutables terminate but keeping the parent process ie
 				our shell running.
@@ -148,11 +117,10 @@ int	execution(t_data *data, t_env *env_list, char **envp)
     char    *path;
 	pid_t	*pids;
 
-	cmd = get_cmd(data);//nameming init cmd
-	data->cmd = cmd;//is this still needed??
+	cmd = init_cmd(data);
+	data->cmd = cmd;//TODO is this still needed??
 	if (ft_strncmp(data->lexer_list->word, "$?",
 				ft_strlen(data->lexer_list->word)))//do not for in case $?
-//else the $? is sent to execve and it trigers a SIGSEV signal
 	pids = alloc_pids(data);
 	exec_child(cmd, env_list, data, pids);
 	stat_from_waitpid(data, pids);
@@ -165,30 +133,30 @@ void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids)
 	int	cmd_count;
 	int	i;
 	char **paths;
-	char *path;
 	int		**pipefd;
 
 	pipefd = create_pipes(data);
 	cmd_count = count_token_type(data, BUILTIN, COMMAND); 	
-	paths = get_paths(env_list);
-//	path = find_good_path(cmd, paths);//took it out of the child TODO
+	paths =	organize_good_paths(cmd, data, env_list);
 	i = 0;
 	while (i < cmd_count) 
 	{
 		pids[i] = fork();//TODO protection needed
 		if (pids[i] == 0) 
 		{
-			redirect_close_fds(pipefd, cmd_count, i);//no pipe???
-			close_unused_fds(pipefd, cmd_count, i);
+			redirect_close_fds(data, pipefd, i);//no pipe???
+			close_unused_fds(data, pipefd, i);
 //			if (is_token(cur_node->word, 0))//redir does not have a node pointed
 //				make_redirections(data, cur_node);// same here!!!
 //			if (is_builtin(data, cmd[0]))
 //				exec_builtin(data, cmd[i], env_list, envp);//not checking return!!
 //			else
 //			{
-			 if (execve(path, cmd[i], NULL) == -1)
-			 	ft_error_errno(data, cmd[i]);
-//			}
+			 if (execve(paths[i], cmd[i], NULL) == -1)
+				{
+					printf("execve retunring -1\n");
+				 	ft_error_errno(data, cmd[i]);
+				}
 		}
 		else if (pids[i] < 0)
 		{

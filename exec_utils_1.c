@@ -6,11 +6,28 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 03:20:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/16 19:27:03 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/17 20:21:50 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*
+int	are_too_many_arguments(char ***cmd)
+{
+	int	i;
+	int args;
+	
+	args = 0;
+	while (cmd[i])//loop each array
+	{
+		if (cmd[i
+	
+	
+	}
+
+
+}*/
 
 char ***allocate_cmd(t_data *data)
 {
@@ -18,7 +35,7 @@ char ***allocate_cmd(t_data *data)
 	int	cmd_count;
 	int	i;
 
-	cmd_count = count_token_type(data, BUILTIN, COMMAND); 
+	cmd_count = count_token_type(data, BUILTIN, COMMAND);
 	cmd = ft_calloc(cmd_count, sizeof(char**));
 	if (!cmd)
 		ft_error(data);//TODO msg Allocation fail cmd array, exit
@@ -31,7 +48,6 @@ char ***allocate_cmd(t_data *data)
 		i++;
 	}
 	return (cmd);
-//	printf("cmd count %d\n", cmd_count);
 }
 
 int	**create_pipes(t_data *data)
