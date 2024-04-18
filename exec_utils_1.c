@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 03:20:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/17 20:21:50 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/18 17:00:14 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ char ***allocate_cmd(t_data *data)
 			ft_error(data);//TODO msg Alloc fail cmd array, free cmd[i]!!, exit
 		i++;
 	}
+	cmd[i] = NULL;
 	return (cmd);
 }
 
