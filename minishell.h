@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/18 09:35:31 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/18 14:34:45 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 #define	ASK 1
 #define	EMPTY 10000
 
-#define MAX_ARGS_CMD 100
+#define MAX_ARGS_CMD 10
 
 extern pid_t g_child_pid;
 

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/18 10:04:16 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/18 15:50:01 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ int	execution(t_data *data, t_env *env_list)
 	return (0);
 }
 
-void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids)
+void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 {	
 	int	cmd_count;
 	int	i;
@@ -148,7 +148,8 @@ void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids)
 //			if (is_token(cur_node->word, 0))//redir does not have a node pointed
 //				make_redirections(data, cur_node);// same here!!!
 //			show_list(data->lexer_list);
-//			show_cmd(cmd, data);
+//			show_cmd(cmd, data);	
+//			show_cmd(&paths, data);
 			if (is_builtin(data, cmd[i][0]))//current node logic needs redone.
 				exec_builtin(data, cmd[i], env_list);//not checking return!!
 			else if (execve(paths[i], cmd[i], NULL) == -1)

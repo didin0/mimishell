@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 15:32:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/18 08:39:18 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/18 15:57:10 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,11 @@ char    *find_good_path(t_data *data, char *cmd, char **paths)
         one_path = ft_strjoin(paths[i], tmp);
 		if (!one_path)
 			ft_error(data);//TODO malloc fail from ft_strjoin
-        if (access(one_path, F_OK) == 0)
-            return (paths[i]);
-//		else
-//			free(paths);//TODO free array of arrays needed
+	   	if (access(one_path, F_OK) == 0)
+            return (one_path);
 		i++;
 	}
+//	free(tmp);//TODO
 	return (NULL);
 }
 
@@ -74,13 +73,11 @@ char **organize_good_paths(char ***cmd, t_data *data, t_env *env_list)
 	cmd_count = count_token_type(data, BUILTIN, COMMAND);
 	asked_paths = ft_calloc(cmd_count, sizeof(char *));
 	if (!asked_paths)
-		ft_error(data);// malloc fail msg, clean exti
+		ft_error(data);//TODO malloc fail msg, clean exti
 	i = 0;
 	while (i < cmd_count)
 	{
 		one_good_path = find_good_path(data, cmd[i][0], all_paths);
-//		if (!one_good_path)
-//			ft_error(data);//TODO free paths malloced in find_good_path
 		asked_paths[i] = one_good_path;
 		i++;
 	}
