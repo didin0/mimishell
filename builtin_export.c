@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 16:08:07 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/01 13:49:34 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/17 22:17:06 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static	int	is_key_in_env(char **new_env, t_env *env_list)
 				if not found then append to env_list.
 */
 
-void	export_builtin(t_data *data, char **cmd, t_env *env_list, char **envp)
+void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 {
 	int	i;
 	int j;

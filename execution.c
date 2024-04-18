@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/17 20:21:56 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/18 10:04:16 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,25 +42,17 @@ static	char	***init_cmd(t_data *data)
 	node = data->lexer_list;
 	cmd = allocate_cmd(data);
 	i = 0;
-	while (node && node->next)
+	j = 0;
+	while (node)
 	{
-		j = 0;
-		while (node && node->type != PIPE)
+		if (node->type != PIPE)
+			cmd[i][j++] = node->word; 
+		else
 		{
-			cmd[i][j] = node->word; 
-			j++;
-			node = node->next;
-		}
-		if (node)
-		{
-			node = node->next;
 			i++;
+			j = 0;
 		}
-	}
-	if (node)
-	{
-		j = 0;
-		cmd[i][j] = node->word;
+		node = node->next;
 	}
 	return (cmd);
 }
@@ -111,7 +103,7 @@ char	**get_cmd(t_data *data, t_lexer *lexer_list)
 @stat_from		call custom waitpid to store exit statuses. more in signals.c
 */
 
-int	execution(t_data *data, t_env *env_list, char **envp)
+int	execution(t_data *data, t_env *env_list)
 {
 	char	***cmd;
     char    *path;
@@ -119,10 +111,17 @@ int	execution(t_data *data, t_env *env_list, char **envp)
 
 	cmd = init_cmd(data);
 	data->cmd = cmd;//TODO is this still needed??
-	if (ft_strncmp(data->lexer_list->word, "$?",
-				ft_strlen(data->lexer_list->word)))//do not for in case $?
 	pids = alloc_pids(data);
-	exec_child(cmd, env_list, data, pids);
+	if (!ft_strncmp(cmd[0][0], "cd", ft_strlen(cmd[0][0]))
+	&& !ft_strncmp(cmd[0][0], "cd", 2))
+	{
+		cd_builtin(data, cmd[0], env_list);
+		return (0);
+	}
+//	if (ft_strncmp(data->lexer_list->word, "$?",
+//				ft_strlen(data->lexer_list->word)))
+	else
+		exec_child(cmd, env_list, data, pids);
 	stat_from_waitpid(data, pids);
 	g_child_pid = -1;
 	return (0);
@@ -148,11 +147,11 @@ void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids)
 			close_unused_fds(data, pipefd, i);
 //			if (is_token(cur_node->word, 0))//redir does not have a node pointed
 //				make_redirections(data, cur_node);// same here!!!
-//			if (is_builtin(data, cmd[0]))
-//				exec_builtin(data, cmd[i], env_list, envp);//not checking return!!
-//			else
-//			{
-			 if (execve(paths[i], cmd[i], NULL) == -1)
+//			show_list(data->lexer_list);
+//			show_cmd(cmd, data);
+			if (is_builtin(data, cmd[i][0]))//current node logic needs redone.
+				exec_builtin(data, cmd[i], env_list);//not checking return!!
+			else if (execve(paths[i], cmd[i], NULL) == -1)
 				{
 					printf("execve retunring -1\n");
 				 	ft_error_errno(data, cmd[i]);

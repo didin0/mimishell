@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/17 16:37:59 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/17 22:20:43 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,13 +73,12 @@ int	main(int argc, char **argv, char **envp)
 //			ft_free some sort TODO
 			continue;
 		}	
-
 		add_history(data.line);
 		lexing(&data);
 		token_type(&data, env_list);
 		parsing(&data, env_list);
 //		show_list(data.lexer_list);
-		execution(&data, env_list, envp);
+		execution(&data, env_list);
 //		shell_exit(&data);
 	}
 	free(data.line);

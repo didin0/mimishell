@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 14:05:36 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/01 16:11:40 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/17 22:17:25 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static	void	is_key_in_env(char *del_env, t_env *env_list)
 		untie_last_node(temp, env_list);
 }
 
-void	unset_builtin(t_data *data, char  **cmd, t_env  *env_list, char **envp)
+void	unset_builtin(t_data *data, char  **cmd, t_env  *env_list)
 {
 		int	i;
 

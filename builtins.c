@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/12 13:50:38 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/18 09:38:18 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,20 +29,29 @@ static	void	echo_stdout(t_data *data, char **cmd, int linebreak)
 	{
 		if (linebreak == 0 && option_flag == 0)
 			j = 2;
-		write(1, cmd[j], ft_strlen(cmd[j]));//TODO write fails, or use ft_puffd
+		if (ft_putstr_fd(cmd[j], 1) < 0)
+			ft_error(data);//TODO message write failed
 		j++;
 		if (cmd[j])	
-			write(STDOUT_FILENO, " ", 1);
+		{
+			if (ft_putchar_fd(' ', 1) < 0)
+				ft_error(data);//TODO message write failed
+		}
 		option_flag = 1;
 	}
 	if (linebreak == 1)
-		write(STDOUT_FILENO, "\n", 1);
+	{
+		if (ft_putchar_fd('\n', 1) < 0)
+			ft_error(data);//TODO message write failed
+	}
 	exit(EXIT_SUCCESS);
 }
 
 /*
 @glance			check if in the string arrray cmd the second pos is the 
 				option -n
+@while and if	-n option is the first argument, check the last char
+				of the first argument strng.
 				also that it is followed only by n characters.
 @make_redir		the builtin can be followed on prompt line by any token
 				so call recirections to be done by dup2().
@@ -59,11 +68,11 @@ static	void	echo_builtin(t_data *data, char **cmd)
 	j = 1;
 	while (cmd[1][0] == '-' && cmd[1][j] == 'n')
 		j++;
-	if (!cmd[1][j])
+	if (cmd[1][0] == '-' && !cmd[1][j])
 		linebreak = 0;
-	cur_node = keep_cur_node(data->lexer_list, ASK);
-	if (is_token(cur_node->word, 0))
-		make_redirections(data, cur_node);
+//	cur_node = keep_cur_node(data->lexer_list, ASK);
+//	if (is_token(cur_node->word, 0))
+//		make_redirections(data, cur_node);//redundant? calling redir in exec_child()
 	echo_stdout(data, cmd, linebreak);
 }
 
@@ -73,16 +82,16 @@ static	void	echo_builtin(t_data *data, char **cmd)
 @glance		check string array cmd and call for a builtin function
 */
 
-static int	exec_buitin_add(t_data *data, char **cmd, t_env *env_list, char **envp)
+static int	exec_buitin_add(t_data *data, char **cmd, t_env *env_list)
 {
 	if (!ft_strncmp(cmd[0], "export", ft_strlen(cmd[0])))
 	{
-		export_builtin(data, cmd,  env_list, envp);
+		export_builtin(data, cmd,  env_list);
 		return (0);
 	}
 	if (!ft_strncmp(cmd[0], "unset", ft_strlen(cmd[0])))
 	{
-		unset_builtin(data, cmd,  env_list, envp);
+		unset_builtin(data, cmd,  env_list);
 		return (0);
 	}
 	if (!ft_strncmp(cmd[0], "exit", ft_strlen(cmd[0])))
@@ -93,7 +102,7 @@ static int	exec_buitin_add(t_data *data, char **cmd, t_env *env_list, char **env
 	return (1);
 }
 
-int	exec_builtin(t_data *data, char **cmd, t_env *env_list, char **envp)
+int	exec_builtin(t_data *data, char **cmd, t_env *env_list)
 {
 	if (!ft_strncmp(cmd[0], "echo", ft_strlen(cmd[0])))
 	{
@@ -102,7 +111,7 @@ int	exec_builtin(t_data *data, char **cmd, t_env *env_list, char **envp)
 	}
 	if (!ft_strncmp(cmd[0], "pwd", ft_strlen(cmd[0])))
 	{
-		pwd_builtin(data, env_list);
+		pwd_builtin(data, env_list, 0);
 		return (0);
 	}
 	if (!ft_strncmp(cmd[0], "env", ft_strlen(cmd[0])))
@@ -115,7 +124,7 @@ int	exec_builtin(t_data *data, char **cmd, t_env *env_list, char **envp)
 		cd_builtin(data, cmd,  env_list);
 		return (0);
 	}
-	if (!exec_buitin_add(data, cmd, env_list, envp))
+	if (!exec_buitin_add(data, cmd, env_list))
 		return (0);
 	return (1);
 }

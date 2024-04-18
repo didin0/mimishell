@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/17 20:22:34 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/18 09:35:31 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,13 +100,13 @@ char ***allocate_cmd(t_data *data);
 int	count_token_type(t_data *data, int	type1, int type2);
 int	**create_pipes(t_data *data);
 char **organize_good_paths(char ***cmd, t_data *data, t_env *env_list);
-int    execution(t_data *data, t_env *env_list, char **envp);
+int    execution(t_data *data, t_env *env_list);
 pid_t	*alloc_pids(t_data *data);
 void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids);
 void	parent_close_all_fds(t_data *data, int **pipefd);
 void	redirect_close_fds(t_data *data, int **pipefd, int i);
 void	close_unused_fds(t_data *data, int **pipefd, int i);
-char    *find_good_path(char *cmd, char **paths);
+char    *find_good_path(t_data *data, char *cmd, char **paths);
 int	count_tokens(t_data *data);
 void	stat_from_waitpid(t_data *data, pid_t *pids);
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i);
@@ -136,12 +136,12 @@ void	create_empty_file(t_data *data, char *name);
 void	here_doc_in(t_data *data, t_lexer *node);
 
 //Builtins
-int	exec_builtin(t_data *data, char **cmd, t_env *env_list, char **envp);
-void	pwd_builtin(t_data *data, t_env *env_list);
+int	exec_builtin(t_data *data, char **cmd, t_env *env_list);
+void	pwd_builtin(t_data *data, t_env *env_listi, int cd_calling);
 void	env_builtin(t_data *data, t_env *env_list);
 void	cd_builtin(t_data *data, char **cmd, t_env *env_list);
-void	export_builtin(t_data *data, char **cmd, t_env *env_list, char **envp);
-void	unset_builtin(t_data *data, char **cmd, t_env *env_list, char **envp);
+void	export_builtin(t_data *data, char **cmd, t_env *env_list);
+void	unset_builtin(t_data *data, char **cmd, t_env *env_list);
 int		ft_isdigit_sign(char *str);
 void	exit_builtin(t_data *data, char **cmd);
 void	shell_exit(t_data *data);

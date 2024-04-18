@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:01:57 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/13 16:57:36 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/17 22:19:41 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,5 @@ void	init_data(t_data *data, t_lexer *lexer_list)
 */
 void init_data(t_data *data)
 {		
-	data->exit_status = 0;	
+	data->exit_status = 0;
 }

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 15:32:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/17 17:42:09 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/18 08:39:18 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,24 +30,30 @@ char	**get_paths(t_env *env_list)
 @glance		loop all env PATH paths with all lexer list words TODO
 */
 
-char    *find_good_path(char *cmd, char **paths)
+char    *find_good_path(t_data *data, char *cmd, char **paths)
 {
-    char *path = malloc(sizeof(char *));//TODO fail, assign
-    char *tmp = malloc(sizeof(char *));//TODO fail, assign
-    int i = 0;
+	char	*one_path;
+	char	*tmp;
+	int i;
 
-    while(paths[i])
+    one_path = malloc(sizeof(char *));//TODO fail, assign
+    tmp = malloc(sizeof(char *));//TODO fail, assign
+	if (!one_path || !tmp)
+			ft_error(data);//TODO malloc fail
+	i = 0;
+ 	while(paths[i])
     {
         tmp = ft_strjoin("/", cmd);
-        path = ft_strjoin(paths[i], tmp);
-		free(tmp);
-        if(access(path, F_OK) == 0)
-            return path;
-        else
-            free(path);
-        i++;
-    }
-    return NULL;//TODO free tmp;
+        one_path = ft_strjoin(paths[i], tmp);
+		if (!one_path)
+			ft_error(data);//TODO malloc fail from ft_strjoin
+        if (access(one_path, F_OK) == 0)
+            return (paths[i]);
+//		else
+//			free(paths);//TODO free array of arrays needed
+		i++;
+	}
+	return (NULL);
 }
 
 /*
@@ -72,9 +78,9 @@ char **organize_good_paths(char ***cmd, t_data *data, t_env *env_list)
 	i = 0;
 	while (i < cmd_count)
 	{
-		one_good_path = find_good_path(cmd[i][0], all_paths);
-		if (!one_good_path)
-			ft_error(data);//TODO free paths malloced in find_good_path
+		one_good_path = find_good_path(data, cmd[i][0], all_paths);
+//		if (!one_good_path)
+//			ft_error(data);//TODO free paths malloced in find_good_path
 		asked_paths[i] = one_good_path;
 		i++;
 	}

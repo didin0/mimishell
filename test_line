@@ -1,3 +1,6 @@
+cat file | grep free
+cat file | grep cd
+
 echo "apple banana apple orange banana apple cherry orange banana cherry apple" | tr ' ' '\n' | sort | uniq -c | sort -nr | head -n 5
 
 exit builtin

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 09:20:38 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/10 11:03:04 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/18 09:36:51 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static	char	*our_get_env(t_env *env_list, char *env)
 	t_env	*temp;
 
 	temp = env_list;
-	while (temp->next)
+	while (temp)
 	{
 		if (!ft_strncmp(temp->key, env, ft_strlen(env)))
 			break;
@@ -37,7 +37,7 @@ static	void	change_env(t_data *data, t_env *env_list, char *env, char *path)
 	t_env	*temp;
 
 	temp = env_list;
-	while (temp->next)
+	while (temp)
 	{
 		if (!ft_strncmp(temp->key, env, ft_strlen(env)))
 		{
@@ -122,5 +122,5 @@ void	cd_builtin(t_data *data, char **cmd, t_env *env_list)
 		ft_error(data);//TODO err STDERR "cd: $new_path no such file or direcitory"
 	get_abs_path(data,  env_list);
 	if (pwd_flag == 1)
-		pwd_builtin(data, env_list);
+		pwd_builtin(data, env_list, 1);
 }
