@@ -1,5 +1,3 @@
-
-
 ######################################
 # COLOR
 ######################################
@@ -20,6 +18,8 @@ Purple= \033[035m
 SRCS = *.c \
 	libft/*.c \
 
+HEADERS = minishell.h libft/libft.h
+
 DATARACE = -fsanitize=thread
 SILENT = --no-print-directory
 MAKE_SILENT = @make ${SILENT} -C
@@ -28,10 +28,10 @@ MAKE_MSG = @printf "\n${Purple}Makefile : ${RED}${NAME}${DEF}\n\n"
 
 NAME = minishell
 DEBUG=#  -fsanitize=address
-CFLAGS = -L. -lreadline -g #-Wall -Werror -Wextra ${DEBUG}
+CFLAGS = -L. -lreadline -ltermcap -g# -Wall -Werror -Wextra ${DEBUG}
  
 
-${NAME} : ${SRCS}
+${NAME} : ${SRCS} ${HEADERS}
 	clear
 	${COMPILE} ${NAME} 
 	${MAKE_MSG}

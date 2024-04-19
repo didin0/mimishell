@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:04:51 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/22 14:44:52 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/14 08:33:51 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,12 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	while (1)
 	{
 		here_line = readline("\033[37mheredoc> \033[m ");
+		if (!here_line)//EOF ctrl-D case
+		{	
+			if (ft_putchar_fd('\n', 1) < 0)
+					ft_error(data);//TODO message write failed, clean, exit
+			break;
+		}
 		if (!ft_strncmp(here_line, delimiter, ft_strlen(here_line)))
 			break;
 		write(fd, here_line, ft_strlen(here_line));
@@ -93,6 +99,13 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	close(fd);
 }
 
+void	expand_status(t_data *data)
+{
+	ft_putnbr_fd(data->exit_status, 1);
+	if (ft_putstr_fd(": command not found\n", 1) < 0)
+		ft_error(data);//TODO msg write failed
+}
+
 /*
 @ glance	loop the token count times, call redirection functions
 */
@@ -102,6 +115,7 @@ void	make_redirections(t_data *data, t_lexer *cur_node)
 	int	count;
 
 	count = count_tokens(data);
+//	printf("cur node %s, type %d\n", cur_node->word, cur_node->type);
 	while (cur_node->next && count > 0)
 	{
 		if (cur_node->type == REDIR_OUT || cur_node->type == REDIR_OUT_APP
@@ -113,4 +127,7 @@ void	make_redirections(t_data *data, t_lexer *cur_node)
 			cur_node = cur_node->next->next;
 		count--;	
 	}
+//	if (cur_node->type == EXP_STATUS)
+//			expand_status(data, cur_node);
+
 }

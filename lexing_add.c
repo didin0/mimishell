@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/13 19:19:32 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/17 10:06:22 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ void	token_type(t_data *data, t_env *env_list)
 
 	temp = data->lexer_list;
 	fd = 0;
-	while (temp != NULL)
+	while (temp != NULL)//TODO leak case?
 	{
 		if (is_builtin(data, temp->word) == 1)
 			temp->type = 0;
-		else if (!is_cmd(temp, env_list))
+		else if (!is_cmd(data, temp, env_list))
 		   	temp->type = 1;
 		else if (temp->word[0] == '-')
 			temp->type = 2;

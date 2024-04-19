@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/25 16:13:54 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/19 11:08:32 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,28 @@
 # include <stdlib.h>
 # include <fcntl.h>//open
 # include <sys/wait.h>//for waitpid on linux
-#include <errno.h>//error number codes
+# include <errno.h>//error number codes
+# include <limits.h>//PATH_MAXi
+# include <signal.h>//signal
+# include <curses.h>//using terminal capabilities
+# include <term.h>//using terminal capabilities
 
 #define BUILTIN 0
+#define COMMAND 1
 #define PIPE 5
 #define REDIR_IN 40
 #define HERE_DOC 400
 #define REDIR_OUT 41
 #define REDIR_OUT_APP 411
+#define EXP_STATUS 6
 #define	F_FILE 10
 #define	ASSIGN 0
 #define	ASK 1
+#define	EMPTY 10000
+
+#define MAX_ARGS_CMD 10
+
+extern pid_t g_child_pid;
 
 // linked list to copy the $ENV variable
 typedef struct s_env
@@ -62,13 +73,14 @@ typedef struct s_data
 	char			*line;
 	t_lexer			*lexer_list;
 	int		exit_status;
+	char	***cmd;
 }					t_data;
 
 // Utils
 void	free_array(char **str);
-void	init_data(t_data *data, t_lexer *lexer_list);
+void	init_data(t_data *data);
 void	ft_error(t_data *data);
-void	ft_error_errno(t_data *data, char *cmd);
+void	ft_error_errno(t_data *data, char **cmd);
 	
 // List
 t_lexer				*ft_lstlex_new(void *word);
@@ -79,12 +91,26 @@ int	peek_list_from(t_lexer *node);
 // Env
 t_env				*get_env_to_list(char **envp);
 char				**get_paths(t_env *env_list);
+void	split_and_add(char *env_var, t_env **head);
+t_env	*create_env_node(char *key, char *value);
+void	add_to_end(t_env **head, t_env *new_node);
 
 // Exec
+char ***allocate_cmd(t_data *data);
+int	count_token_type(t_data *data, int	type1, int type2);
+int	**create_pipes(t_data *data);
+char **organize_good_paths(char ***cmd, t_data *data, t_env *env_list);
 int    execution(t_data *data, t_env *env_list);
-char    *find_good_path(char **cmd, char **paths);
+pid_t	*alloc_pids(t_data *data);
+int		bypass_child(t_data *data, char ***cmd, t_env *env_list);
+int	adv_strncmp(const char *s1, const char *s2);
+void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids);
+void	parent_close_all_fds(t_data *data, int **pipefd);
+void	redirect_close_fds(t_data *data, int **pipefd, int i);
+void	close_unused_fds(t_data *data, int **pipefd, int i);
+char    *find_good_path(t_data *data, char *cmd, char **paths);
 int	count_tokens(t_data *data);
-void	stat_from_waitpid(t_data *data, pid_t pid1);
+void	stat_from_waitpid(t_data *data, pid_t *pids);
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i);
 void	print_str_array(char **array, int len);
 
@@ -94,7 +120,7 @@ t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list);
 int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i, int ibis);
 int	is_token(char *c, int i);
 void	token_type(t_data *data, t_env *env_list);
-int	is_cmd(t_lexer *token, t_env *env_list);
+int	is_cmd(t_data *data, t_lexer *token, t_env *env_list);
 int	all_tokens_categorized(t_lexer *temp);
 int	ft_strchr_from(char *s, char c, int i);
 int	ft_strchr_end(char *s, char c, int i);
@@ -113,8 +139,19 @@ void	here_doc_in(t_data *data, t_lexer *node);
 
 //Builtins
 int	exec_builtin(t_data *data, char **cmd, t_env *env_list);
-void	pwd_builtin(t_data *data, t_env *env_list);
+void	pwd_builtin(t_data *data, t_env *env_listi, int cd_calling);
 void	env_builtin(t_data *data, t_env *env_list);
 void	cd_builtin(t_data *data, char **cmd, t_env *env_list);
+void	export_builtin(t_data *data, char **cmd, t_env *env_list);
+void	unset_builtin(t_data *data, char **cmd, t_env *env_list);
+int		ft_isdigit_sign(char *str);
+void	exit_builtin(t_data *data, char **cmd);
+void	shell_exit(t_data *data);
+void	expand_status(t_data *data);
 
+//Signals
+void	init_signals(void);
+void	sigint_handler(int signum);
+//void	reset_terminal();
+void	show_cmd(char ***cmd, t_data *data);
 #endif 

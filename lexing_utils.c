@@ -6,26 +6,25 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:11:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/03/22 17:28:30 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/18 07:29:30 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-@glance 	look at one token, is it a command found in $PATH.
+@glance 	needed to figure out token_type.
+			look at one token, is it a command found in $PATH.
 @temp_cmd	a forced solution to use existing func of find_good_path()
  * */
 
-int	is_cmd(t_lexer *token, t_env *env_list)
+int	is_cmd(t_data *data, t_lexer *token, t_env *env_list)
 {
 	char **paths;
-	char **temp_cmd;
+	char *temp_cmd;
 
-	temp_cmd = (char **)malloc(sizeof(char **) + 1);
 	paths = get_paths(env_list);
-	temp_cmd[0] = token->word;
-	if (find_good_path(temp_cmd, paths))
+	if (find_good_path(data, token->word, paths))
 		return (0);
 	return (1);
 }
@@ -49,7 +48,8 @@ int	is_builtin(t_data *data, char *word)
 	i = 0;
 	while (i < 7)
 	{
-		if (ft_strncmp(word, builtin_names[i], ft_strlen(word)) == 0)
+		if (ft_strncmp(word, builtin_names[i], ft_strlen(word)) == 0
+				&& ft_strncmp(word, builtin_names[i], ft_strlen(builtin_names[i])) == 0)
 			return (1);
 		i++;
 	}

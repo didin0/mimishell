@@ -1,0 +1,109 @@
+cat file | grep free
+cat file | grep cd
+
+echo "apple banana apple orange banana apple cherry orange banana cherry apple" | tr ' ' '\n' | sort | uniq -c | sort -nr | head -n 5
+
+exit builtin
+exit | ls  status 0, does not exit nor print
+ls | exit status 0, does not exit nor print
+ls | exit 12 keeps status 12 does not exit nor print exit to stdout
+ls | exit 12 asd failure status 1 does not exit, stdout exit: too many arguments
+ls | exit 1a failure status 255 does not exit, stdout exit: numeric arguments requiered
+exit 1a
+exit 1 1
+exit -255
+exit +266
+
+signal
+interactive mode ctrl-c reads new line
+interactive mode ctrl-d stdout "exit\n" and exits minishell
+interactive mode ctrl-\ no actions, ignored
+non-interactive mode ctrl-c reads new line
+non-interactive mode ctrl-d stdout "exit\n" and exits minishell
+non-interactive mode ctrl-\ core dumped unclean exit.
+
+signals inside a heredoc
+ctrl-C line in interactive mode, sig handler handles the STDOUT
+ctrl-D in case middle of a line is ignored, beginning of a line errors
+bash: warning: here-document at line 13 delimited by end-of-file (wanted `EOF')
+
+export builtin tests:
+export a=   creates an env
+export a =1 error
+export a.=1 error
+export HOMe=1 new env
+export "a=1" works
+export "a= 1" updates value
+export "a =1" does not work
+
+cd builtin tests:
+cd abs path
+cd rel path
+cd ~, cd ~/ cd ~/., cd ~./..
+cd $HOME, cd $PWD
+cd "New Folder"
+cd New\ Folder - not functional
+cd ///home
+
+ecco 2> file not functional
+
+Redirection out append mode
+echo a1 >> f1 a2 >> f2 a3 >> f3 creates all 3 files and 
+ALL have a1 a2 a3\n in it.
+
+Redirection out
+echo a1 > f1 a2 > f2 a3 > f3 creates all 3 files and 
+the last one has a1 a2 a3\n in it, other files  empty.
+Has an edge case in case one of the files exists.
+
+Quotes tests
+
+"a"  a  "a" goes into one node
+"a" < "a" goes into 3 nodes
+'a' a one space between
+'a'b space in the end loose char
+b' a a 'b
+a' a a'a char and one or more preceding spaces
+<a'a'a> preceding chars 
+|<|'a'|>| preceding pipes and redirs 
+< a'a'a > one space
+<  a'a'a  > several spaces
+a'<'
+a'a'
+a '<'
+'a'a' 
+a"a"|aaaa 
+"ads"a| loosing | !!!!!! single quote the same thing
+"asd"a|a loosint a
+"asd"|a loosint a
+
+CMD and file name with ""
+"ls"
+"main.c"
+
+cat test_line | grep ‘<’ type arg token <
+cat test_line | grep asd"asd” type arg token1 asdasd  ???
+cat test_line | grep "asd1'<""a"sd'>'2 type arg token asd1'<asd>2
+cat test_line | grep “asd1””asd2 undefined/error 
+cat test_line | grep “"asd1asd2"" type arg token asd1asd2
+cat test_line | grep “"""a"sd1asd2" type arg token asd1asd2
+cat test_line | grep “asd1’<” | grep “k"type arg token1 asd1'< token2 '
+cat test_line | grep "asd1'<""a"sd'>'2 type arg token asd1'<asd>2
+cat test_line | grep "a""s""d" type 31 token "a""s""d"
+“123 567” 10 asd <<>><>|test_line
+
+//***Dollar sign***///
+echo "$USER" token should expand look for the value of var like echo $USER
+echo '$USER' token $USER
+echo "'$USER'" token expands to 'mabbadi'
+echo "asd'$USER'asd" expands to asd'mabbadi'asd
+
+Variable expansion to values
+bash AAA=1000
+bash echo $AAA
+1000
+
+Error management
+cat test_line | grep "a"s"d" Error message Minishell: asd: command not found
+
+
