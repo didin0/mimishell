@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 16:08:07 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/17 22:17:06 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/19 12:05:31 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static	int	is_key_in_env(char **new_env, t_env *env_list)
 	t_env	*temp;
 
 	temp = env_list;
-	while (temp->next)
+	while (temp)
 	{
 		if (!ft_strncmp(temp->key, new_env[0], ft_strlen(new_env[0]))
 		&& !ft_strncmp(temp->key, new_env[0], ft_strlen(temp->key)))
@@ -49,11 +49,6 @@ static	int	is_key_in_env(char **new_env, t_env *env_list)
 			return (1);
 		}
 		temp = temp->next;
-	}
-	if (!ft_strncmp(temp->key, new_env[0], ft_strlen(new_env[0])))
-	{
-		temp->value = ft_strdup(new_env[1]);
-		return (1);
 	}
 	return (0);
 }
@@ -91,4 +86,5 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 		i++;
 	}
 	free(new_env);
+	exit(EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 03:20:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/18 17:00:14 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/19 11:11:58 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,14 @@ pid_t	*alloc_pids(t_data *data)
 	if (!pids)
 		ft_error(data);//TODO msg Allocation faily, exit
 	return (pids);
+}
+
+int	adv_strncmp(const char *s1, const char *s2)
+{
+	if (!ft_strncmp(s1, s2, ft_strlen(s1))
+		&& !ft_strncmp(s1, s2, ft_strlen(s2)))
+		return (0);
+	return (1);
 }
 
 int	peek_list_from(t_lexer *node)

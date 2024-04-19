@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 14:05:36 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/17 22:17:25 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/19 11:57:20 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,4 +81,5 @@ void	unset_builtin(t_data *data, char  **cmd, t_env  *env_list)
 		is_key_in_env(cmd[i], env_list);	
 		i++;
 	}
+	exit(EXIT_SUCCESS);
 }

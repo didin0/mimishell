@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/18 09:38:18 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/19 11:52:09 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,11 +94,6 @@ static int	exec_buitin_add(t_data *data, char **cmd, t_env *env_list)
 		unset_builtin(data, cmd,  env_list);
 		return (0);
 	}
-	if (!ft_strncmp(cmd[0], "exit", ft_strlen(cmd[0])))
-	{
-		exit_builtin(data, cmd);
-		return (0);
-	}
 	return (1);
 }
 
@@ -117,11 +112,6 @@ int	exec_builtin(t_data *data, char **cmd, t_env *env_list)
 	if (!ft_strncmp(cmd[0], "env", ft_strlen(cmd[0])))
 	{
 		env_builtin(data, env_list);
-		return (0);
-	}
-	if (!ft_strncmp(cmd[0], "cd", ft_strlen(cmd[0])))
-	{
-		cd_builtin(data, cmd,  env_list);
 		return (0);
 	}
 	if (!exec_buitin_add(data, cmd, env_list))

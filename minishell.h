@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/18 14:34:45 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/19 11:08:32 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,8 @@ int	**create_pipes(t_data *data);
 char **organize_good_paths(char ***cmd, t_data *data, t_env *env_list);
 int    execution(t_data *data, t_env *env_list);
 pid_t	*alloc_pids(t_data *data);
+int		bypass_child(t_data *data, char ***cmd, t_env *env_list);
+int	adv_strncmp(const char *s1, const char *s2);
 void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids);
 void	parent_close_all_fds(t_data *data, int **pipefd);
 void	redirect_close_fds(t_data *data, int **pipefd, int i);

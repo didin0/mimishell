@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/18 15:50:01 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/19 12:53:37 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ char	**get_cmd(t_data *data, t_lexer *lexer_list)
 	return (cmd);
 }
 */
-/*
+/* OUTDATED
 @glance			excecute with token char array in child process to have
 				excecutables terminate but keeping the parent process ie
 				our shell running.
@@ -101,6 +101,31 @@ char	**get_cmd(t_data *data, t_lexer *lexer_list)
 @global			store child pid in parent process and
 				restore child pid after child terminated.
 @stat_from		call custom waitpid to store exit statuses. more in signals.c
+*/
+
+int		bypass_child(t_data *data, char ***cmd, t_env *env_list)
+{
+	if (!adv_strncmp(cmd[0][0], "cd"))
+	{
+		cd_builtin(data, cmd[0], env_list);
+		return (1);
+	}
+	else if (!adv_strncmp(cmd[0][0], "exit"))
+	{
+		exit_builtin(data, cmd[0]);
+		return (1);
+	}
+//	if (ft_strncmp(data->lexer_list->word, "$?",
+//	}
+//	ft_strlen(data->lexer_list->word)))
+	return (0);
+}
+
+/*
+@glance		3 main flows of execution:
+			1. command to exexcv(), child process, exits by itself
+			2. builtin in chilc process, we call exit
+			3. cd and exit builtin in parent process, return (0)
 */
 
 int	execution(t_data *data, t_env *env_list)
@@ -112,17 +137,13 @@ int	execution(t_data *data, t_env *env_list)
 	cmd = init_cmd(data);
 	data->cmd = cmd;//TODO is this still needed??
 	pids = alloc_pids(data);
-	if (!ft_strncmp(cmd[0][0], "cd", ft_strlen(cmd[0][0]))
-	&& !ft_strncmp(cmd[0][0], "cd", 2))
-	{
-		cd_builtin(data, cmd[0], env_list);
+	if(bypass_child(data, cmd, env_list))
 		return (0);
-	}
-//	if (ft_strncmp(data->lexer_list->word, "$?",
-//				ft_strlen(data->lexer_list->word)))
 	else
+	{
 		exec_child(cmd, env_list, data, pids);
-	stat_from_waitpid(data, pids);
+		stat_from_waitpid(data, pids);
+	}
 	g_child_pid = -1;
 	return (0);
 }
@@ -145,11 +166,9 @@ void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 		{
 			redirect_close_fds(data, pipefd, i);//no pipe???
 			close_unused_fds(data, pipefd, i);
+//check if the cmd[i] contains any of the redirection tokens
 //			if (is_token(cur_node->word, 0))//redir does not have a node pointed
 //				make_redirections(data, cur_node);// same here!!!
-//			show_list(data->lexer_list);
-//			show_cmd(cmd, data);	
-//			show_cmd(&paths, data);
 			if (is_builtin(data, cmd[i][0]))//current node logic needs redone.
 				exec_builtin(data, cmd[i], env_list);//not checking return!!
 			else if (execve(paths[i], cmd[i], NULL) == -1)

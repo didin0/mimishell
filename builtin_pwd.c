@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 07:38:24 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/18 09:36:54 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/19 11:54:34 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 void	pwd_builtin(t_data *data, t_env *env_list, int cd_calling)
 {
 	t_env	*temp;
-	int	status;
 
 	temp = env_list;
 	while (temp)
@@ -34,7 +33,7 @@ void	pwd_builtin(t_data *data, t_env *env_list, int cd_calling)
 		temp = temp->next;
 	}
 	if (cd_calling != 1)
-		exit(status);
+	exit(EXIT_SUCCESS);
 }
 
 /*
@@ -45,7 +44,6 @@ void	pwd_builtin(t_data *data, t_env *env_list, int cd_calling)
 void	env_builtin(t_data *data, t_env *env_list)
 {
 	t_env	*temp;
-	int	status;
 	temp = env_list;
 
 	while (temp)
@@ -60,5 +58,5 @@ void	env_builtin(t_data *data, t_env *env_list)
 			ft_error(data);//TODO msg write failed
 		temp = temp->next;
 	}
-	exit(status);
+	exit(EXIT_SUCCESS);
 }
