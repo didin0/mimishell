@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/13 21:54:31 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/22 17:32:46 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,9 @@ char *find_key_in_str(char *str, t_env *env_list)
         presult  =  ft_strnstr(str, env_list->key, ft_strlen(str));
         if (presult != NULL)
         {
+            printf("value : %s\npresult : %s\n", str, presult);
+            if (adv_strncmp(env_list->value, presult))
+                return NULL;
             int pos = presult - str;
             char *new_value = env_list->value;
             int new_value_len = ft_strlen(new_value);
@@ -102,7 +105,7 @@ char *find_key_in_str(char *str, t_env *env_list)
                 return NULL;
             ft_strlcpy(modified_str, str, pos); // Copy in modified_str what is before the '$'
             ft_strlcat(modified_str, new_value, total_len + 1); // Add in modified_str the expended variable
-            ft_strlcat(modified_str,str + (pos + key_len), total_len + 1); // Add in modified_str the remaining string
+            ft_strlcat(modified_str, str + (pos + key_len), total_len + 1); // Add in modified_str the remaining string
             return modified_str;
         }
         env_list = env_list->next;
@@ -136,7 +139,7 @@ char *expander(char *str, t_env *env_list)
     {
         if(str[i] == '$')
         {
-                    result = find_key_in_str(str, env_list);
+                    result = find_key_in_str(str + 1, env_list);
                     if(result)
                         return result;
                     else if (!result)
@@ -181,7 +184,7 @@ t_lexer *parsing(t_data *data, t_env *env_list)
         int j = 0;
         if(!check_sq(tmp->word))
         {
-            while(j < 2)
+            while(j < variables)
             {
                 tmp->word = expander(tmp->word, env_list);
                 j++;

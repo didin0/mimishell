@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:56:32 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/12 13:00:01 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/04/22 16:19:27 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,11 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 	if (!haystack)
 		return (NULL);
 	if (*needle == '\0')
-		return ((char *) haystack);
+		return ((char *)haystack);
 	while (*haystack != '\0' && len >= needle_len)
 	{
-		if (*haystack == *needle
-			&& ft_strncmp(haystack, needle, needle_len) == 0)
-			return ((char *) haystack);
+		if (*haystack == *needle && !adv_strncmp(haystack, needle))
+			return ((char *)haystack);
 		haystack++;
 	}
 	return (NULL);

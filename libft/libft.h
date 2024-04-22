@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 14:10:02 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/29 11:07:21 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/19 15:33:53 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include "../minishell.h"
 
 typedef struct s_list
 {
