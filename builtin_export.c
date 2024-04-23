@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 16:08:07 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/19 12:05:31 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/20 06:58:41 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,4 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 		i++;
 	}
 	free(new_env);
-	exit(EXIT_SUCCESS);
 }

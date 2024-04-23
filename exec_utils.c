@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/17 16:35:26 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/22 15:32:34 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,29 +69,6 @@ t_lexer	*keep_cur_node(t_lexer *cur_node, int i)
 	return (temp);
 }
 
-/*
-@dev		debugging function
-@glance		print a non terminated string array
-*/
-
-void	print_str_array(char **array, int len)
-{
-	int	i;
-
-	if (array)
-	{
-		i = 0;
-		write(1, "String array:\n", 13); 
-		while (i < len)
-		{
-			write(1, array[i], ft_strlen(array[i]));//TODO return -1
-			write(1, "--", 2);
-			i++;
-		}
-		write(1, "\n", 1);
-	}
-	return;
-}
 
 /*
 @glance				waitpid retunrs child PID or - 1

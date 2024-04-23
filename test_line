@@ -1,3 +1,9 @@
+redi and pipe on one line
+cat t4 | grep 1 > t9 | cat > t10 in bash creates an empty t10 file
+The same in zsh filles the t1 with grep result.
+We will implemnt unified behaviour, whenever there is a redirection on the line,
+the redirection is done.
+
 cat file | grep free
 cat file | grep cd
 

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/19 11:08:32 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/22 11:47:42 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	ft_error_errno(t_data *data, char **cmd);
 t_lexer				*ft_lstlex_new(void *word);
 void				ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
 void	show_list(t_lexer *lexer_list);
+void	show_env_list(t_env *list);
 int	peek_list_from(t_lexer *node);
 
 // Env
@@ -139,7 +140,7 @@ void	here_doc_in(t_data *data, t_lexer *node);
 
 //Builtins
 int	exec_builtin(t_data *data, char **cmd, t_env *env_list);
-void	pwd_builtin(t_data *data, t_env *env_listi, int cd_calling);
+void	pwd_builtin(t_data *data, t_env *env_list);
 void	env_builtin(t_data *data, t_env *env_list);
 void	cd_builtin(t_data *data, char **cmd, t_env *env_list);
 void	export_builtin(t_data *data, char **cmd, t_env *env_list);

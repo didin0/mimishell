@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/19 12:53:37 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/22 15:32:13 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,15 +105,10 @@ char	**get_cmd(t_data *data, t_lexer *lexer_list)
 
 int		bypass_child(t_data *data, char ***cmd, t_env *env_list)
 {
-	if (!adv_strncmp(cmd[0][0], "cd"))
+	if (is_builtin(data, cmd[0][0]))//current node logic needs redone.
 	{
-		cd_builtin(data, cmd[0], env_list);
-		return (1);
-	}
-	else if (!adv_strncmp(cmd[0][0], "exit"))
-	{
-		exit_builtin(data, cmd[0]);
-		return (1);
+		if (exec_builtin(data, cmd[0], env_list) == 0);//not checking return!!
+			return (1);
 	}
 //	if (ft_strncmp(data->lexer_list->word, "$?",
 //	}
@@ -164,14 +159,16 @@ void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 		pids[i] = fork();//TODO protection needed
 		if (pids[i] == 0) 
 		{
+//			if (is_token(cur_node->word, 0))//redir does not have a node pointed
+			if (array_contains_redir(cmd[i], data))
+			{
+				printf("I found a redir\n");
+				clean_cmd_redir_fd(cmd[i], data);			
+//			make_redirections(data, cur_node);// same here!!!
+			}
 			redirect_close_fds(data, pipefd, i);//no pipe???
 			close_unused_fds(data, pipefd, i);
-//check if the cmd[i] contains any of the redirection tokens
-//			if (is_token(cur_node->word, 0))//redir does not have a node pointed
-//				make_redirections(data, cur_node);// same here!!!
-			if (is_builtin(data, cmd[i][0]))//current node logic needs redone.
-				exec_builtin(data, cmd[i], env_list);//not checking return!!
-			else if (execve(paths[i], cmd[i], NULL) == -1)
+			if (execve(paths[i], cmd[i], NULL) == -1)
 				{
 					printf("execve retunring -1\n");
 				 	ft_error_errno(data, cmd[i]);

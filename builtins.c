@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/19 11:52:09 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/22 12:05:22 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ static	void	echo_stdout(t_data *data, char **cmd, int linebreak)
 		if (ft_putchar_fd('\n', 1) < 0)
 			ft_error(data);//TODO message write failed
 	}
-	exit(EXIT_SUCCESS);
+//	else
+//		rl_on_new_line();
 }
 
 /*
@@ -84,14 +85,24 @@ static	void	echo_builtin(t_data *data, char **cmd)
 
 static int	exec_buitin_add(t_data *data, char **cmd, t_env *env_list)
 {
-	if (!ft_strncmp(cmd[0], "export", ft_strlen(cmd[0])))
+	if (!adv_strncmp(cmd[0], "export"))
 	{
 		export_builtin(data, cmd,  env_list);
 		return (0);
 	}
-	if (!ft_strncmp(cmd[0], "unset", ft_strlen(cmd[0])))
+	if (!adv_strncmp(cmd[0], "unset"))
 	{
 		unset_builtin(data, cmd,  env_list);
+		return (0);
+	}
+	if (!adv_strncmp(cmd[0], "cd"))
+	{
+		cd_builtin(data, cmd, env_list);
+		return (0);
+	}
+	else if (!adv_strncmp(cmd[0], "exit"))
+	{
+		exit_builtin(data, cmd);
 		return (0);
 	}
 	return (1);
@@ -99,17 +110,17 @@ static int	exec_buitin_add(t_data *data, char **cmd, t_env *env_list)
 
 int	exec_builtin(t_data *data, char **cmd, t_env *env_list)
 {
-	if (!ft_strncmp(cmd[0], "echo", ft_strlen(cmd[0])))
+	if (!adv_strncmp(cmd[0], "echo"))
 	{
 		echo_builtin(data, cmd);
 		return (0);
 	}
-	if (!ft_strncmp(cmd[0], "pwd", ft_strlen(cmd[0])))
+	if (!adv_strncmp(cmd[0], "pwd"))
 	{
-		pwd_builtin(data, env_list, 0);
+		pwd_builtin(data, env_list);
 		return (0);
 	}
-	if (!ft_strncmp(cmd[0], "env", ft_strlen(cmd[0])))
+	if (!adv_strncmp(cmd[0], "env"))
 	{
 		env_builtin(data, env_list);
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 09:20:38 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/18 09:36:51 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/20 07:07:11 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,5 +122,5 @@ void	cd_builtin(t_data *data, char **cmd, t_env *env_list)
 		ft_error(data);//TODO err STDERR "cd: $new_path no such file or direcitory"
 	get_abs_path(data,  env_list);
 	if (pwd_flag == 1)
-		pwd_builtin(data, env_list, 1);
+		pwd_builtin(data, env_list);
 }
