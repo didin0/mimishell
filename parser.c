@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/22 17:32:46 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/04/25 14:25:17 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,16 +81,17 @@ int check_dq(char *str)
  */
 char *find_key_in_str(char *str, t_env *env_list)
 {
+   str = clean_quote(str); 
    int total_len;
+   str++;
     while (env_list)
     {
         int size = ft_strlen(str);
         char *presult = ft_calloc(size,1);
-        presult  =  ft_strnstr(str, env_list->key, ft_strlen(str));
-        if (presult != NULL)
+        presult  =  ft_strnstr(str, env_list->key, ft_strlen(env_list->key));
+        if (presult != NULL && ft_strncmp(str, presult, ft_strlen(str)) == 0)
         {
-            printf("value : %s\npresult : %s\n", str, presult);
-            if (adv_strncmp(env_list->value, presult))
+            if (ft_strncmp(env_list->key, presult, ft_strlen(str)) != 0)
                 return NULL;
             int pos = presult - str;
             char *new_value = env_list->value;
@@ -139,7 +140,7 @@ char *expander(char *str, t_env *env_list)
     {
         if(str[i] == '$')
         {
-                    result = find_key_in_str(str + 1, env_list);
+                    result = find_key_in_str(str, env_list);
                     if(result)
                         return result;
                     else if (!result)
@@ -182,11 +183,53 @@ t_lexer *parsing(t_data *data, t_env *env_list)
     {
         int variables = count_$(tmp->word);
         int j = 0;
+        int size;
+        char *temp;
         if(!check_sq(tmp->word))
         {
+            int i = 0;
+            char **tab1 = ft_split(tmp->word,'$'); 
+        
+            while(tab1[i])
+            {
+            //    printf("** %s\n",tab1[i]);
+                char *dol;
+                dol = malloc(sizeof(char *) * sizeof(char *) + 1);
+                tab[i] = malloc(sizeof(char *) * sizeof(char *) + 1);
+                dol = ft_strdup("$");
+                size = ft_strlen(tab1[i]) + ft_strlen(dol) + 1;
+                ft_strlcat(dol, tab1[i], size); 
+                ft_strlcpy(tab1[i], dol, size);
+                i++;
+
+            }
             while(j < variables)
             {
-                tmp->word = expander(tmp->word, env_list);
+                if ((j == variables -1) && (variables != i)) 
+                {
+                    // NOT WORKING ??? MALLOC SIZE TOO SMALL ???
+                    printf("OK 1\n");
+                    char *dol;
+                    dol = ft_strdup("HELLO");
+                    // printf("dol : %s\n", dol);
+                    // printf("word b: %s\n", tmp->word);
+                    ft_strlcat(tmp->word, dol, ft_strlen(tmp->word) + 1);
+                    // printf("word a: %s\n", tmp->word);
+                }
+                else if (j == 0)
+                {
+                    printf("OK 2\n");
+                    tmp->word = expander(tab1[j], env_list);
+                    // printf("tab1[%d] : %s\n", j, tab1[j]);
+                }
+                else
+                {
+                    printf("OK 3\n");
+                    temp = expander(tab1[j], env_list);
+                    size = ft_strlen(tmp->word) + ft_strlen(temp) + 1;
+                // printf("tmp->word : %s\n", tmp->word);
+                    ft_strlcat(tmp->word, temp, size);
+                }
                 j++;
             }
         }
