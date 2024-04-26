@@ -53,11 +53,29 @@ cd ///home
 
 ecco 2> file not functional
 
+Heredoc
+<< EOF - does not have any practical meaning
+<< EOF > t1 creates an empty file, does not have any practical meaning
+cat << EOF | grep asd
+cat <<EOF >t4
+
+Redirection in
+grep void < t1
+grep void < t1 | grep list > t2
+grep void < t1 | grep list >> t2
+grep void < t1 | grep list >> t2 | grep lex > t3
+
+
 Redirection out append mode
 echo a1 >> f1 a2 >> f2 a3 >> f3 creates all 3 files and 
 ALL have a1 a2 a3\n in it.
+cat main.c >> t1
+cat main.c | grep void | grep list >> t1
 
 Redirection out
+cat main.c > t1
+cat main.c | grep void | grep list > t1
+
 echo a1 > f1 a2 > f2 a3 > f3 creates all 3 files and 
 the last one has a1 a2 a3\n in it, other files  empty.
 Has an edge case in case one of the files exists.

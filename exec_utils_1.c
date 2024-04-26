@@ -26,21 +26,38 @@ int	are_too_many_arguments(char ***cmd)
 	
 	}
 
-
 }*/
+
+int	check_meaning(t_data *data)
+{
+	int	cmd_count;
+	int	pipe_count;
+
+	cmd_count = count_token_type(data, BUILTIN, COMMAND);
+	pipe_count = count_token_type(data, PIPE, EMPTY);
+	data->cmd_count = cmd_count;
+	data->pipe_count = pipe_count;
+	if (data->cmd_count == 0)
+		return (1);
+	return (0);
+}
+
+/*
+ *@glance
+ *@if count==0		Heredoc can be used without commands
+ *
+ */
 
 char ***allocate_cmd(t_data *data)
 {
 	char ***cmd;
-	int	cmd_count;
-	int	i;
+	int i;
 
-	cmd_count = count_token_type(data, BUILTIN, COMMAND);
-	cmd = ft_calloc(cmd_count, sizeof(char**));
+	cmd = ft_calloc(data->cmd_count, sizeof(char**));
 	if (!cmd)
 		ft_error(data);//TODO msg Allocation fail cmd array, exit
 	i = 0;
-	while (i < cmd_count)
+	while (i < data->cmd_count)
 	{
 		cmd[i] = ft_calloc(MAX_ARGS_CMD + 1, sizeof(char*)); 
 		if (!cmd[i])
@@ -79,6 +96,8 @@ pid_t	*alloc_pids(t_data *data)
 	int	cmd_count;
 
 	cmd_count = count_token_type(data, BUILTIN, COMMAND); 
+//	if (cmd_count == 0 && data->lexer_list->type == HERE_DOC) 
+//		cmd_count = 1;
 	pids = malloc(cmd_count * sizeof(pid_t));
 	if (!pids)
 		ft_error(data);//TODO msg Allocation faily, exit

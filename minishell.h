@@ -74,6 +74,8 @@ typedef struct s_data
 	t_lexer			*lexer_list;
 	int		exit_status;
 	char	***cmd;
+	int	cmd_count;
+	int	pipe_count;
 }					t_data;
 
 // Utils
@@ -97,6 +99,7 @@ t_env	*create_env_node(char *key, char *value);
 void	add_to_end(t_env **head, t_env *new_node);
 
 // Exec
+int	check_meaning(t_data *data);
 char ***allocate_cmd(t_data *data);
 int	count_token_type(t_data *data, int	type1, int type2);
 int	**create_pipes(t_data *data);
@@ -113,6 +116,7 @@ char    *find_good_path(t_data *data, char *cmd, char **paths);
 int	count_tokens(t_data *data);
 void	stat_from_waitpid(t_data *data, pid_t *pids);
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i);
+void	update_cur_node(t_data *data, int i);
 void	print_str_array(char **array, int len);
 
 // Lexer
@@ -133,6 +137,8 @@ int is_builtin(t_data *data, char *word);
 t_lexer *parsing(t_data *data, t_env *env_list);
 
 //Redirections
+
+char	**look_for_redirs(char **cmd, t_data *data, int i);
 void	make_redirections(t_data *data, t_lexer *node);
 void	redir_fd(t_data *data, t_lexer *node);
 void	create_empty_file(t_data *data, char *name);

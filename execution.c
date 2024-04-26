@@ -129,9 +129,17 @@ int	execution(t_data *data, t_env *env_list)
     char    *path;
 	pid_t	*pids;
 
+	if (check_meaning(data) != 0)
+	{
+		printf("meaning missing\n");
+//		ft_error(data);//TODO msg no meaning/command missing
+		return (0);
+	}
 	cmd = init_cmd(data);
 	data->cmd = cmd;//TODO is this still needed??
 	pids = alloc_pids(data);
+	keep_cur_node(data->lexer_list, ASSIGN);//initialize the cur_node, for redis
+//	do redirections for the first cmd array.
 	if(bypass_child(data, cmd, env_list))
 		return (0);
 	else
@@ -142,30 +150,34 @@ int	execution(t_data *data, t_env *env_list)
 	g_child_pid = -1;
 	return (0);
 }
-
+// why should the redirections be within child process at all
+// the complexity is keeping a cur_node in and out of child process
 void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 {	
-	int	cmd_count;
+//	int	cmd_count;
 	int	i;
 	char **paths;
 	int		**pipefd;
+	t_lexer	*cur;
 
 	pipefd = create_pipes(data);
-	cmd_count = count_token_type(data, BUILTIN, COMMAND); 	
+//	cmd_count = count_token_type(data, BUILTIN, COMMAND); 	
 	paths =	organize_good_paths(cmd, data, env_list);
 	i = 0;
-	while (i < cmd_count) 
+	while (i < data->cmd_count) 
 	{
 		pids[i] = fork();//TODO protection needed
 		if (pids[i] == 0) 
 		{
 //			if (is_token(cur_node->word, 0))//redir does not have a node pointed
-			if (array_contains_redir(cmd[i], data))
-			{
-				printf("I found a redir\n");
-				clean_cmd_redir_fd(cmd[i], data);			
+//			if (array_contains_redir(cmd[i], data))
+//			{
+//				printf("I found a redir\n");
+		keep_cur_node(data->lexer_list, ASK);
+			cmd[i] = look_for_redirs(cmd[i], data, i);
+//			show_cmd(&cmd[i], data);	
 //			make_redirections(data, cur_node);// same here!!!
-			}
+//			}
 			redirect_close_fds(data, pipefd, i);//no pipe???
 			close_unused_fds(data, pipefd, i);
 			if (execve(paths[i], cmd[i], NULL) == -1)
@@ -179,6 +191,10 @@ void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 			perror("fork");
 			exit(EXIT_FAILURE);
 		}
+		if (data->cmd_count > 1)//there is a pipe
+			update_cur_node(data, i);
+	cur = keep_cur_node(data->lexer_list, ASK);
+//	printf("cur node %s,  end of cmd[%d] \n", cur->word, i); 
 		i++;
 	}
 	parent_close_all_fds(data, pipefd);
@@ -187,7 +203,6 @@ void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 		else
 			g_child_pid = pids[i];//TODO need incrementation, chech signals
 }
-
 
 /*
 @glance			excecute with token char array in child process to have

@@ -36,10 +36,9 @@ int	count_token_type(t_data *data, int	type1, int type2)
 
 
 /*
- * !!!!!! DOES NOT CHECK THE LAST NODE TODO
 @glance		number of commands = number of pipes - 1
 */
-
+// NOT USED make_redirections any more!!!!1
 int	count_tokens(t_data *data)
 {
 	t_lexer	*temp;
@@ -47,10 +46,13 @@ int	count_tokens(t_data *data)
 
 	temp = data->lexer_list;
 	count = 0;
-	while (temp != NULL)
+	while (temp )
 	{
-		if (is_token(temp->word, 0))
+		if ((is_token(temp->word, 0) && temp->type != 5) && temp->type != 6)
+		{
+			printf("counting  .. %d\n", temp->type);
 			count++;
+		}
 		temp = temp->next;
 	}
 	return (count);
@@ -62,13 +64,41 @@ int	count_tokens(t_data *data)
 
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i)
 {
-	static t_lexer *temp = NULL;
+	static t_lexer *temp;
 
 	if (i == ASSIGN)
 		temp = cur_node;
 	return (temp);
 }
 
+/*
+ *parent process keeping track of the current node, for a child process
+ *to know to make redirections.
+ *
+ */
+
+void	update_cur_node(t_data *data, int i)
+{
+	t_lexer *node;
+//	int	pipe_count;
+	int j;
+
+//	pipe_count = count_token_type(data, PIPE, EMPTY);
+	node = data->lexer_list;
+	j = -1;
+//move over i number of pipes
+	while (node && j < i)
+	{
+//move the list to PIPE next
+		if (node->type == PIPE)
+		{
+			node = node->next;
+			keep_cur_node(node, ASSIGN);
+			j++;
+		}
+		node = node->next;
+	}
+}
 
 /*
 @glance				waitpid retunrs child PID or - 1

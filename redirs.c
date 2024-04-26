@@ -75,7 +75,7 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	  	ft_error(data);//TODO	
 	while (1)
 	{
-		here_line = readline("\033[37mheredoc> \033[m ");
+		here_line = readline("\033[37m> \033[m ");
 		if (!here_line)//EOF ctrl-D case
 		{	
 			if (ft_putchar_fd('\n', 1) < 0)
@@ -109,13 +109,13 @@ void	expand_status(t_data *data)
 /*
 @ glance	loop the token count times, call redirection functions
 */
-
+//TODO count all redirections within between pipes.
 void	make_redirections(t_data *data, t_lexer *cur_node)
 {
 	int	count;
 
 	count = count_tokens(data);
-//	printf("cur node %s, type %d\n", cur_node->word, cur_node->type);
+	printf("cur node %s, type %d, count %d\n", cur_node->word, cur_node->type, count);
 	while (cur_node->next && count > 0)
 	{
 		if (cur_node->type == REDIR_OUT || cur_node->type == REDIR_OUT_APP
@@ -124,6 +124,7 @@ void	make_redirections(t_data *data, t_lexer *cur_node)
 		else if (cur_node->type == HERE_DOC)
 			here_doc_in(data, cur_node);
 		if (cur_node->next->next && is_token(cur_node->next->next->word, 0))
+			//accessing memory where I should not, invalid read TODO
 			cur_node = cur_node->next->next;
 		count--;	
 	}
