@@ -13,7 +13,23 @@
 #include "minishell.h"
 
 /*
-@glance		number of commands = number of pipes - 1
+int	are_too_many_arguments(char ***cmd)
+{
+	int	i;
+	int args;
+	
+	args = 0;
+	while (cmd[i])//loop each array
+	{
+		if (cmd[i
+	
+	
+	}
+
+}*/
+
+/*
+@glance		count two types at the time.
 */
 
 int	count_token_type(t_data *data, int	type1, int type2)
@@ -34,32 +50,9 @@ int	count_token_type(t_data *data, int	type1, int type2)
 	return (count);
 }
 
-
-/*
-@glance		number of commands = number of pipes - 1
-*/
-// NOT USED make_redirections any more!!!!1
-int	count_tokens(t_data *data)
-{
-	t_lexer	*temp;
-	int	count;
-
-	temp = data->lexer_list;
-	count = 0;
-	while (temp )
-	{
-		if ((is_token(temp->word, 0) && temp->type != 5) && temp->type != 6)
-		{
-			printf("counting  .. %d\n", temp->type);
-			count++;
-		}
-		temp = temp->next;
-	}
-	return (count);
-}
 /*
 @glance		keeps the offset in linked list to seperate string arrays
-			for execution() while loop.
+			for execution() while loop, to manage the pipline.
 */
 
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i)
@@ -72,24 +65,20 @@ t_lexer	*keep_cur_node(t_lexer *cur_node, int i)
 }
 
 /*
- *parent process keeping track of the current node, for a child process
- *to know to make redirections.
- *
- */
+@glance		parent process keeping track of the current node, for child process
+			to know to make redirections.
+@i			child number
+*/
 
 void	update_cur_node(t_data *data, int i)
 {
 	t_lexer *node;
-//	int	pipe_count;
 	int j;
 
-//	pipe_count = count_token_type(data, PIPE, EMPTY);
 	node = data->lexer_list;
 	j = -1;
-//move over i number of pipes
 	while (node && j < i)
 	{
-//move the list to PIPE next
 		if (node->type == PIPE)
 		{
 			node = node->next;
@@ -102,7 +91,6 @@ void	update_cur_node(t_data *data, int i)
 
 /*
 @glance				waitpid retunrs child PID or - 1
-					127 is the exit status value in case $? and again $?
 @W UNTRACED			wait for processes status change, get status
 @W IFEXITED			check if the process exited normally ie by exit()
 @W EXITSTATUS		macro to extract the exit satus of waitpid
@@ -121,7 +109,7 @@ void stat_from_waitpid(t_data *data, pid_t *pids)
 	{	
 		if ((waitpid(pids[i], &status, WUNTRACED)) == -1)
 			perror("waitpid");
-//		ft_error(data);//TODO
+//		ft_error(data);//TODO free on waitpid fail
 		i++;
 	}
 	if (WIFEXITED(status))
@@ -129,26 +117,4 @@ void stat_from_waitpid(t_data *data, pid_t *pids)
 	else if (WIFSIGNALED(status))
 		data->exit_status = 128 + WTERMSIG(status);
 	free(pids);
-	return;//redundant TODO;
 }
-/*
-void stat_from_waitpid(t_data *data, pid_t pid1)
-{
-	int	status;
-
-	if ((waitpid(pid1, &status, WUNTRACED)) == -1)
-		perror("waitpid");
-//		ft_error(data);//TODO
-	else
-	{
-		if (WIFEXITED(status))
-		{
-			data->exit_status = WEXITSTATUS(status);	
-		}
-		else if (WIFSIGNALED(status))
-		{
-			data->exit_status = 128 + WTERMSIG(status);
-		}
-	}
-	return;
-}*/

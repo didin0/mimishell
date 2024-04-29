@@ -12,6 +12,10 @@
 
 #include "minishell.h"
 
+/*
+@glance to mimic bash in some subsequent redirections and file names
+ */
+
 void	create_empty_file(t_data *data, char *name)
 {
 	int	fd;
@@ -54,11 +58,28 @@ void	redir_fd(t_data *data, t_lexer *node)
 	}
 	close(fd);
 }
-	
+
+/*
+@open	previous open enables to use the fd only for writing.
+ */
+
+static	void	redir_temp_file_fd(t_data *data, int fd)
+{	
+	fd = -1;
+	fd = open("here_doc_temp", O_RDONLY);
+	if (fd == -1)	 
+	  	ft_error(data);//TODO
+	if (dup2(fd, STDIN_FILENO) == -1)
+		ft_error(data);//TODO
+	if (unlink("here_doc_temp") == -1)
+		ft_error(data);//TODO
+	//TODO free readline memory?
+	close(fd);
+}
+
 /*
 @glance		store delimiter string. open a temp file and loop to store lines
 			from user prompt.
-@2nd open	first open enables to use the fd only for writing.
 */
 
 void	here_doc_in(t_data *data, t_lexer *node)
@@ -87,16 +108,7 @@ void	here_doc_in(t_data *data, t_lexer *node)
 		write(fd, here_line, ft_strlen(here_line));
 		write(fd, "\n", 1);
 	}
-	fd = -1;
-	fd = open("here_doc_temp", O_RDONLY);
-	if (fd == -1)	 
-	  	ft_error(data);//TODO
-	if (dup2(fd, STDIN_FILENO) == -1)
-		ft_error(data);//TODO
-	if (unlink("here_doc_temp") == -1)
-		ft_error(data);//TODO
-	//TODO free readline memory?
-	close(fd);
+	redir_temp_file_fd(data, fd); 
 }
 
 void	expand_status(t_data *data)
@@ -104,31 +116,4 @@ void	expand_status(t_data *data)
 	ft_putnbr_fd(data->exit_status, 1);
 	if (ft_putstr_fd(": command not found\n", 1) < 0)
 		ft_error(data);//TODO msg write failed
-}
-
-/*
-@ glance	loop the token count times, call redirection functions
-*/
-//TODO count all redirections within between pipes.
-void	make_redirections(t_data *data, t_lexer *cur_node)
-{
-	int	count;
-
-	count = count_tokens(data);
-	printf("cur node %s, type %d, count %d\n", cur_node->word, cur_node->type, count);
-	while (cur_node->next && count > 0)
-	{
-		if (cur_node->type == REDIR_OUT || cur_node->type == REDIR_OUT_APP
-		|| cur_node->type == REDIR_IN)
-			redir_fd(data, cur_node);
-		else if (cur_node->type == HERE_DOC)
-			here_doc_in(data, cur_node);
-		if (cur_node->next->next && is_token(cur_node->next->next->word, 0))
-			//accessing memory where I should not, invalid read TODO
-			cur_node = cur_node->next->next;
-		count--;	
-	}
-//	if (cur_node->type == EXP_STATUS)
-//			expand_status(data, cur_node);
-
 }

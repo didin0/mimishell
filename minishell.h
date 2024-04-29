@@ -106,7 +106,6 @@ int	**create_pipes(t_data *data);
 char **organize_good_paths(char ***cmd, t_data *data, t_env *env_list);
 int    execution(t_data *data, t_env *env_list);
 pid_t	*alloc_pids(t_data *data);
-int		bypass_child(t_data *data, char ***cmd, t_env *env_list);
 int	adv_strncmp(const char *s1, const char *s2);
 void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids);
 void	parent_close_all_fds(t_data *data, int **pipefd);
@@ -145,7 +144,8 @@ void	create_empty_file(t_data *data, char *name);
 void	here_doc_in(t_data *data, t_lexer *node);
 
 //Builtins
-int	exec_builtin(t_data *data, char **cmd, t_env *env_list);
+int	exec_builtin_parent(t_data *data, char **cmd, t_env *env_list);
+int	exec_builtin_child(t_data *data, char **cmd, t_env *env_list);
 void	pwd_builtin(t_data *data, t_env *env_list);
 void	env_builtin(t_data *data, t_env *env_list);
 void	cd_builtin(t_data *data, char **cmd, t_env *env_list);

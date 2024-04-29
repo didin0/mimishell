@@ -13,20 +13,8 @@
 #include "minishell.h"
 
 /*
-int	are_too_many_arguments(char ***cmd)
-{
-	int	i;
-	int args;
-	
-	args = 0;
-	while (cmd[i])//loop each array
-	{
-		if (cmd[i
-	
-	
-	}
-
-}*/
+@glance		for the cases that do not include a command or builtin
+*/
 
 int	check_meaning(t_data *data)
 {
@@ -37,16 +25,12 @@ int	check_meaning(t_data *data)
 	pipe_count = count_token_type(data, PIPE, EMPTY);
 	data->cmd_count = cmd_count;
 	data->pipe_count = pipe_count;
+	if (data->lexer_list->type == 6 && !data->lexer_list->next)	
+		data->cmd_count = 1;
 	if (data->cmd_count == 0)
 		return (1);
 	return (0);
 }
-
-/*
- *@glance
- *@if count==0		Heredoc can be used without commands
- *
- */
 
 char ***allocate_cmd(t_data *data)
 {
@@ -96,8 +80,6 @@ pid_t	*alloc_pids(t_data *data)
 	int	cmd_count;
 
 	cmd_count = count_token_type(data, BUILTIN, COMMAND); 
-//	if (cmd_count == 0 && data->lexer_list->type == HERE_DOC) 
-//		cmd_count = 1;
 	pids = malloc(cmd_count * sizeof(pid_t));
 	if (!pids)
 		ft_error(data);//TODO msg Allocation faily, exit
@@ -110,20 +92,4 @@ int	adv_strncmp(const char *s1, const char *s2)
 		&& !ft_strncmp(s1, s2, ft_strlen(s2)))
 		return (0);
 	return (1);
-}
-
-int	peek_list_from(t_lexer *node)
-{
-	t_lexer *temp;
-	int peek_type;
-
-	peek_type = node->type;
-	temp = node->next;
-	while (temp->next)
-	{		
-		if (temp->type == peek_type)//type found
-			return (1);	
-		temp = temp->next;
-	}
-	return (0);//did not find or @ tail node
 }

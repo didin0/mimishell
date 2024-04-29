@@ -13,7 +13,7 @@
 #include "minishell.h"
 
 /*
-@glance		loop the string array for - followed by one or more concecutve
+@glance		loop the string array for - followed by one or more concecutive
 			n-s.
 @while		write out the string array cmd, skip option -n in case existing
 */
@@ -54,8 +54,6 @@ static	void	echo_stdout(t_data *data, char **cmd, int linebreak)
 @while and if	-n option is the first argument, check the last char
 				of the first argument strng.
 				also that it is followed only by n characters.
-@make_redir		the builtin can be followed on prompt line by any token
-				so call recirections to be done by dup2().
 @echo_stdout	write out the string array cmd
 */
 
@@ -71,19 +69,14 @@ static	void	echo_builtin(t_data *data, char **cmd)
 		j++;
 	if (cmd[1][0] == '-' && !cmd[1][j])
 		linebreak = 0;
-//	cur_node = keep_cur_node(data->lexer_list, ASK);
-//	if (is_token(cur_node->word, 0))
-//		make_redirections(data, cur_node);//redundant? calling redir in exec_child()
 	echo_stdout(data, cmd, linebreak);
 }
 
 /*
- @dev		there might be a better way to do this ft_strncmp only once
- 			and have all builtins as seperate token types in one group
 @glance		check string array cmd and call for a builtin function
 */
 
-static int	exec_buitin_add(t_data *data, char **cmd, t_env *env_list)
+int	exec_builtin_parent(t_data *data, char **cmd, t_env *env_list)
 {
 	if (!adv_strncmp(cmd[0], "export"))
 	{
@@ -105,10 +98,15 @@ static int	exec_buitin_add(t_data *data, char **cmd, t_env *env_list)
 		exit_builtin(data, cmd);
 		return (0);
 	}
+	else if (!adv_strncmp(cmd[0], "$?"))
+	{
+		expand_status(data);
+		return (0);
+	}
 	return (1);
 }
 
-int	exec_builtin(t_data *data, char **cmd, t_env *env_list)
+int	exec_builtin_child(t_data *data, char **cmd, t_env *env_list)
 {
 	if (!adv_strncmp(cmd[0], "echo"))
 	{
@@ -125,7 +123,5 @@ int	exec_builtin(t_data *data, char **cmd, t_env *env_list)
 		env_builtin(data, env_list);
 		return (0);
 	}
-	if (!exec_buitin_add(data, cmd, env_list))
-		return (0);
 	return (1);
 }
