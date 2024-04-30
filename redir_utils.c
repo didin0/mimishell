@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:15:45 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/22 16:27:49 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/30 07:33:26 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static	int	adv_list_size(t_lexer *list)
 @2nd if		in case there are several redirection within one cmd array
  */
 
-static	char **clean_cmd_from_redir_tokens(t_lexer *node, char **temp)
+static char	**clean_cmd_from_redir_tokens(t_lexer *node, char **temp)
 {
 	int	k;
 
@@ -44,7 +44,7 @@ static	char **clean_cmd_from_redir_tokens(t_lexer *node, char **temp)
 			temp[k] = node->word;
 		if (node)
 			node = node->next;
-		k++	;
+		k++;
 	}
 	return (temp);
 }
@@ -53,11 +53,11 @@ static	char **clean_cmd_from_redir_tokens(t_lexer *node, char **temp)
 @2nd if		in case there is a pipeline, the cur node is not the first node
  */
 
-static	char **change_cmd(char **cmd, t_data *data, int i)
+static char	**change_cmd(char **cmd, t_data *data, int i)
 {
-	char **temp;
-	t_lexer *node;
-	int	j;
+	char	**temp;
+	t_lexer	*node;
+	int		j;
 
 	temp = ft_calloc(adv_list_size(data->lexer_list), sizeof(char *));
 	if (!temp)
@@ -67,7 +67,7 @@ static	char **change_cmd(char **cmd, t_data *data, int i)
 	if (node != data->lexer_list)
 	{
 		node = data->lexer_list;
-		while(node && j < i)
+		while (node && j < i)
 		{
 			if (node->type == PIPE)
 				j++;
@@ -75,13 +75,13 @@ static	char **change_cmd(char **cmd, t_data *data, int i)
 		}
 		keep_cur_node(node, ASSIGN);
 	}
-	temp = clean_cmd_from_redir_tokens(node, temp); 
+	temp = clean_cmd_from_redir_tokens(node, temp);
 	return (temp);
 }
 
-static	void  array_contains_redir(char **cmd, t_data *data)
+static void	array_contains_redir(char **cmd, t_data *data)
 {
-	t_lexer *node;
+	t_lexer	*node;
 
 	node = data->lexer_list;
 	node = keep_cur_node(node, ASK);
@@ -90,13 +90,13 @@ static	void  array_contains_redir(char **cmd, t_data *data)
 		if (is_token(node->word, 0))
 		{
 			if (node->type == REDIR_OUT || node->type == REDIR_OUT_APP
-			|| node->type == REDIR_IN)
+				|| node->type == REDIR_IN)
 				redir_fd(data, node);
 			else if (node->type == HERE_DOC)
 				here_doc_in(data, node);
 		}
 		node = node->next;
-	}	
+	}
 }
 
 /*
@@ -105,10 +105,10 @@ static	void  array_contains_redir(char **cmd, t_data *data)
 
 char	**look_for_redirs(char **cmd, t_data *data, int i)
 {
-	t_lexer *node;
-	
+	t_lexer	*node;
+
 	node = data->lexer_list;
 	array_contains_redir(cmd, data);
-	cmd = change_cmd(cmd, data, i); 
+	cmd = change_cmd(cmd, data, i);
 	return (cmd);
 }

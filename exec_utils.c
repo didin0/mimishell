@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/22 15:32:34 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/29 20:29:02 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ int	are_too_many_arguments(char ***cmd)
 @glance		count two types at the time.
 */
 
-int	count_token_type(t_data *data, int	type1, int type2)
+int	count_token_type(t_data *data, int type1, int type2)
 {
 	t_lexer	*temp;
-	int	count;
+	int		count;
 
 	temp = data->lexer_list;
 	count = 0;
@@ -57,7 +57,7 @@ int	count_token_type(t_data *data, int	type1, int type2)
 
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i)
 {
-	static t_lexer *temp;
+	static t_lexer	*temp;
 
 	if (i == ASSIGN)
 		temp = cur_node;
@@ -72,8 +72,8 @@ t_lexer	*keep_cur_node(t_lexer *cur_node, int i)
 
 void	update_cur_node(t_data *data, int i)
 {
-	t_lexer *node;
-	int j;
+	t_lexer	*node;
+	int		j;
 
 	node = data->lexer_list;
 	j = -1;
@@ -97,23 +97,23 @@ void	update_cur_node(t_data *data, int i)
 @W IFSIGLAED		was the child killed by a signal, add 128 to status
 */
 
-void stat_from_waitpid(t_data *data, pid_t *pids)
+void	stat_from_waitpid(t_data *data, pid_t *pids)
 {
-	int i;
+	int	i;
 	int	status;
 	int	cmd_count;
 
-	cmd_count = count_token_type(data, BUILTIN, COMMAND); 
+	cmd_count = count_token_type(data, BUILTIN, COMMAND);
 	i = 0;
 	while (i < cmd_count)
-	{	
+	{
 		if ((waitpid(pids[i], &status, WUNTRACED)) == -1)
 			perror("waitpid");
 //		ft_error(data);//TODO free on waitpid fail
 		i++;
 	}
 	if (WIFEXITED(status))
-		data->exit_status = WEXITSTATUS(status);	
+		data->exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 		data->exit_status = 128 + WTERMSIG(status);
 	free(pids);

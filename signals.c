@@ -6,18 +6,13 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 11:32:00 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/17 17:49:25 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/30 09:13:38 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-int ft_putchar(int c)
-{
-    return (write(STDOUT_FILENO, &c, 1));  // Simple wrapper around write for a single char
-}
-
 void reset_terminal()
 {
 	printf("reset test 00\n");
@@ -26,7 +21,8 @@ void reset_terminal()
 		printf("reset test 01\n");
 	  	return;  // Error handling or fallback
     }
-    char *reset_cmd = tgetstr("rs1", NULL);  // Fetch the reset command, if available
+    char *reset_cmd = tgetstr("rs1", NULL); 
+// Fetch the reset command, if available
     if (reset_cmd)
 		printf("reset test 0\n");
 	if (reset_cmd) {
@@ -54,7 +50,7 @@ void reset_terminal()
 
 void	init_signals(void)
 {
-	struct sigaction sa;
+	struct sigaction	sa;
 
 	ft_memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = sigint_handler;
@@ -64,7 +60,7 @@ void	init_signals(void)
 	{
 		perror("Sigaction failed SIGINT");
 		exit(EXIT_FAILURE);
-    }
+	}
 	sa.sa_handler = SIG_IGN;
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
 	{
@@ -88,19 +84,19 @@ void	init_signals(void)
 
 void	sigint_handler(int signum)
 {
-		if (g_child_pid > 0)
-		{
-			if (g_child_pid != 2147483647)// I need more info inside the handler
-				write(STDOUT_FILENO, "\n", 1);//not needed in case of heredoc
+	if (g_child_pid > 0)
+	{
+		if (g_child_pid != 2147483647) // I need more info inside the handler
+			write(STDOUT_FILENO, "\n", 1);//not needed in case of heredoc
 //		printf("child entered handler with pid %d\n", global_child_pid);
-		}
-		else
-		{
-			rl_replace_line("", 0);
-			write(STDOUT_FILENO, "\n", 1);
-			rl_on_new_line();
-			rl_redisplay();
-//			printf("parent entered handler with pid %d\n", global_parent_pid);
-		}
+	}
+	else
+	{
+		rl_replace_line("", 0);
+		write(STDOUT_FILENO, "\n", 1);
+		rl_on_new_line();
+		rl_redisplay();
+//		printf("parent entered handler with pid %d\n", global_parent_pid);
+	}
 //		printf("no coditions, just passing signal handler\n");
 }

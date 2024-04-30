@@ -6,24 +6,24 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/22 15:32:13 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/29 20:43:38 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-pid_t g_child_pid = -1;
+pid_t	g_child_pid = -1;
 
 /*
 @glance		cmd[] array takes in all node wordsi(tokens) up until redir or pipe
 */
 
-static	char	***init_cmd(t_data *data)
+static char	***init_cmd(t_data *data)
 {
 	char	***cmd;
 	int		i;
 	int		j;
-	t_lexer *node;
+	t_lexer	*node;
 
 	node = data->lexer_list;
 	cmd = allocate_cmd(data);
@@ -32,7 +32,7 @@ static	char	***init_cmd(t_data *data)
 	while (node)
 	{
 		if (node->type != PIPE)
-			cmd[i][j++] = node->word; 
+			cmd[i][j++] = node->word;
 		else
 		{
 			i++;
@@ -48,13 +48,13 @@ static	char	***init_cmd(t_data *data)
 @if 400			special case to handle SIGINT inside heredoc
 */
 
-static	void	close_fd_set_g(t_data *data, pid_t *pids, int **pipefd, int i)
+static void	close_fd_set_g(t_data *data, pid_t *pids, int **pipefd, int i)
 {
 	parent_close_all_fds(data, pipefd);
 	if (data->lexer_list->type == 400)
-			g_child_pid = 2147483647;
+		g_child_pid = 2147483647;
 	else
-			g_child_pid = pids[i];
+		g_child_pid = pids[i];
 }
 
 /*
@@ -62,7 +62,7 @@ static	void	close_fd_set_g(t_data *data, pid_t *pids, int **pipefd, int i)
 @2nd if			update cur_node in case there are pipes. pipeline mgmt.
 */
 
-static	void	resume_parent(t_data *data, pid_t *pids, int i)
+static void	resume_parent(t_data *data, pid_t *pids, int i)
 {
 	if (pids[i] < 0)
 	{
@@ -85,27 +85,27 @@ static	void	resume_parent(t_data *data, pid_t *pids, int i)
  */
 
 void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
-{	
-	int	i;
-	char **paths;
+{
+	int		i;
+	char	**paths;
 	int		**pipefd;
 
 	pipefd = create_pipes(data);
-	paths =	organize_good_paths(cmd, data, env_list);
+	paths = organize_good_paths(cmd, data, env_list);
 	i = 0;
-	while (i < data->cmd_count) 
+	while (i < data->cmd_count)
 	{
-		pids[i] = fork();	
-		if (pids[i] == 0) 
+		pids[i] = fork();
+		if (pids[i] == 0)
 		{
 			cmd[i] = look_for_redirs(cmd[i], data, i);
 			redirect_close_fds(data, pipefd, i);
 			close_unused_fds(data, pipefd, i);
-			if(!exec_builtin_child(data, cmd[i], env_list))
+			if (!exec_builtin_child(data, cmd[i], env_list))
 				exit(EXIT_SUCCESS);
-			else 
+			else
 				if (execve(paths[i], cmd[i], NULL) == -1)
-				 	ft_error_errno(data, cmd[i]);//TODO check
+					ft_error_errno(data, cmd[i]);//TODO check
 		}
 		resume_parent(data, pids, i);
 		i++;
@@ -138,20 +138,20 @@ void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 int	execution(t_data *data, t_env *env_list)
 {
 	char	***cmd;
-    char    *path;
+	char	*path;
 	pid_t	*pids;
 
 	if (check_meaning(data) != 0)
 	{
 		printf("meaning missing\n");
 		data->exit_status = 127;
-//		ft_error(data);//TODO msg no meaning/command missing, set exit status to 127
+//		ft_error(data);//TODO msg no meaning/command missing,set exitstatus 127
 		return (0);
 	}
 	cmd = init_cmd(data);
 	pids = alloc_pids(data);
 	keep_cur_node(data->lexer_list, ASSIGN);//initialize the cur_node, for redis
-	if(!exec_builtin_parent(data, cmd[0], env_list))
+	if (!exec_builtin_parent(data, cmd[0], env_list))
 		return (0);
 	else
 	{
@@ -161,4 +161,3 @@ int	execution(t_data *data, t_env *env_list)
 	g_child_pid = -1;
 	return (0);
 }
-

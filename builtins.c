@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/22 12:05:22 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/30 08:07:08 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,34 +18,32 @@
 @while		write out the string array cmd, skip option -n in case existing
 */
 
-static	void	echo_stdout(t_data *data, char **cmd, int linebreak)
+static void	echo_stdout(t_data *data, char **cmd, int line_break)
 {
-	int j;
-	int option_flag;
+	int	j;
+	int	option_flag;
 
 	option_flag = 0;
 	j = 1;
 	while (cmd[j])
 	{
-		if (linebreak == 0 && option_flag == 0)
+		if (line_break == 0 && option_flag == 0)
 			j = 2;
 		if (ft_putstr_fd(cmd[j], 1) < 0)
 			ft_error(data);//TODO message write failed
 		j++;
-		if (cmd[j])	
+		if (cmd[j])
 		{
 			if (ft_putchar_fd(' ', 1) < 0)
 				ft_error(data);//TODO message write failed
 		}
 		option_flag = 1;
 	}
-	if (linebreak == 1)
+	if (line_break == 1)
 	{
 		if (ft_putchar_fd('\n', 1) < 0)
 			ft_error(data);//TODO message write failed
 	}
-//	else
-//		rl_on_new_line();
 }
 
 /*
@@ -57,19 +55,21 @@ static	void	echo_stdout(t_data *data, char **cmd, int linebreak)
 @echo_stdout	write out the string array cmd
 */
 
-static	void	echo_builtin(t_data *data, char **cmd)
+static void	echo_builtin(t_data *data, char **cmd)
 {
-	int j;
-	int	linebreak;
-	t_lexer *cur_node;
+	int		j;
+	int		line_break;
+	t_lexer	*cur_node;
 
-	linebreak = 1;
+	line_break = 1;
 	j = 1;
 	while (cmd[1][0] == '-' && cmd[1][j] == 'n')
 		j++;
 	if (cmd[1][0] == '-' && !cmd[1][j])
-		linebreak = 0;
-	echo_stdout(data, cmd, linebreak);
+		line_break = 0;
+	echo_stdout(data, cmd, line_break);
+//	if (line_break != 1)
+//		rl_on_new_line();
 }
 
 /*
@@ -78,14 +78,9 @@ static	void	echo_builtin(t_data *data, char **cmd)
 
 int	exec_builtin_parent(t_data *data, char **cmd, t_env *env_list)
 {
-	if (!adv_strncmp(cmd[0], "export"))
+	if (!adv_strncmp(cmd[0], "export") || !adv_strncmp(cmd[0], "unset"))
 	{
-		export_builtin(data, cmd,  env_list);
-		return (0);
-	}
-	if (!adv_strncmp(cmd[0], "unset"))
-	{
-		unset_builtin(data, cmd,  env_list);
+		unset_builtin(data, cmd, env_list);
 		return (0);
 	}
 	if (!adv_strncmp(cmd[0], "cd"))

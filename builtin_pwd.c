@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 07:38:24 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/20 07:05:06 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/30 08:43:48 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,14 @@ void	pwd_builtin(t_data *data, t_env *env_list)
 }
 
 /*
-@glance		//print env list to stdout, key=value\n
- *
- * */
+@glance		print env list to stdout, key=value\n
+*/
 
 void	env_builtin(t_data *data, t_env *env_list)
 {
 	t_env	*temp;
-	temp = env_list;
 
+	temp = env_list;
 	while (temp)
 	{
 		if (ft_putstr_fd(temp->key, 1) < 0)

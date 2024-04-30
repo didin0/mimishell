@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:04:51 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/14 08:33:51 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/30 06:55:11 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,26 +32,25 @@ void	create_empty_file(t_data *data, char *name)
 
 void	redir_fd(t_data *data, t_lexer *node)
 {
-	int	fd;
-	t_lexer *temp;
+	int		fd;
+	t_lexer	*temp;
 
 	fd = -1;
 	temp = node;
 	if (temp->type == REDIR_OUT)
-		fd = open(temp->next->word, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+		fd = open(temp->next->word, OPEN_FLAGS | O_TRUNC, OPEN_RIGHTS);
 	else if (temp->type == REDIR_OUT_APP)
-		fd = open(temp->next->word, O_WRONLY | O_CREAT | O_APPEND,
-			   	S_IRUSR | S_IWUSR);
+		fd = open(temp->next->word, OPEN_FLAGS | O_APPEND, OPEN_RIGHTS);
 	else if (temp->type == REDIR_IN)
 		fd = open(temp->next->word, O_RDONLY);
-	if (fd ==-1)	
-		ft_error(data);//TODO	
-	else if (temp->type == REDIR_IN)	
+	if (fd == -1)
+		ft_error(data);//TODO
+	else if (temp->type == REDIR_IN)
 	{
 		if (dup2(fd, STDIN_FILENO) == -1)
 			ft_error(data);//TODO
 	}
-	else if (temp->type == REDIR_OUT || temp->type == REDIR_OUT_APP)	
+	else if (temp->type == REDIR_OUT || temp->type == REDIR_OUT_APP)
 	{
 		if (dup2(fd, STDOUT_FILENO) == -1)
 			ft_error(data);//TODO
@@ -64,11 +63,11 @@ void	redir_fd(t_data *data, t_lexer *node)
  */
 
 static	void	redir_temp_file_fd(t_data *data, int fd)
-{	
+{
 	fd = -1;
 	fd = open("here_doc_temp", O_RDONLY);
-	if (fd == -1)	 
-	  	ft_error(data);//TODO
+	if (fd == -1)
+		ft_error(data);//TODO
 	if (dup2(fd, STDIN_FILENO) == -1)
 		ft_error(data);//TODO
 	if (unlink("here_doc_temp") == -1)
@@ -78,37 +77,38 @@ static	void	redir_temp_file_fd(t_data *data, int fd)
 }
 
 /*
-@glance		store delimiter string. open a temp file and loop to store lines
-			from user prompt.
+@glance			store delimiter string. open a temp file and loop to store lines
+				from user prompt.
+@!here_line		EOF, ctrl-D case	
 */
 
 void	here_doc_in(t_data *data, t_lexer *node)
 {
-	char *delimiter;
-	char *here_line;
-	int fd;
+	char	*delimiter;
+	char	*here_line;
+	int		fd;
 
 	delimiter = node->next->word;
 	here_line = NULL;
 	fd = -1;
 	fd = open("here_doc_temp", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-	if (fd == -1)	 
-	  	ft_error(data);//TODO	
+	if (fd == -1)
+		ft_error(data);//TODO	
 	while (1)
 	{
 		here_line = readline("\033[37m> \033[m ");
-		if (!here_line)//EOF ctrl-D case
-		{	
+		if (!here_line)
+		{
 			if (ft_putchar_fd('\n', 1) < 0)
-					ft_error(data);//TODO message write failed, clean, exit
-			break;
+				ft_error(data);//TODO message write failed, clean, exit
+			break ;
 		}
 		if (!ft_strncmp(here_line, delimiter, ft_strlen(here_line)))
-			break;
+			break ;
 		write(fd, here_line, ft_strlen(here_line));
 		write(fd, "\n", 1);
 	}
-	redir_temp_file_fd(data, fd); 
+	redir_temp_file_fd(data, fd);
 }
 
 void	expand_status(t_data *data)

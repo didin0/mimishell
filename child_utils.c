@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 16:34:33 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/17 16:36:32 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/30 07:52:50 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,11 @@ void	parent_close_all_fds(t_data *data, int **pipefd)
 void	redirect_close_fds(t_data *data, int **pipefd, int i)
 {
 	if (i > 0)
-  	{
+	{
 		dup2(pipefd[i - 1][0], STDIN_FILENO);
 		close(pipefd[i - 1][0]);
 	}
-	if (i < data->pipe_count) 
+	if (i < data->pipe_count)
 	{
 		dup2(pipefd[i][1], STDOUT_FILENO);
 		close(pipefd[i][1]);

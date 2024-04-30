@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_utils_1.c                                     :+:      :+:    :+:   */
+/*   exec_utils_add.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 03:20:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/19 11:11:58 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/29 20:35:25 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,25 +25,25 @@ int	check_meaning(t_data *data)
 	pipe_count = count_token_type(data, PIPE, EMPTY);
 	data->cmd_count = cmd_count;
 	data->pipe_count = pipe_count;
-	if (data->lexer_list->type == 6 && !data->lexer_list->next)	
+	if (data->lexer_list->type == 6 && !data->lexer_list->next)
 		data->cmd_count = 1;
 	if (data->cmd_count == 0)
 		return (1);
 	return (0);
 }
 
-char ***allocate_cmd(t_data *data)
+char	***allocate_cmd(t_data *data)
 {
-	char ***cmd;
-	int i;
+	char	***cmd;
+	int		i;
 
-	cmd = ft_calloc(data->cmd_count, sizeof(char**));
+	cmd = ft_calloc(data->cmd_count, sizeof(char **));
 	if (!cmd)
 		ft_error(data);//TODO msg Allocation fail cmd array, exit
 	i = 0;
 	while (i < data->cmd_count)
 	{
-		cmd[i] = ft_calloc(MAX_ARGS_CMD + 1, sizeof(char*)); 
+		cmd[i] = ft_calloc(MAX_ARGS_CMD + 1, sizeof(char *));
 		if (!cmd[i])
 			ft_error(data);//TODO msg Alloc fail cmd array, free cmd[i]!!, exit
 		i++;
@@ -63,7 +63,7 @@ int	**create_pipes(t_data *data)
 	if (!pipefd)
 		ft_error(data);//TODO msg Allocation fail, exit
 	j = 0;
-	while (j < pipe_count) 
+	while (j < pipe_count)
 	{
 		pipefd[j] = malloc(2 * sizeof(int));
 		if (!pipefd)
@@ -77,9 +77,9 @@ int	**create_pipes(t_data *data)
 pid_t	*alloc_pids(t_data *data)
 {
 	pid_t	*pids;
-	int	cmd_count;
+	int		cmd_count;
 
-	cmd_count = count_token_type(data, BUILTIN, COMMAND); 
+	cmd_count = count_token_type(data, BUILTIN, COMMAND);
 	pids = malloc(cmd_count * sizeof(pid_t));
 	if (!pids)
 		ft_error(data);//TODO msg Allocation faily, exit

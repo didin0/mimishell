@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/22 11:47:42 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/30 11:52:02 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@
 #define	EMPTY 10000
 
 #define MAX_ARGS_CMD 10
+#define OPEN_FLAGS (O_WRONLY | O_CREAT | O_APPEND)
+#define OPEN_RIGHTS (S_IRUSR | S_IWUSR)
 
 extern pid_t g_child_pid;
 
@@ -85,15 +87,15 @@ void	ft_error(t_data *data);
 void	ft_error_errno(t_data *data, char **cmd);
 	
 // List
-t_lexer				*ft_lstlex_new(void *word);
-void				ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
+t_lexer	*ft_lstlex_new(void *word);
+void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
 void	show_list(t_lexer *lexer_list);
 void	show_env_list(t_env *list);
-int	peek_list_from(t_lexer *node);
+int		peek_list_from(t_lexer *node);
 
 // Env
 t_env				*get_env_to_list(char **envp);
-char				**get_paths(t_env *env_list);
+char				**get_paths(t_data *data, t_env *env_list);
 void	split_and_add(char *env_var, t_env **head);
 t_env	*create_env_node(char *key, char *value);
 void	add_to_end(t_env **head, t_env *new_node);
@@ -105,13 +107,13 @@ int	count_token_type(t_data *data, int	type1, int type2);
 int	**create_pipes(t_data *data);
 char **organize_good_paths(char ***cmd, t_data *data, t_env *env_list);
 int    execution(t_data *data, t_env *env_list);
+char    *find_good_path(t_data *data, char *cmd, char **paths);
 pid_t	*alloc_pids(t_data *data);
 int	adv_strncmp(const char *s1, const char *s2);
 void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids);
 void	parent_close_all_fds(t_data *data, int **pipefd);
 void	redirect_close_fds(t_data *data, int **pipefd, int i);
 void	close_unused_fds(t_data *data, int **pipefd, int i);
-char    *find_good_path(t_data *data, char *cmd, char **paths);
 int	count_tokens(t_data *data);
 void	stat_from_waitpid(t_data *data, pid_t *pids);
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i);
@@ -120,7 +122,6 @@ void	print_str_array(char **array, int len);
 
 // Lexer
 void	lexing(t_data *data);
-t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list);
 int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i, int ibis);
 int	is_token(char *c, int i);
 void	token_type(t_data *data, t_env *env_list);
