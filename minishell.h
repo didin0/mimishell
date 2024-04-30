@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/30 11:52:02 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/30 21:41:23 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,15 @@ typedef struct s_data
 	int	pipe_count;
 }					t_data;
 
+//Lexing splitting local struct
+typedef struct s_stat
+{
+	int				i;
+	int				ibis;
+	int				turner;
+}					t_stat;
+
+
 // Utils
 void	free_array(char **str);
 void	init_data(t_data *data);
@@ -89,9 +98,12 @@ void	ft_error_errno(t_data *data, char **cmd);
 // List
 t_lexer	*ft_lstlex_new(void *word);
 void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
+void	create_node_is_token(t_data *data, t_stat *stat, char *buff);
+int		create_node_space_term(t_data *data, t_stat *stat, char *buff);
+int		create_node_quotes(t_data *data, t_stat *stat, char *buff);
+int		str_to_list(t_data *data, t_stat *stat, char *buff);
 void	show_list(t_lexer *lexer_list);
 void	show_env_list(t_env *list);
-int		peek_list_from(t_lexer *node);
 
 // Env
 t_env				*get_env_to_list(char **envp);

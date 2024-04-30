@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/30 12:33:37 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/04/30 21:30:56 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,12 @@ int	is_token(char *c, int i)
 	return (0);
 }
 
-int	str_to_list(t_data *data, char *buff, char *line, int i, int ibis)
+int	str_to_list(t_data *data, t_stat *stat, char *buff)
 {
-	if (i == ibis)
+	if (stat->i == stat->ibis)
 		return (0);
-	if (line)
-		buff = ft_substr(data->line, ibis, i - ibis);
+	if (data->line)
+		buff = ft_substr(data->line, stat->ibis, stat->i - stat->ibis);
 	if (!buff)
 		return (0);
 	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(buff));
@@ -68,91 +68,42 @@ int	str_to_list(t_data *data, char *buff, char *line, int i, int ibis)
 @ft_strchr_end	look for second char " or ' in line, return char pos.
 */
 
-static void	splitting_lexer(t_data *data, char *line)
+static void	splitting_lexer(t_data *data, t_stat *stat)
 {
-	int		i;
-	int		ibis;
 	char	*buff;
+	int		ret;
 
-	i = 0;
-	ibis = 0;
+	ret = 0;
 	buff = NULL;
-	while (line && line[i] == ' ')
-		i++;
-	ibis = i;
-	while (line && line[i])
+	while (data->line && data->line[stat->i] == ' ')
+		stat->i++;
+	stat->ibis = stat->i;
+	while (data->line && data->line[stat->i])
 	{
-//		create_node_is_token(data, i, ibis, buff);//i and ibis need return
-		if (is_token(line, i) || line[i] == '\0')
-		{
-			if (ibis != i)
-			{
-				if (str_to_list(data, buff, line, i, ibis) != 0)
-					return ;
-			}
-			if (is_token(line, i) == 2)
-			{
-				buff = ft_substr(line, i, 2);
-				if (!buff)
-					return ;
-				i++;
-			}
-			else
-				buff = ft_substr(line, i, 1);
-			if (!buff)
-				return ;
-			ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(buff));
-			while (line[i + 1] == ' ')
-				i++;
-			ibis = i + 1;
-		}
-		else if (line[i] == ' ' || line[i + 1] == '\0')
-		{
-			if (line[i + 1] == '\0')
-			{
-				if (line[i] != ' ')
-					i++;
-				if (str_to_list(data, buff, line, i, ibis) != 0)
-					return ;
-				break ;
-			}
-			if (str_to_list(data, buff, line, i, ibis) != 0)
-				return ;
-			while (line [i + 1] == ' ' && line[i + 1] != '\0')
-				i++;
-			ibis = i + 1;
-			if (line[i + 1] == ' ')
-				continue ;
-		}
-		else if (line[i] == '"' || line[i] == '\'')
-		{
-			if (is_quote_closed(line, line[i]) != 0)
-				ft_error(data);//TODO exit, no free
-			i = ft_strchr_end(line, line[i], i) + 1;
-			while ((line[i] != '\0' && is_token(line, i) == 0) && line[i] != ' ')
-				i++;
-			if (str_to_list(data, buff, line, i, ibis) != 0)
-				return ;
-			if (line[i] == '\0')
-				break ;
-			if (line[i + 1] == '\0' || is_token(line, i) != 0 || line[i] == ' ')
-			{
-				ibis = i;
-				continue ;
-			}
-			else
-				ibis = i + 1;
-		}
-		i++;
+		if (is_token(data->line, stat->i) || data->line[stat->i] == '\0')
+			create_node_is_token(data, stat, buff);
+		else if (data->line[stat->i] == ' ' || data->line[stat->i + 1] == '\0')
+			ret = create_node_space_term(data, stat, buff);
+		else if (data->line[stat->i] == '"' || data->line[stat->i] == '\'')
+			ret = create_node_quotes(data, stat, buff);
+		if (ret == 1)
+			break ;
+		else if (ret == 2)
+			continue ;
+		stat->i++;
 	}
 }
 
 void	lexing(t_data *data)
 {
+	t_stat	stat;
+
 	data->lexer_list = ft_calloc(sizeof(t_lexer), 1);
 	if (!data->lexer_list)
 		ft_error(data);
-	splitting_lexer(data, data->line);
+	stat.i = 0;
+	stat.ibis = 0;
+	splitting_lexer(data, &stat);
 	if (!data->lexer_list)
 		ft_error(data);
 }
