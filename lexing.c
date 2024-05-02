@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/30 21:30:56 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/01 07:12:55 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,33 +39,29 @@ int	is_token(char *c, int i)
 	return (0);
 }
 
-int	str_to_list(t_data *data, t_stat *stat, char *buff)
+void	str_to_list(t_data *data, t_stat *stat, char *buff)
 {
 	if (stat->i == stat->ibis)
-		return (0);
+		return ;
 	if (data->line)
 		buff = ft_substr(data->line, stat->ibis, stat->i - stat->ibis);
 	if (!buff)
-		return (0);
+		ft_error(data);//TODO
 	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(buff));
-	return (0);
 }
 
 /*
 @glance			loop leading space, loop each char in line.
-				return list of tokens.
+				append tokens to a list.
 @var			ibis is the first unporcessed character and i the last 
  				char of a word.
-@is_token		token here is a redirection or a pipe
-@if is_token	makes list nodes from redirections and pipe
-				ibis !=i ......TODO
-				if redir, store substring to buffer
+@is_token		token here is a redirection or a pipe,
+				store substring to buffer.
 @ft_lstlex_		append node with buffer string to the list
 @elseif ' '		space inidcates next token, add to list, deal wiht line end.
-@elseif '"'		makes list node from double quoted token.
+@elseif '"'		makes list node from quoted token. 
 				first and second quote found, 
 				update i to the second quote char.
-@ft_strchr_end	look for second char " or ' in line, return char pos.
 */
 
 static void	splitting_lexer(t_data *data, t_stat *stat)

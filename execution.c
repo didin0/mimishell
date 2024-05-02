@@ -6,16 +6,16 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/29 20:43:38 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/02 10:04:43 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-pid_t	g_child_pid = -1;
+ pid_t	g_child_pid = -1;
 
 /*
-@glance		cmd[] array takes in all node wordsi(tokens) up until redir or pipe
+@glance		cmd[] array takes in all node words(tokens) up until redir or pipe
 */
 
 static char	***init_cmd(t_data *data)
@@ -35,11 +35,14 @@ static char	***init_cmd(t_data *data)
 			cmd[i][j++] = node->word;
 		else
 		{
+			j++;
+			cmd[i][j] = NULL;
 			i++;
 			j = 0;
 		}
 		node = node->next;
 	}
+	cmd[i][j] = NULL;
 	return (cmd);
 }
 
@@ -51,10 +54,9 @@ static char	***init_cmd(t_data *data)
 static void	close_fd_set_g(t_data *data, pid_t *pids, int **pipefd, int i)
 {
 	parent_close_all_fds(data, pipefd);
-	if (data->lexer_list->type == 400)
-		g_child_pid = 2147483647;
-	else
-		g_child_pid = pids[i];
+//	else
+//		g_child_pid = pids[i];
+//printf("parent OUT WHILE  @ child in exec g_pid %d - getpid %d -- pids[i] %d\n", g_child_pid, getpid(), pids[i]);
 }
 
 /*
@@ -71,6 +73,15 @@ static void	resume_parent(t_data *data, pid_t *pids, int i)
 	}
 	if (data->cmd_count > 1)
 		update_cur_node(data, i);
+//	printf("is type 400 --- %d\n", data->lexer_list->next->type);
+	if (data->lexer_list->next)
+	{
+		if (data->lexer_list->next->type == 400)
+			g_child_pid = 2147483647;
+		else  
+			g_child_pid = pids[i];
+	}
+//printf("parent IN while @ child in exec g_pid %d - getpid %d -- pids[i] %d\n", g_child_pid, getpid(), pids[i]);
 }
 
 /*
@@ -111,6 +122,7 @@ void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 		i++;
 	}
 	close_fd_set_g(data, pids, pipefd, i);
+//	printf("parent prorcess here, child still sleeping\n");
 }
 
 /*
@@ -143,7 +155,7 @@ int	execution(t_data *data, t_env *env_list)
 
 	if (check_meaning(data) != 0)
 	{
-		printf("meaning missing\n");
+		printf("meaning missing\n");//TODO
 		data->exit_status = 127;
 //		ft_error(data);//TODO msg no meaning/command missing,set exitstatus 127
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 12:23:41 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/30 21:40:05 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/01 07:14:00 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,18 @@
 void	create_node_is_token(t_data *data, t_stat *stat, char *buff)
 {
 	if (stat->ibis != stat->i)
-	{
-		if (str_to_list(data, stat, buff) != 0)
-			return ;
-	}
+		str_to_list(data, stat, buff);
 	if (is_token(data->line, stat->i) == 2)
 	{
 		buff = ft_substr(data->line, stat->i, 2);
 		if (!buff)
-			return ;
+			ft_error(data);//TODO
 		stat->i++;
 	}
 	else
 		buff = ft_substr(data->line, stat->i, 1);
 	if (!buff)
-		return ;
+		ft_error(data);//TODO
 	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(buff));
 	while (data->line[stat->i + 1] == ' ')
 		stat->i++;
@@ -53,12 +50,10 @@ int	create_node_space_term(t_data *data, t_stat *stat, char *buff)
 	{
 		if (data->line[stat->i] != ' ')
 			stat->i++;
-		if (str_to_list(data, stat, buff) != 0)
-			return (0);
+		str_to_list(data, stat, buff);
 		return (1);
 	}
-	if (str_to_list(data, stat, buff) != 0)
-		return (0);
+	str_to_list(data, stat, buff);
 	while (data->line [stat->i + 1] == ' '
 		&& data->line[stat->i + 1] != '\0')
 		stat->i++;
@@ -69,9 +64,11 @@ int	create_node_space_term(t_data *data, t_stat *stat, char *buff)
 }
 
 /*
-@glance		creates a node to linked list where the line includes quotes
-			single or double ones.
-@return		return 1 indicates a break to the main lexing loop and 2 continue.
+@glance			creates a node to linked list where the line includes quotes
+				single or double ones.
+@return			return 1 indicates a break to the main lexing loop
+				and 2 continue.
+@ft_strchr_end	look for second char " or ' in line, return char pos.
 */
 
 int	create_node_quotes(t_data *data, t_stat *stat, char *buff)
@@ -83,8 +80,7 @@ int	create_node_quotes(t_data *data, t_stat *stat, char *buff)
 	while ((data->line[stat->i] != '\0' && is_token(data->line,
 				stat->i) == 0) && data->line[stat->i] != ' ')
 		stat->i++;
-	if (str_to_list(data, stat, buff) != 0)
-		return (0);
+	str_to_list(data, stat, buff);
 	if (data->line[stat->i] == '\0')
 		return (1);
 	if (data->line[stat->i + 1] == '\0'

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/20 06:41:36 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/02 12:38:14 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int	main(int argc, char **argv, char **envp)
 	init_data(&data);
 	while (1)
 	{
-		init_signals();
+		init_signals(&data);
 		data.line = readline("\033[36mminishell :\033[m "); // readline return a malloc char *
 		if (!data.line)
 		{
@@ -89,7 +89,7 @@ int	main(int argc, char **argv, char **envp)
 		add_history(data.line);
 		lexing(&data);
 		token_type(&data, env_list);
-		parsing(&data, env_list);
+//		parsing(&data, env_list);
 //		show_list(data.lexer_list);
 		execution(&data, env_list);
 //		shell_exit(&data);

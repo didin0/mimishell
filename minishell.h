@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/30 21:41:23 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/02 14:03:09 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,11 @@
 #define REDIR_OUT_APP 411
 #define EXP_STATUS 6
 #define	F_FILE 10
+#define OTHER 3
 #define	ASSIGN 0
 #define	ASK 1
 #define	EMPTY 10000
 
-#define MAX_ARGS_CMD 10
 #define OPEN_FLAGS (O_WRONLY | O_CREAT | O_APPEND)
 #define OPEN_RIGHTS (S_IRUSR | S_IWUSR)
 
@@ -72,12 +72,14 @@ typedef struct s_lexer
 // GENERAL STRUCT
 typedef struct s_data
 {
-	char			*line;
-	t_lexer			*lexer_list;
-	int		exit_status;
-	char	***cmd;
-	int	cmd_count;
-	int	pipe_count;
+	char		*line;
+	t_lexer		*lexer_list;
+	int			exit_status;
+	char		***cmd;
+	int			cmd_count;
+	int			pipe_count;
+	int			list_size;
+	struct sigaction	sa;
 }					t_data;
 
 //Lexing splitting local struct
@@ -85,7 +87,6 @@ typedef struct s_stat
 {
 	int				i;
 	int				ibis;
-	int				turner;
 }					t_stat;
 
 
@@ -101,7 +102,7 @@ void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
 void	create_node_is_token(t_data *data, t_stat *stat, char *buff);
 int		create_node_space_term(t_data *data, t_stat *stat, char *buff);
 int		create_node_quotes(t_data *data, t_stat *stat, char *buff);
-int		str_to_list(t_data *data, t_stat *stat, char *buff);
+void	str_to_list(t_data *data, t_stat *stat, char *buff);
 void	show_list(t_lexer *lexer_list);
 void	show_env_list(t_env *list);
 
@@ -151,10 +152,11 @@ t_lexer *parsing(t_data *data, t_env *env_list);
 //Redirections
 
 char	**look_for_redirs(char **cmd, t_data *data, int i);
-void	make_redirections(t_data *data, t_lexer *node);
 void	redir_fd(t_data *data, t_lexer *node);
 void	create_empty_file(t_data *data, char *name);
 void	here_doc_in(t_data *data, t_lexer *node);
+int		check_heredoc_meaning(t_lexer *node);
+int		adv_list_size(t_lexer *list);
 
 //Builtins
 int	exec_builtin_parent(t_data *data, char **cmd, t_env *env_list);
@@ -170,7 +172,7 @@ void	shell_exit(t_data *data);
 void	expand_status(t_data *data);
 
 //Signals
-void	init_signals(void);
+void	init_signals(t_data *data);
 void	sigint_handler(int signum);
 //void	reset_terminal();
 void	show_cmd(char ***cmd, t_data *data);

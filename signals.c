@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 11:32:00 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/30 09:13:38 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/02 12:54:12 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void reset_terminal()
 				check sigaction call failure, ignore signal in interactive mode
 */
 
-void	init_signals(void)
+void	init_signals(t_data *data)
 {
 	struct sigaction	sa;
 
@@ -67,6 +67,7 @@ void	init_signals(void)
 		perror("Failed to ignore SIGQUIT");
 		exit(EXIT_FAILURE);
 	}
+	data->sa = sa;
 }
 
 /*
@@ -75,6 +76,8 @@ void	init_signals(void)
 					so need to manage the promt with rl_() functions. 
 @global variable	to differenciate promt line cleanup ie rl_redisplay 
 					is coditional for interactive shell mode only.
+@if					non-interactive mode behavior
+@else				interactive mode behavior
 @rl_replace_line	clear current input line.
 @rl_on_new_line		tell readline() I am on a new line.
 @rl_redisplay		request readline to redisplay the prompt.
@@ -84,19 +87,20 @@ void	init_signals(void)
 
 void	sigint_handler(int signum)
 {
+		
+	write(STDOUT_FILENO, "\n", 1);
 	if (g_child_pid > 0)
 	{
-		if (g_child_pid != 2147483647) // I need more info inside the handler
-			write(STDOUT_FILENO, "\n", 1);//not needed in case of heredoc
-//		printf("child entered handler with pid %d\n", global_child_pid);
+//		if (g_child_pid == 2147483647)
+		{
+//			write(STDOUT_FILENO, "\n", 1);
+//			rl_on_new_line();
+		}
 	}
 	else
 	{
 		rl_replace_line("", 0);
-		write(STDOUT_FILENO, "\n", 1);
 		rl_on_new_line();
 		rl_redisplay();
-//		printf("parent entered handler with pid %d\n", global_parent_pid);
 	}
-//		printf("no coditions, just passing signal handler\n");
 }

@@ -6,27 +6,11 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/29 20:29:02 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/02 13:55:54 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*
-int	are_too_many_arguments(char ***cmd)
-{
-	int	i;
-	int args;
-	
-	args = 0;
-	while (cmd[i])//loop each array
-	{
-		if (cmd[i
-	
-	
-	}
-
-}*/
 
 /*
 @glance		count two types at the time.

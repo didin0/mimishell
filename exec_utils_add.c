@@ -6,49 +6,54 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 03:20:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/29 20:35:25 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/01 12:36:21 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-@glance		for the cases that do not include a command or builtin
+@glance		alloc one cmd array with the size of token list.
 */
 
-int	check_meaning(t_data *data)
+static void	allocate_cmd_arrays(t_data *data, char ***cmd, int i)
 {
-	int	cmd_count;
-	int	pipe_count;
+	int		j;
 
-	cmd_count = count_token_type(data, BUILTIN, COMMAND);
-	pipe_count = count_token_type(data, PIPE, EMPTY);
-	data->cmd_count = cmd_count;
-	data->pipe_count = pipe_count;
-	if (data->lexer_list->type == 6 && !data->lexer_list->next)
-		data->cmd_count = 1;
-	if (data->cmd_count == 0)
-		return (1);
-	return (0);
+	data->list_size = adv_list_size(data->lexer_list);
+	j = 0;
+	while (j < data->list_size + 1)
+	{
+		cmd[i][j] = ft_calloc(1, sizeof(char));
+		if (!cmd[i][j])
+			ft_error(data);//TODO msg Allocation fail cmd array, exit
+		j++;
+	}
 }
+
+/*
+@glance		cmd is a pointer to an array of char arrays. The array of arrays
+			is null terminated for execve and loop safety.
+*/
 
 char	***allocate_cmd(t_data *data)
 {
 	char	***cmd;
 	int		i;
 
-	cmd = ft_calloc(data->cmd_count, sizeof(char **));
+	cmd = ft_calloc(data->cmd_count + 1, sizeof(char **));
 	if (!cmd)
 		ft_error(data);//TODO msg Allocation fail cmd array, exit
 	i = 0;
-	while (i < data->cmd_count)
+	while (i < data->cmd_count + 1)
 	{
-		cmd[i] = ft_calloc(MAX_ARGS_CMD + 1, sizeof(char *));
+		cmd[i] = ft_calloc(1, sizeof(char *));
 		if (!cmd[i])
 			ft_error(data);//TODO msg Alloc fail cmd array, free cmd[i]!!, exit
+		allocate_cmd_arrays(data, cmd, i);
 		i++;
 	}
-	cmd[i] = NULL;
+	cmd[i - 1] = NULL;
 	return (cmd);
 }
 

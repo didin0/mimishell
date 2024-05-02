@@ -1,3 +1,4 @@
+
 redir and bultin and pipeline
 env | grep PWD
 echo asd > t1
@@ -58,6 +59,11 @@ cd ///home
 ecco 2> file not functional
 
 Heredoc
+sort << EOF | grep apple > t1
+bash << EOF ls -l EOF
+echo << cat > t1
+cat << echo > t1 - bash works on this one.
+cat << cat > t1 - bash cat should work here.
 << EOF - does not have any practical meaning
 << EOF > t1 creates an empty file, does not have any practical meaning
 cat << EOF | grep asd

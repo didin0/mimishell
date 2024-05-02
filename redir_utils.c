@@ -6,13 +6,13 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:15:45 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/30 07:33:26 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/02 19:35:54 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static	int	adv_list_size(t_lexer *list)
+int	adv_list_size(t_lexer *list)
 {
 	int	i;
 
@@ -27,25 +27,36 @@ static	int	adv_list_size(t_lexer *list)
 
 /*
 @2nd if		in case there are several redirection within one cmd array
- */
+@3rd if		expand the exit status for 
+@NULL		set the last pointer in cmd pointer array to NULL for
+			execve() and safe looping.
+*/
 
-static char	**clean_cmd_from_redir_tokens(t_lexer *node, char **temp)
+static char	**clean_cmd_from_redir(t_data *data, t_lexer *node, char **temp)
 {
 	int	k;
 
 	k = 0;
 	while (node && node->type != PIPE)
 	{
-		if (is_token(node->word, 0))
+		if (is_token(node->word, 0) && node->type != EXP_STATUS)
 			node = node->next->next;
-		if ((node && is_token(node->word, 0)) && node->type != PIPE)
+		if (((node && is_token(node->word, 0)) && node->type != PIPE)
+			&& node->type != EXP_STATUS)
 			node = node->next->next;
+		if (node && node->type == EXP_STATUS)
+		{
+			temp[k] = ft_itoa(data->exit_status);
+			node = node->next;
+			k++;
+		}
 		if (node && node->type != PIPE)
 			temp[k] = node->word;
 		if (node)
 			node = node->next;
 		k++;
 	}
+	temp[k] = NULL;
 	return (temp);
 }
 
@@ -75,7 +86,7 @@ static char	**change_cmd(char **cmd, t_data *data, int i)
 		}
 		keep_cur_node(node, ASSIGN);
 	}
-	temp = clean_cmd_from_redir_tokens(node, temp);
+	temp = clean_cmd_from_redir(data, node, temp);
 	return (temp);
 }
 
@@ -93,7 +104,14 @@ static void	array_contains_redir(char **cmd, t_data *data)
 				|| node->type == REDIR_IN)
 				redir_fd(data, node);
 			else if (node->type == HERE_DOC)
+			{
+				if (node->type != OTHER)
+				{
+					printf("this is a better error\n");
+					exit(EXIT_FAILURE);
+				}
 				here_doc_in(data, node);
+			}
 		}
 		node = node->next;
 	}

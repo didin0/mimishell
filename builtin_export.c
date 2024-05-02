@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 16:08:07 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/30 08:36:49 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/01 07:21:49 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,14 @@ static int	is_key_in_env(t_data *data, char **new_env, t_env *env_list)
 	return (0);
 }
 
+static void	check_args(t_data *data, char **cmd, t_env *env_list)
+{
+	if (!cmd[1])
+		env_builtin(data, env_list);
+	else if (!cmd[2])
+		ft_error(data);//TODO free, msg too many arguments
+}
+
 /*
 @glance			main while looks at each string in array.
 				inner while checkes if variable mathces a standardad.
@@ -73,8 +81,7 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 	int		j;
 	char	**new_env;
 
-	if (!cmd[1])
-		ft_error(data);//TODO message declare builtin not implemented, use env
+	check_args(data, cmd, env_list);
 	i = 1;
 	while (cmd[i])
 	{

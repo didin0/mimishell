@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/30 08:07:08 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/01 19:55:19 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,14 @@ static void	echo_builtin(t_data *data, char **cmd)
 
 	line_break = 1;
 	j = 1;
-	while (cmd[1][0] == '-' && cmd[1][j] == 'n')
-		j++;
-	if (cmd[1][0] == '-' && !cmd[1][j])
+	if (cmd[1][0] == '-')
+	{
+		while (cmd[1][j] == 'n')
+			j++;
+	}
+	if (cmd[1][0] == '-' && cmd[1][j] == '\0')
 		line_break = 0;
 	echo_stdout(data, cmd, line_break);
-//	if (line_break != 1)
-//		rl_on_new_line();
 }
 
 /*

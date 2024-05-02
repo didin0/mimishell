@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:04:51 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/30 06:55:11 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/02 18:01:29 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,14 @@ static	void	redir_temp_file_fd(t_data *data, int fd)
 		ft_error(data);//TODO
 	//TODO free readline memory?
 	close(fd);
+	signal(SIGINT, sigint_handler);
 }
 
 /*
 @glance			store delimiter string. open a temp file and loop to store lines
 				from user prompt.
-@!here_line		EOF, ctrl-D case	
+@!here_line		EOF, ctrl-D case
+@signal			for for SIGINT to pass throught to readline.
 */
 
 void	here_doc_in(t_data *data, t_lexer *node)
@@ -88,6 +90,13 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	char	*here_line;
 	int		fd;
 
+	if (check_heredoc_meaning(node))
+	{
+		printf("Choose a better delimier name, pid %d\n", getpid());
+//		ft_error(data);//TODO free, delimiter matches a commad
+		exit(EXIT_FAILURE);
+	}
+	signal(SIGINT, SIG_DFL);
 	delimiter = node->next->word;
 	here_line = NULL;
 	fd = -1;
@@ -103,7 +112,7 @@ void	here_doc_in(t_data *data, t_lexer *node)
 				ft_error(data);//TODO message write failed, clean, exit
 			break ;
 		}
-		if (!ft_strncmp(here_line, delimiter, ft_strlen(here_line)))
+		if (!adv_strncmp(here_line, delimiter))
 			break ;
 		write(fd, here_line, ft_strlen(here_line));
 		write(fd, "\n", 1);
