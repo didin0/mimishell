@@ -6,45 +6,44 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/19 11:52:09 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 13:03:43 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-@glance		loop the string array for - followed by one or more concecutve
+@glance		loop the string array for - followed by one or more concecutive
 			n-s.
 @while		write out the string array cmd, skip option -n in case existing
 */
 
-static	void	echo_stdout(t_data *data, char **cmd, int linebreak)
+static void	echo_stdout(t_data *data, char **cmd, int line_break)
 {
-	int j;
-	int option_flag;
+	int	j;
+	int	option_flag;
 
 	option_flag = 0;
 	j = 1;
 	while (cmd[j])
 	{
-		if (linebreak == 0 && option_flag == 0)
+		if (line_break == 0 && option_flag == 0)
 			j = 2;
 		if (ft_putstr_fd(cmd[j], 1) < 0)
-			ft_error(data);//TODO message write failed
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 		j++;
-		if (cmd[j])	
+		if (cmd[j])
 		{
 			if (ft_putchar_fd(' ', 1) < 0)
-				ft_error(data);//TODO message write failed
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 		}
 		option_flag = 1;
 	}
-	if (linebreak == 1)
+	if (line_break == 1)
 	{
 		if (ft_putchar_fd('\n', 1) < 0)
-			ft_error(data);//TODO message write failed
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 	}
-	exit(EXIT_SUCCESS);
 }
 
 /*
@@ -53,68 +52,71 @@ static	void	echo_stdout(t_data *data, char **cmd, int linebreak)
 @while and if	-n option is the first argument, check the last char
 				of the first argument strng.
 				also that it is followed only by n characters.
-@make_redir		the builtin can be followed on prompt line by any token
-				so call recirections to be done by dup2().
 @echo_stdout	write out the string array cmd
 */
 
-static	void	echo_builtin(t_data *data, char **cmd)
+static void	echo_builtin(t_data *data, char **cmd)
 {
-	int j;
-	int	linebreak;
-	t_lexer *cur_node;
+	int		j;
+	int		line_break;
 
-	linebreak = 1;
+	line_break = 1;
 	j = 1;
-	while (cmd[1][0] == '-' && cmd[1][j] == 'n')
-		j++;
-	if (cmd[1][0] == '-' && !cmd[1][j])
-		linebreak = 0;
-//	cur_node = keep_cur_node(data->lexer_list, ASK);
-//	if (is_token(cur_node->word, 0))
-//		make_redirections(data, cur_node);//redundant? calling redir in exec_child()
-	echo_stdout(data, cmd, linebreak);
+	if (cmd[1][0] == '-')
+	{
+		while (cmd[1][j] == 'n')
+			j++;
+	}
+	if (cmd[1][0] == '-' && cmd[1][j] == '\0')
+		line_break = 0;
+	echo_stdout(data, cmd, line_break);
 }
 
 /*
- @dev		there might be a better way to do this ft_strncmp only once
- 			and have all builtins as seperate token types in one group
 @glance		check string array cmd and call for a builtin function
 */
 
-static int	exec_buitin_add(t_data *data, char **cmd, t_env *env_list)
+int	exec_builtin_parent(t_data *data, char **cmd, t_env *env_list)
 {
-	if (!ft_strncmp(cmd[0], "export", ft_strlen(cmd[0])))
+	if (!adv_strncmp(cmd[0], "export") || !adv_strncmp(cmd[0], "unset"))
 	{
-		export_builtin(data, cmd,  env_list);
+		unset_builtin(data, cmd, env_list);
 		return (0);
 	}
-	if (!ft_strncmp(cmd[0], "unset", ft_strlen(cmd[0])))
+	if (!adv_strncmp(cmd[0], "cd"))
 	{
-		unset_builtin(data, cmd,  env_list);
+		cd_builtin(data, cmd, env_list);
+		return (0);
+	}
+	else if (!adv_strncmp(cmd[0], "exit"))
+	{
+		exit_builtin(data, cmd);
+		return (0);
+	}
+	else if (!adv_strncmp(cmd[0], "$?"))
+	{
+		expand_status(data);
 		return (0);
 	}
 	return (1);
 }
 
-int	exec_builtin(t_data *data, char **cmd, t_env *env_list)
+int	exec_builtin_child(t_data *data, char **cmd, t_env *env_list)
 {
-	if (!ft_strncmp(cmd[0], "echo", ft_strlen(cmd[0])))
+	if (!adv_strncmp(cmd[0], "echo"))
 	{
 		echo_builtin(data, cmd);
 		return (0);
 	}
-	if (!ft_strncmp(cmd[0], "pwd", ft_strlen(cmd[0])))
+	if (!adv_strncmp(cmd[0], "pwd"))
 	{
-		pwd_builtin(data, env_list, 0);
+		pwd_builtin(data, env_list);
 		return (0);
 	}
-	if (!ft_strncmp(cmd[0], "env", ft_strlen(cmd[0])))
+	if (!adv_strncmp(cmd[0], "env"))
 	{
 		env_builtin(data, env_list);
 		return (0);
 	}
-	if (!exec_buitin_add(data, cmd, env_list))
-		return (0);
 	return (1);
 }

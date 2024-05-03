@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 07:38:24 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/19 11:54:34 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 12:47:12 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 @glance		loop env list nodes and write when match
 */
 
-void	pwd_builtin(t_data *data, t_env *env_list, int cd_calling)
+void	pwd_builtin(t_data *data, t_env *env_list)
 {
 	t_env	*temp;
 
@@ -26,37 +26,37 @@ void	pwd_builtin(t_data *data, t_env *env_list, int cd_calling)
 		if (!ft_strncmp(temp->key, "PWD", ft_strlen(temp->key)))
 		{
 			if (ft_putstr_fd(temp->value, 1) < 0)
-				ft_error(data);//TODO message write failed
+				ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 			if (ft_putchar_fd('\n', 1) < 0)
-				ft_error(data);//TODO message write failed
+				ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+			if (ft_putchar_fd('\n', 1) < 0)
+				ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 		}
 		temp = temp->next;
 	}
-	if (cd_calling != 1)
-	exit(EXIT_SUCCESS);
 }
 
 /*
-@glance		//print env list to stdout, key=value\n
- *
- * */
+@glance		print env list to stdout, key=value\n
+*/
 
 void	env_builtin(t_data *data, t_env *env_list)
 {
 	t_env	*temp;
-	temp = env_list;
 
+	temp = env_list;
 	while (temp)
 	{
 		if (ft_putstr_fd(temp->key, 1) < 0)
-			ft_error(data);//TODO msg write failed
-		if (ft_putchar_fd('=', 1) < 0)
-			ft_error(data);//TODO msg write failed
-		if (ft_putstr_fd(temp->value, 1) < 0)
-			ft_error(data);//TODO msg write failed
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 		if (ft_putchar_fd('\n', 1) < 0)
-			ft_error(data);//TODO msg write failed
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+		if (ft_putchar_fd('=', 1) < 0)
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+		if (ft_putstr_fd(temp->value, 1) < 0)
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+		if (ft_putchar_fd('\n', 1) < 0)
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 		temp = temp->next;
 	}
-	exit(EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/03 13:40:28 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/05/03 18:50:00 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,8 @@
 # include <fcntl.h>//open
 # include <sys/wait.h>//for waitpid on linux
 # include <errno.h>//error number codes
-# include <limits.h>//PATH_MAXi
+# include <limits.h>//PATH_MAX
 # include <signal.h>//signal
-# include <curses.h>//using terminal capabilities
-# include <term.h>//using terminal capabilities
 
 #define BUILTIN 0
 #define COMMAND 1
@@ -35,11 +33,24 @@
 #define REDIR_OUT_APP 411
 #define EXP_STATUS 6
 #define	F_FILE 10
+#define OTHER 3
 #define	ASSIGN 0
 #define	ASK 1
 #define	EMPTY 10000
 
-#define MAX_ARGS_CMD 10
+#define OPEN_FLAGS (O_WRONLY | O_CREAT | O_APPEND)
+#define OPEN_RIGHTS (S_IRUSR | S_IWUSR)
+
+// Error defines
+#define ERR_WRITE_FAIL "Write call failed\n"
+#define ERR_MALLOC "Malloc failed\n"
+#define ERR_READLINE "Readline fail of EOF sent to process\n"
+#define ERR_UNSET "UNSET needs an argument\n"
+
+#define NO_STDOUT 0
+#define STDOUT 1 //duplicate error message to stdout
+#define FREE_PAR 10
+#define FREE_ENV 3
 
 extern pid_t g_child_pid;
 extern void rl_replace_line(const char *str, int i);
@@ -70,54 +81,71 @@ typedef struct s_lexer
 
 // GENERAL STRUCT
 typedef struct s_data
-{
-	char			*line;
-	t_lexer			*lexer_list;
-	int		exit_status;
-	char	***cmd;
+{	
+	char				*line;
+	t_lexer				*lexer_list;
+	int					exit_status;
+	char				***cmd;
+	int					cmd_count;
+	int					pipe_count;
+	int					list_size;
+	struct sigaction	sa;
+	t_env		 		*env_list;
 }					t_data;
+
+//Lexing splitting local struct
+typedef struct s_stat
+{
+	int				i;
+	int				ibis;
+}					t_stat;
+
 
 // Utils
 void	free_array(char **str);
+void	free_env_list(t_env *head);
 void	init_data(t_data *data);
-void	ft_error(t_data *data);
+void	ft_error(t_data *data, const char *msg, int fd, int flag);
 void	ft_error_errno(t_data *data, char **cmd);
 	
 // List
-t_lexer				*ft_lstlex_new(void *word);
-void				ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
+t_lexer	*ft_lstlex_new(void *word);
+void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
+void	create_node_is_token(t_data *data, t_stat *stat, char *buff);
+int		create_node_space_term(t_data *data, t_stat *stat, char *buff);
+int		create_node_quotes(t_data *data, t_stat *stat, char *buff);
+void	str_to_list(t_data *data, t_stat *stat, char *buff);
 void	show_list(t_lexer *lexer_list);
-int	peek_list_from(t_lexer *node);
+void	show_env_list(t_env *list);
 
 // Env
-t_env				*get_env_to_list(char **envp);
-char				**get_paths(t_env *env_list);
-void	split_and_add(char *env_var, t_env **head);
-t_env	*create_env_node(char *key, char *value);
+t_env	*get_env_to_list(t_data *data, char **envp);
+char	**get_paths(t_data *data, t_env *env_list);
+t_env	*create_env_node(t_data *data, char *key, char *value);
 void	add_to_end(t_env **head, t_env *new_node);
 
 // Exec
-char ***allocate_cmd(t_data *data);
-int	count_token_type(t_data *data, int	type1, int type2);
-int	**create_pipes(t_data *data);
-char **organize_good_paths(char ***cmd, t_data *data, t_env *env_list);
-int    execution(t_data *data, t_env *env_list);
+int		check_meaning(t_data *data);
+char	***allocate_cmd(t_data *data);
+int		count_token_type(t_data *data, int	type1, int type2);
+int		**create_pipes(t_data *data);
+char	 **organize_good_paths(char ***cmd, t_data *data, t_env *env_list);
+int		execution(t_data *data, t_env *env_list);
+char    *find_good_path(t_data *data, char *cmd, char **paths);
 pid_t	*alloc_pids(t_data *data);
-int		bypass_child(t_data *data, char ***cmd, t_env *env_list);
-int	adv_strncmp(const char *s1, const char *s2);
+int		adv_strncmp(const char *s1, const char *s2);
 void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids);
 void	parent_close_all_fds(t_data *data, int **pipefd);
 void	redirect_close_fds(t_data *data, int **pipefd, int i);
 void	close_unused_fds(t_data *data, int **pipefd, int i);
-char    *find_good_path(t_data *data, char *cmd, char **paths);
-int	count_tokens(t_data *data);
+int		count_tokens(t_data *data);
 void	stat_from_waitpid(t_data *data, pid_t *pids);
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i);
+void	update_cur_node(t_data *data, int i);
 void	print_str_array(char **array, int len);
 
 // Lexer
-void	lexing(t_data *data);
-t_lexer	*splitting_lexer(char *line, t_lexer **lexer_list);
+int	lexing(t_data *data);
 int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i, int ibis);
 int	is_token(char *c, int i);
 void	token_type(t_data *data, t_env *env_list);
@@ -137,26 +165,28 @@ int check_sq(char *str);
 char	*clean_quote(char *str);
 
 //Redirections
-void	make_redirections(t_data *data, t_lexer *node);
+
+char	**look_for_redirs(char **cmd, t_data *data, int i);
 void	redir_fd(t_data *data, t_lexer *node);
-void	create_empty_file(t_data *data, char *name);
+void	create_empty_file(char *name);
 void	here_doc_in(t_data *data, t_lexer *node);
+int		check_heredoc_meaning(t_lexer *node);
+int		adv_list_size(t_lexer *list);
 
 //Builtins
-int	exec_builtin(t_data *data, char **cmd, t_env *env_list);
-void	pwd_builtin(t_data *data, t_env *env_listi, int cd_calling);
+int	exec_builtin_parent(t_data *data, char **cmd, t_env *env_list);
+int	exec_builtin_child(t_data *data, char **cmd, t_env *env_list);
+void	pwd_builtin(t_data *data, t_env *env_list);
 void	env_builtin(t_data *data, t_env *env_list);
 void	cd_builtin(t_data *data, char **cmd, t_env *env_list);
 void	export_builtin(t_data *data, char **cmd, t_env *env_list);
 void	unset_builtin(t_data *data, char **cmd, t_env *env_list);
 int		ft_isdigit_sign(char *str);
 void	exit_builtin(t_data *data, char **cmd);
-void	shell_exit(t_data *data);
 void	expand_status(t_data *data);
 
 //Signals
-void	init_signals(void);
+void	init_signals(t_data *data);
 void	sigint_handler(int signum);
-//void	reset_terminal();
 void	show_cmd(char ***cmd, t_data *data);
 #endif 

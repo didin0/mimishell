@@ -6,13 +6,17 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:04:51 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/14 08:33:51 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 13:18:36 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	create_empty_file(t_data *data, char *name)
+/*
+@glance to mimic bash in some subsequent redirections and file names
+ */
+
+void	create_empty_file(char *name)
 {
 	int	fd;
 
@@ -28,106 +32,107 @@ void	create_empty_file(t_data *data, char *name)
 
 void	redir_fd(t_data *data, t_lexer *node)
 {
-	int	fd;
-	t_lexer *temp;
+	int		fd;
+	t_lexer	*temp;
 
 	fd = -1;
 	temp = node;
 	if (temp->type == REDIR_OUT)
-		fd = open(temp->next->word, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+		fd = open(temp->next->word, OPEN_FLAGS | O_TRUNC, OPEN_RIGHTS);
 	else if (temp->type == REDIR_OUT_APP)
-		fd = open(temp->next->word, O_WRONLY | O_CREAT | O_APPEND,
-			   	S_IRUSR | S_IWUSR);
+		fd = open(temp->next->word, OPEN_FLAGS | O_APPEND, OPEN_RIGHTS);
 	else if (temp->type == REDIR_IN)
 		fd = open(temp->next->word, O_RDONLY);
-	if (fd ==-1)	
-		ft_error(data);//TODO	
-	else if (temp->type == REDIR_IN)	
+	if (fd == -1)
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO
+	else if (temp->type == REDIR_IN)
 	{
 		if (dup2(fd, STDIN_FILENO) == -1)
-			ft_error(data);//TODO
+			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//			ft_error(data);//TODO
 	}
-	else if (temp->type == REDIR_OUT || temp->type == REDIR_OUT_APP)	
+	else if (temp->type == REDIR_OUT || temp->type == REDIR_OUT_APP)
 	{
 		if (dup2(fd, STDOUT_FILENO) == -1)
-			ft_error(data);//TODO
+			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//			ft_error(data);//TODO
 	}
 	close(fd);
 }
-	
+
 /*
-@glance		store delimiter string. open a temp file and loop to store lines
-			from user prompt.
-@2nd open	first open enables to use the fd only for writing.
+@open	previous open enables to use the fd only for writing.
+ */
+
+static	void	redir_temp_file_fd(t_data *data, int fd)
+{
+	fd = -1;
+	fd = open("here_doc_temp", O_RDONLY);
+	if (fd == -1)
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO
+	if (dup2(fd, STDIN_FILENO) == -1)
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO
+	if (unlink("here_doc_temp") == -1)
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO
+	//TODO free readline memory?
+	close(fd);
+//	signal(SIGINT, sigint_handler);
+}
+
+/*
+@glance			store delimiter string. open a temp file and loop to store lines
+				from user prompt.
+@!here_line		EOF, ctrl-D case
+@signal			for for SIGINT to pass throught to readline.
 */
 
 void	here_doc_in(t_data *data, t_lexer *node)
 {
-	char *delimiter;
-	char *here_line;
-	int fd;
+	char	*delimiter;
+	char	*here_line;
+	int		fd;
 
+	if (check_heredoc_meaning(node))
+	{
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+		printf("Choose an unique delimier name\n");
+//		ft_error(data);//TODO free, delimiter matches a commad
+		exit(EXIT_FAILURE);
+	}
+	signal(SIGINT, SIG_DFL);
 	delimiter = node->next->word;
 	here_line = NULL;
 	fd = -1;
 	fd = open("here_doc_temp", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-	if (fd == -1)	 
-	  	ft_error(data);//TODO	
+	if (fd == -1)
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO	
 	while (1)
 	{
-		here_line = readline("\033[37mheredoc> \033[m ");
-		if (!here_line)//EOF ctrl-D case
-		{	
+		here_line = readline("\033[37m> \033[m ");
+		if (!here_line)
+		{
 			if (ft_putchar_fd('\n', 1) < 0)
-					ft_error(data);//TODO message write failed, clean, exit
-			break;
+				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//				ft_error(data);//TODO message write failed, clean, exit
+			break ;
 		}
-		if (!ft_strncmp(here_line, delimiter, ft_strlen(here_line)))
-			break;
+		if (!adv_strncmp(here_line, delimiter))
+			break ;
 		write(fd, here_line, ft_strlen(here_line));
 		write(fd, "\n", 1);
 	}
-	fd = -1;
-	fd = open("here_doc_temp", O_RDONLY);
-	if (fd == -1)	 
-	  	ft_error(data);//TODO
-	if (dup2(fd, STDIN_FILENO) == -1)
-		ft_error(data);//TODO
-	if (unlink("here_doc_temp") == -1)
-		ft_error(data);//TODO
-	//TODO free readline memory?
-	close(fd);
+	redir_temp_file_fd(data, fd);	
 }
 
 void	expand_status(t_data *data)
 {
 	ft_putnbr_fd(data->exit_status, 1);
 	if (ft_putstr_fd(": command not found\n", 1) < 0)
-		ft_error(data);//TODO msg write failed
-}
-
-/*
-@ glance	loop the token count times, call redirection functions
-*/
-
-void	make_redirections(t_data *data, t_lexer *cur_node)
-{
-	int	count;
-
-	count = count_tokens(data);
-//	printf("cur node %s, type %d\n", cur_node->word, cur_node->type);
-	while (cur_node->next && count > 0)
-	{
-		if (cur_node->type == REDIR_OUT || cur_node->type == REDIR_OUT_APP
-		|| cur_node->type == REDIR_IN)
-			redir_fd(data, cur_node);
-		else if (cur_node->type == HERE_DOC)
-			here_doc_in(data, cur_node);
-		if (cur_node->next->next && is_token(cur_node->next->next->word, 0))
-			cur_node = cur_node->next->next;
-		count--;	
-	}
-//	if (cur_node->type == EXP_STATUS)
-//			expand_status(data, cur_node);
-
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO msg write failed
 }

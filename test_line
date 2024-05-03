@@ -1,7 +1,18 @@
+
+redir and bultin and pipeline
+env | grep PWD
+echo asd > t1
+
+redir and pipe on one line
+cat t4 | grep 1 > t9 | cat > t10 in bash creates an empty t10 file
+The same in zsh filles the t1 with grep result.
+We will implemnt unified behaviour, whenever there is a redirection on the line,
+the redirection is done.
+
 cat file | grep free
 cat file | grep cd
 
-echo "apple banana apple orange banana apple cherry orange banana cherry apple" | tr ' ' '\n' | sort | uniq -c | sort -nr | head -n 5
+echo "apple banana apple orange banana apple cherry orange banana cherry apple" | tr ' ' "\n" | sort | uniq -c | sort -nr | head -n 5
 
 exit builtin
 exit | ls  status 0, does not exit nor print
@@ -47,11 +58,34 @@ cd ///home
 
 ecco 2> file not functional
 
+Heredoc
+sort << EOF | grep apple > t1
+bash << EOF ls -l EOF
+echo << cat > t1
+cat << echo > t1 - bash works on this one.
+cat << cat > t1 - bash cat should work here.
+<< EOF - does not have any practical meaning
+<< EOF > t1 creates an empty file, does not have any practical meaning
+cat << EOF | grep asd
+cat <<EOF >t4
+
+Redirection in
+grep void < t1
+grep void < t1 | grep list > t2
+grep void < t1 | grep list >> t2
+grep void < t1 | grep list >> t2 | grep lex > t3
+
+
 Redirection out append mode
 echo a1 >> f1 a2 >> f2 a3 >> f3 creates all 3 files and 
 ALL have a1 a2 a3\n in it.
+cat main.c >> t1
+cat main.c | grep void | grep list >> t1
 
 Redirection out
+cat main.c > t1
+cat main.c | grep void | grep list > t1
+
 echo a1 > f1 a2 > f2 a3 > f3 creates all 3 files and 
 the last one has a1 a2 a3\n in it, other files  empty.
 Has an edge case in case one of the files exists.

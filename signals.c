@@ -6,34 +6,11 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 11:32:00 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/30 14:42:09 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/05/03 18:50:20 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*
-int ft_putchar(int c)
-{
-    return (write(STDOUT_FILENO, &c, 1));  // Simple wrapper around write for a single char
-}
-
-void reset_terminal()
-{
-	printf("reset test 00\n");
-    if (tgetent(NULL, getenv("TERM")) < 1) {
-	  	//TODO ft_getenv needed Load the terminal entry 
-		printf("reset test 01\n");
-	  	return;  // Error handling or fallback
-    }
-    char *reset_cmd = tgetstr("rs1", NULL);  // Fetch the reset command, if available
-    if (reset_cmd)
-		printf("reset test 0\n");
-	if (reset_cmd) {
-        tputs(reset_cmd, 30, ft_putchar);  // Execute the reset command
-			printf("reset test\n");
-    }
-}*/
 
 /*
 @glance			initate signals prior readline()
@@ -52,9 +29,9 @@ void reset_terminal()
 				check sigaction call failure, ignore signal in interactive mode
 */
 
-void	init_signals(void)
+void	init_signals(t_data *data)
 {
-	struct sigaction sa;
+	struct sigaction	sa;
 
 	ft_memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = sigint_handler;
@@ -64,13 +41,14 @@ void	init_signals(void)
 	{
 		perror("Sigaction failed SIGINT");
 		exit(EXIT_FAILURE);
-    }
+	}
 	sa.sa_handler = SIG_IGN;
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
 	{
 		perror("Failed to ignore SIGQUIT");
 		exit(EXIT_FAILURE);
 	}
+	data->sa = sa;
 }
 
 /*
@@ -79,6 +57,8 @@ void	init_signals(void)
 					so need to manage the promt with rl_() functions. 
 @global variable	to differenciate promt line cleanup ie rl_redisplay 
 					is coditional for interactive shell mode only.
+@if					non-interactive mode behavior
+@else				interactive mode behavior
 @rl_replace_line	clear current input line.
 @rl_on_new_line		tell readline() I am on a new line.
 @rl_redisplay		request readline to redisplay the prompt.
@@ -88,19 +68,15 @@ void	init_signals(void)
 
 void	sigint_handler(int signum)
 {
-		if (g_child_pid > 0)
-		{
-			if (g_child_pid != 2147483647)// I need more info inside the handler
-				write(STDOUT_FILENO, "\n", 1);//not needed in case of heredoc
-//		printf("child entered handler with pid %d\n", global_child_pid);
-		}
-		else
-		{
-			rl_replace_line("", 0);
-			write(STDOUT_FILENO, "\n", 1);
-			rl_on_new_line();
-			rl_redisplay();
-//			printf("parent entered handler with pid %d\n", global_parent_pid);
-		}
-//		printf("no coditions, just passing signal handler\n");
+		
+	(void)signum;
+	if (g_child_pid > 0)
+		write(STDOUT_FILENO, "\n", 1);
+	else
+	{
+		rl_replace_line("", 0);
+		write(STDOUT_FILENO, "\n", 1);
+		rl_on_new_line();
+		rl_redisplay();
+	}
 }

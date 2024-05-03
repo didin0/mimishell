@@ -6,38 +6,24 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/19 12:53:37 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 13:14:56 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-pid_t g_child_pid = -1;
-
-int	list_size(t_lexer *lexer_list)
-{
-	int	i;
-
-	i = 0;
-	while (lexer_list)
-	{
-		i++;
-		lexer_list = lexer_list->next;
-	}
-	return (i);
-}
+ pid_t	g_child_pid = -1;
 
 /*
- * 			put everithing in the list exept the pipes
-@glance		cmd[] array takes in all node words up until redir or pipe
+@glance		cmd[] array takes in all node words(tokens) up until redir or pipe
 */
 
-static	char	***init_cmd(t_data *data)
+static char	***init_cmd(t_data *data)
 {
 	char	***cmd;
 	int		i;
 	int		j;
-	t_lexer *node;
+	t_lexer	*node;
 
 	node = data->lexer_list;
 	cmd = allocate_cmd(data);
@@ -46,98 +32,125 @@ static	char	***init_cmd(t_data *data)
 	while (node)
 	{
 		if (node->type != PIPE)
-			cmd[i][j++] = node->word; 
+			cmd[i][j++] = node->word;
 		else
 		{
+			j++;
+			cmd[i][j] = NULL;
 			i++;
 			j = 0;
 		}
 		node = node->next;
 	}
+	cmd[i][j] = NULL;
 	return (cmd);
-}
-
-/*	
-char	**get_cmd(t_data *data, t_lexer *lexer_list)
-{
-	char	**cmd;
-	int		i;
-	t_lexer *cur_node;
-
-	cur_node = lexer_list;
-	cmd = ft_calloc((list_size(cur_node) + 1), (sizeof(t_lexer *)));//TODO calloc fail
-	i = 0;
-	while (cur_node->next)
-	{
-		if (is_token(cur_node->word, 0) && peek_list_from(cur_node)
-				&& cur_node->next->next)//in case more 
-		{
-			if (cur_node->type == REDIR_OUT)
-				create_empty_file(data, cur_node->next->word);
-			cur_node = cur_node->next->next;//traverse 2 nodes
-		}
-		else if (is_token(cur_node->word, 0))//in case token
-			break;
-		cmd[i] = ft_strdup(cur_node->word);
-//		printf("char **cmd where I look at cmd[i] %c \n", cmd[i][2]); 
-		cur_node = cur_node->next;
-		i++;
-	}
-	if (cur_node && !is_token(cur_node->word, 0))//in case only one token in cmd
-		cmd[i] = ft_strdup(cur_node->word);
-	if (!is_token(cur_node->word, 0))
-	{
-		cmd[i] = ft_strdup(cur_node->word);
-	}
-	keep_cur_node(cur_node, ASSIGN);
-	return (cmd);
-}
-*/
-/* OUTDATED
-@glance			excecute with token char array in child process to have
-				excecutables terminate but keeping the parent process ie
-				our shell running.
-@400			special case to handle SIGINT inside heredoc
-@global			store child pid in parent process and
-				restore child pid after child terminated.
-@stat_from		call custom waitpid to store exit statuses. more in signals.c
-*/
-
-int		bypass_child(t_data *data, char ***cmd, t_env *env_list)
-{
-	if (!adv_strncmp(cmd[0][0], "cd"))
-	{
-		cd_builtin(data, cmd[0], env_list);
-		return (1);
-	}
-	else if (!adv_strncmp(cmd[0][0], "exit"))
-	{
-		exit_builtin(data, cmd[0]);
-		return (1);
-	}
-//	if (ft_strncmp(data->lexer_list->word, "$?",
-//	}
-//	ft_strlen(data->lexer_list->word)))
-	return (0);
 }
 
 /*
-@glance		3 main flows of execution:
-			1. command to exexcv(), child process, exits by itself
-			2. builtin in chilc process, we call exit
-			3. cd and exit builtin in parent process, return (0)
+@if				check for fork failure
+@2nd if			update cur_node in case there are pipes. pipeline mgmt.
+*/
+
+static void	resume_parent(t_data *data, pid_t *pids, int i)
+{
+	if (pids[i] < 0)
+	{
+//		perror("fork");
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+		exit(EXIT_FAILURE);//TODO free
+	}
+	if (data->cmd_count > 1)
+		update_cur_node(data, i);
+	if (data->lexer_list->next)
+	{
+		if (data->lexer_list->next->type == 400)
+			g_child_pid = 2147483647;
+		else  
+			g_child_pid = pids[i];
+	}
+//printf("parent IN while @ child in exec g_pid %d - getpid %d -- pids[i] %d\n", g_child_pid, getpid(), pids[i]);
+}
+
+/*
+@glance			loop token array of arrays, create a child for each array.
+@pipefds		allocate pipefd array, read and write ends of pipes.
+@paths			compose an array of paths for commands.
+@cmd[i]			check for redirections, change the cmd array to take out
+				redir tokens and file names. make redirections.
+@redir			make pipe fd redirections.
+@close			unused fd-s will be closed for child process.
+@execve			call command executive file. Normally child exits here.
+@parent			close all pipefds for parent pocesss.
+ */
+
+void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
+{
+	int		i;
+	char	**paths;
+	int		**pipefd;
+
+	pipefd = create_pipes(data);
+	paths = organize_good_paths(cmd, data, env_list);
+	i = 0;
+	while (i < data->cmd_count)
+	{
+		pids[i] = fork();
+		if (pids[i] == 0)
+		{
+			cmd[i] = look_for_redirs(cmd[i], data, i);
+			redirect_close_fds(data, pipefd, i);
+			close_unused_fds(data, pipefd, i);
+			if (!exec_builtin_child(data, cmd[i], env_list))
+				exit(EXIT_SUCCESS);
+			else
+				if (execve(paths[i], cmd[i], NULL) == -1)
+					ft_error_errno(data, cmd[i]);//TODO check
+		}
+		resume_parent(data, pids, i);
+		i++;
+	}
+	parent_close_all_fds(data, pipefd);
+}
+
+/*
+@design			3 main flows of execution:
+				1.builtin in paretn process like exit, export, unset,  cd, $? 
+				2. builtin in chilld process like echo, pwd, env 
+				3. command to exexcv(), child process, exits by itself
+					(data->lexer_list, ASK);
+
+@glance			excecute with token char array in to have builtins return 0 or
+				excecutables terminate but keeping the parent process ie
+				our shell running.
+
+@meaning		for the cases that do not include a command or builtin
+@init_cmd		compose the array of token arrays
+@pids			pids have to be an array, for the parerent process to reap
+				children correctly.
+@keep_cur		keep a list node pointer as static variable, for redirections
+				in pipeline.
+@stat_from		call custom waitpid to store exit statuses. more in signals.c
+@global			store child pid in parent process and
+				reset child pid after child terminated.
 */
 
 int	execution(t_data *data, t_env *env_list)
 {
 	char	***cmd;
-    char    *path;
 	pid_t	*pids;
 
+	if (check_meaning(data) != 0)
+	{
+		printf("meaning missing\n");//TODO
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+		data->exit_status = 127;
+//		ft_error(data);//TODO msg no meaning/command missing,set exitstatus 127
+		return (0);
+	}
 	cmd = init_cmd(data);
-	data->cmd = cmd;//TODO is this still needed??
 	pids = alloc_pids(data);
-	if(bypass_child(data, cmd, env_list))
+	keep_cur_node(data->lexer_list, ASSIGN);//initialize the cur_node, for redis
+	if (!exec_builtin_parent(data, cmd[0], env_list))
 		return (0);
 	else
 	{
@@ -147,105 +160,3 @@ int	execution(t_data *data, t_env *env_list)
 	g_child_pid = -1;
 	return (0);
 }
-
-void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
-{	
-	int	cmd_count;
-	int	i;
-	char **paths;
-	int		**pipefd;
-
-	pipefd = create_pipes(data);
-	cmd_count = count_token_type(data, BUILTIN, COMMAND); 	
-	paths =	organize_good_paths(cmd, data, env_list);
-	i = 0;
-	while (i < cmd_count) 
-	{
-		pids[i] = fork();//TODO protection needed
-		if (pids[i] == 0) 
-		{
-			redirect_close_fds(data, pipefd, i);//no pipe???
-			close_unused_fds(data, pipefd, i);
-//check if the cmd[i] contains any of the redirection tokens
-//			if (is_token(cur_node->word, 0))//redir does not have a node pointed
-//				make_redirections(data, cur_node);// same here!!!
-			if (is_builtin(data, cmd[i][0]))//current node logic needs redone.
-				exec_builtin(data, cmd[i], env_list);//not checking return!!
-			else if (execve(paths[i], cmd[i], NULL) == -1)
-				{
-					printf("execve retunring -1\n");
-				 	ft_error_errno(data, cmd[i]);
-				}
-		}
-		else if (pids[i] < 0)
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		i++;
-	}
-	parent_close_all_fds(data, pipefd);
-	if (data->lexer_list->type == 400)
-			g_child_pid = 2147483647;
-		else
-			g_child_pid = pids[i];//TODO need incrementation, chech signals
-}
-
-
-/*
-@glance			excecute with token char array in child process to have
-				excecutables terminate but keeping the parent process ie
-				our shell running.
-@400			special case to handle SIGINT inside heredoc
-@global			store child pid in parent process and
-				restore child pid after child terminated.
-@stat_from		call custom waitpid to store exit statuses. more in signals.c
-*/
-/*
-int	execution(t_data *data, t_env *env_list, char **envp)
-{
-	char	**cmd;
-    char    **paths;
-    char    *path;
-	pid_t	pid1;
-
-	t_lexer	*cur_node;//TODO one too many variables
-    
-	paths = get_paths(env_list);
-	cmd = get_cmd(data, data->lexer_list);	
-	data->cmd = cmd;
-//	printf("cmd gets $? %s\n", cmd[0]);
-	cur_node = keep_cur_node(data->lexer_list, ASK);
-//	printf("cur node has$? %s type %d\n", cur_node->word, cur_node->type);//word not written node
-	if (ft_strncmp(data->lexer_list->word, "$?",
-				ft_strlen(data->lexer_list->word)))//do not for in case $?
-//else the $? is sent to execve and it trigers a SIGSEV signal
-	{
-		pid1 = fork();//TODO protect fork return -1 
-		if (pid1 == 0)
-		{
-			if (is_token(cur_node->word, 0))
-				make_redirections(data, cur_node);// same here!!!
-			path = find_good_path(cmd, paths);
-			if (is_builtin(data, cmd[0]))
-				exec_builtin(data, cmd, env_list, envp);//not checking return!!!
-			else
-			{
-			 if (execve(path, cmd, NULL) == -1)
-			 	ft_error_errno(data, cmd[0]);
-			}
-		}
-		else
-		{
-			if (data->lexer_list->type == 400)
-				g_child_pid = 2147483647;
-			else
-				g_child_pid = pid1;
-			stat_from_waitpid(data, pid1);
-//			g_parent_pid = getpid();//dev
-		}
-	}
-	g_child_pid = -1;
-	keep_cur_node(data->lexer_list, ASSIGN);//reset static variable
-	return (0);
-}*/
