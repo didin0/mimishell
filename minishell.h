@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/19 11:08:32 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 13:40:28 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@
 #define MAX_ARGS_CMD 10
 
 extern pid_t g_child_pid;
+extern void rl_replace_line(const char *str, int i);
 
 // linked list to copy the $ENV variable
 typedef struct s_env
@@ -130,6 +131,10 @@ int is_builtin(t_data *data, char *word);
 
 // Parser
 t_lexer *parsing(t_data *data, t_env *env_list);
+char	**ft_new_split(char const *s, char c);
+int count_$(char *str);
+int check_sq(char *str);
+char	*clean_quote(char *str);
 
 //Redirections
 void	make_redirections(t_data *data, t_lexer *node);

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 11:32:00 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/19 14:11:50 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/04/30 14:42:09 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void	sigint_handler(int signum)
 		}
 		else
 		{
-			// rl_replace_line("", 0);
+			rl_replace_line("", 0);
 			write(STDOUT_FILENO, "\n", 1);
 			rl_on_new_line();
 			rl_redisplay();

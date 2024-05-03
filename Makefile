@@ -28,8 +28,12 @@ MAKE_MSG = @printf "\n${Purple}Makefile : ${RED}${NAME}${DEF}\n\n"
 
 NAME = minishell
 DEBUG=#  -fsanitize=address
-CFLAGS = -L. -lreadline -ltermcap -g# -Wall -Werror -Wextra ${DEBUG}
- 
+READLINEFLAGS = -L /Users/$(shell whoami)/.brew/opt/readline/lib  -I /Users/$(shell whoami)/.brew/opt/readline/include
+ifeq ($(shell uname), Darwin)
+	CFLAGS =  $(READLINEFLAGS) -lreadline -ltermcap -g# -Wall -Werror -Wextra ${DEBUG}
+else 
+	CFLAGS = -L. -lreadline -ltermcap -g# -Wall -Werror -Wextra ${DEBUG}
+endif
 
 ${NAME} : ${SRCS} ${HEADERS}
 	clear
