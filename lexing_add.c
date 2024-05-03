@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/30 10:53:18 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 13:02:27 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,21 +65,7 @@ void	token_type(t_data *data, t_env *env_list)
 		temp = temp->next;
 	}
 }
-/*//	temp = data->lexer_list;
-//	if (all_tokens_categorized(temp) == 1)
-//   	ft_error(data);
-//		printf("token error\n");
 
-int	all_tokens_categorized(t_lexer	*temp)
-{
-	while (temp != NULL)
-	{
-		if (temp->type == -1)
-			return (1);
-		temp = temp->next;
-	}
-	return (0);
-}*/
 /*
 @glance 	loop until the next pipe of redirection
 			loop back until the closing quote

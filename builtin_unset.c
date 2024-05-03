@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 14:05:36 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/30 08:42:44 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 12:47:27 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	unset_builtin(t_data *data, char **cmd, t_env *env_list)
 		return ;
 	}
 	if (!cmd[1])
-		ft_error(data);//TODO no message needed
+		ft_error(data, ERR_UNSET, STDERR_FILENO, NO_STDOUT);
 	i = 1;
 	while (cmd[i])
 	{

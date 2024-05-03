@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:11:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/30 10:58:33 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 13:16:37 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 int	is_cmd(t_data *data, t_lexer *token, t_env *env_list)
 {
 	char	**paths;
-	char	*temp_cmd;
 
 	paths = get_paths(data, env_list);
 	if (find_good_path(data, token->word, paths))
@@ -36,7 +35,8 @@ int	is_builtin(t_data *data, char *word)
 
 	builtin_names = (char **)malloc(sizeof(char *) * 8 + 1);
 	if (!builtin_names)
-		ft_error(data);//TODO
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO
 	builtin_names[0] = ft_strdup("echo");
 	builtin_names[1] = ft_strdup("cd");
 	builtin_names[2] = ft_strdup("pwd");

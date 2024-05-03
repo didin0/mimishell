@@ -6,11 +6,31 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/04/16 18:03:16 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 16:29:14 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+/*
+all paths
+main -> ctrl-D, !data.line //no leaks
+main -> linebeak -> ctrl-D 2nd if //no leaks
+main -> spaces -> linebreak -> ctrl-D // no leaks
+
+*/
+void	free_env_list(t_env *head)
+{
+	t_env *node;
+	
+	while (head)
+	{
+		node = head;
+		head = head->next;
+		free(node->key);
+		free(node->value);
+		free(node);
+	}
+}
 
 void	free_array(char **str)
 {
@@ -25,10 +45,20 @@ void	free_array(char **str)
 	}
 }
 
-void	ft_error(t_data *data)
+void	ft_error(t_data *data, const char *msg, int fd, int flag)
 {
-	printf("substr or ft_calloc malloc failed\n");
-//	free list TODO
+	if (flag != FREE_ENV)
+		if (ft_putstr_fd("Error: ", fd) < 0)
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+	if (flag != 0)
+	{
+		if (ft_putstr_fd((char *)msg, fd) < 0)
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+	}
+	if (flag == FREE_ENV)
+		free_env_list(data->env_list);
+
+//	conditional exit?
 	exit(EXIT_FAILURE);
 }
 
@@ -47,27 +77,3 @@ void	ft_error_errno(t_data *data, char **cmd)
 	write(STDERR_FILENO, ": command not found\n", 20);
 	exit(EXIT_FAILURE);//TODO free data
 }
-
-/*
- * does the string array contain exit token, what are the following arguments
- *
- * */
-/*
-void	shell_exit(t_data *data)
-{
-	if (data->cmd[0])
-	{
-		if (data->cmd[1])
-		{
-			if (!ft_strncmp(data->cmd[0], "exit", ft_strlen(data->cmd[0]))
-				&& !data->cmd[2])
-				exit(data->exit_status);
-		}
-		if (!ft_strncmp(data->cmd[0], "exit", ft_strlen(data->cmd[0]))
-				&& !data->cmd[1])
-				exit(data->exit_status);
-	}
-	if (!ft_strncmp(data->lexer_list->word, "$?",
-		ft_strlen(data->lexer_list->word)) && !data->lexer_list->next)
-				expand_status(data);
-}*/

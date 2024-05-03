@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 21:22:37 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/30 08:45:45 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 13:00:43 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,20 @@ void	exit_builtin(t_data *data, char **cmd)
 	if (cmd[1] && cmd[2])
 	{
 		if (ft_putstr_fd("exit: too many arguments\n", 1) < 0)
-			ft_error(data);//TODO msg write failed
+			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//			ft_error(data);//TODO msg write failed
 		exit(EXIT_FAILURE);
 	}
 	if (ft_putstr_fd("exit\n", 1) < 0)
-		ft_error(data);//TODO msg write failed
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO msg write failed
 	if (cmd[1])
 	{
 		if (ft_isdigit_sign(cmd[1]) == 0)
 		{
 			if (ft_putstr_fd("exit: numeric argument required\n", 1) < 0)
-				ft_error(data);//TODO msg write failed
+				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//				ft_error(data);//TODO msg write failed
 			else
 				exit(EXIT_FAILURE);
 		}

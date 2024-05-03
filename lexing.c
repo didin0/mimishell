@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/01 07:12:55 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 16:37:52 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ void	str_to_list(t_data *data, t_stat *stat, char *buff)
 	if (data->line)
 		buff = ft_substr(data->line, stat->ibis, stat->i - stat->ibis);
 	if (!buff)
-		ft_error(data);//TODO
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO
 	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(buff));
 }
 
@@ -90,16 +91,26 @@ static void	splitting_lexer(t_data *data, t_stat *stat)
 	}
 }
 
-void	lexing(t_data *data)
+/*
+@return		return needed for readline loop continue.
+@3rd if		spaces on data.line lead to word NULL.
+*/
+
+int	lexing(t_data *data)
 {
 	t_stat	stat;
 
 	data->lexer_list = ft_calloc(sizeof(t_lexer), 1);
 	if (!data->lexer_list)
-		ft_error(data);
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);
 	stat.i = 0;
 	stat.ibis = 0;
 	splitting_lexer(data, &stat);
 	if (!data->lexer_list)
-		ft_error(data);
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);
+	if (!data->lexer_list->word)
+		return (1);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:52:39 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/02 13:55:54 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 13:12:47 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,12 @@ int	count_token_type(t_data *data, int type1, int type2)
 
 	temp = data->lexer_list;
 	count = 0;
-	while (temp->next)
+	while (temp)
 	{
 		if (temp->type == type1 || temp->type == type2)
 			count++;
 		temp = temp->next;
 	}
-	if (temp->type == type1 || temp->type == type2)
-		count++;
 	return (count);
 }
 
@@ -85,14 +83,13 @@ void	stat_from_waitpid(t_data *data, pid_t *pids)
 {
 	int	i;
 	int	status;
-	int	cmd_count;
-
-	cmd_count = count_token_type(data, BUILTIN, COMMAND);
+	
 	i = 0;
-	while (i < cmd_count)
+	while (i < data->cmd_count)
 	{
 		if ((waitpid(pids[i], &status, WUNTRACED)) == -1)
-			perror("waitpid");
+//			perror("waitpid");
+			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
 //		ft_error(data);//TODO free on waitpid fail
 		i++;
 	}

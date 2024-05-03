@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/02 14:03:09 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 16:37:54 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,8 @@
 # include <fcntl.h>//open
 # include <sys/wait.h>//for waitpid on linux
 # include <errno.h>//error number codes
-# include <limits.h>//PATH_MAXi
+# include <limits.h>//PATH_MAX
 # include <signal.h>//signal
-# include <curses.h>//using terminal capabilities
-# include <term.h>//using terminal capabilities
 
 #define BUILTIN 0
 #define COMMAND 1
@@ -42,6 +40,17 @@
 
 #define OPEN_FLAGS (O_WRONLY | O_CREAT | O_APPEND)
 #define OPEN_RIGHTS (S_IRUSR | S_IWUSR)
+
+// Error defines
+#define ERR_WRITE_FAIL "Write call failed\n"
+#define ERR_MALLOC "Malloc failed\n"
+#define ERR_READLINE "Readline fail of EOF sent to process\n"
+#define ERR_UNSET "UNSET needs an argument\n"
+
+#define NO_STDOUT 0
+#define STDOUT 1 //duplicate error message to stdout
+#define FREE_PAR 10
+#define FREE_ENV 3
 
 extern pid_t g_child_pid;
 
@@ -71,15 +80,16 @@ typedef struct s_lexer
 
 // GENERAL STRUCT
 typedef struct s_data
-{
-	char		*line;
-	t_lexer		*lexer_list;
-	int			exit_status;
-	char		***cmd;
-	int			cmd_count;
-	int			pipe_count;
-	int			list_size;
+{	
+	char				*line;
+	t_lexer				*lexer_list;
+	int					exit_status;
+	char				***cmd;
+	int					cmd_count;
+	int					pipe_count;
+	int					list_size;
 	struct sigaction	sa;
+	t_env		 		*env_list;
 }					t_data;
 
 //Lexing splitting local struct
@@ -92,8 +102,9 @@ typedef struct s_stat
 
 // Utils
 void	free_array(char **str);
+void	free_env_list(t_env *head);
 void	init_data(t_data *data);
-void	ft_error(t_data *data);
+void	ft_error(t_data *data, const char *msg, int fd, int flag);
 void	ft_error_errno(t_data *data, char **cmd);
 	
 // List
@@ -107,34 +118,33 @@ void	show_list(t_lexer *lexer_list);
 void	show_env_list(t_env *list);
 
 // Env
-t_env				*get_env_to_list(char **envp);
-char				**get_paths(t_data *data, t_env *env_list);
-void	split_and_add(char *env_var, t_env **head);
-t_env	*create_env_node(char *key, char *value);
+t_env	*get_env_to_list(t_data *data, char **envp);
+char	**get_paths(t_data *data, t_env *env_list);
+t_env	*create_env_node(t_data *data, char *key, char *value);
 void	add_to_end(t_env **head, t_env *new_node);
 
 // Exec
-int	check_meaning(t_data *data);
-char ***allocate_cmd(t_data *data);
-int	count_token_type(t_data *data, int	type1, int type2);
-int	**create_pipes(t_data *data);
-char **organize_good_paths(char ***cmd, t_data *data, t_env *env_list);
-int    execution(t_data *data, t_env *env_list);
+int		check_meaning(t_data *data);
+char	***allocate_cmd(t_data *data);
+int		count_token_type(t_data *data, int	type1, int type2);
+int		**create_pipes(t_data *data);
+char	 **organize_good_paths(char ***cmd, t_data *data, t_env *env_list);
+int		execution(t_data *data, t_env *env_list);
 char    *find_good_path(t_data *data, char *cmd, char **paths);
 pid_t	*alloc_pids(t_data *data);
-int	adv_strncmp(const char *s1, const char *s2);
+int		adv_strncmp(const char *s1, const char *s2);
 void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids);
 void	parent_close_all_fds(t_data *data, int **pipefd);
 void	redirect_close_fds(t_data *data, int **pipefd, int i);
 void	close_unused_fds(t_data *data, int **pipefd, int i);
-int	count_tokens(t_data *data);
+int		count_tokens(t_data *data);
 void	stat_from_waitpid(t_data *data, pid_t *pids);
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i);
 void	update_cur_node(t_data *data, int i);
 void	print_str_array(char **array, int len);
 
 // Lexer
-void	lexing(t_data *data);
+int	lexing(t_data *data);
 int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i, int ibis);
 int	is_token(char *c, int i);
 void	token_type(t_data *data, t_env *env_list);
@@ -153,7 +163,7 @@ t_lexer *parsing(t_data *data, t_env *env_list);
 
 char	**look_for_redirs(char **cmd, t_data *data, int i);
 void	redir_fd(t_data *data, t_lexer *node);
-void	create_empty_file(t_data *data, char *name);
+void	create_empty_file(char *name);
 void	here_doc_in(t_data *data, t_lexer *node);
 int		check_heredoc_meaning(t_lexer *node);
 int		adv_list_size(t_lexer *list);
@@ -168,12 +178,10 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list);
 void	unset_builtin(t_data *data, char **cmd, t_env *env_list);
 int		ft_isdigit_sign(char *str);
 void	exit_builtin(t_data *data, char **cmd);
-void	shell_exit(t_data *data);
 void	expand_status(t_data *data);
 
 //Signals
 void	init_signals(t_data *data);
 void	sigint_handler(int signum);
-//void	reset_terminal();
 void	show_cmd(char ***cmd, t_data *data);
 #endif 

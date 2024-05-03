@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:04:51 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/02 18:01:29 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 13:18:36 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 @glance to mimic bash in some subsequent redirections and file names
  */
 
-void	create_empty_file(t_data *data, char *name)
+void	create_empty_file(char *name)
 {
 	int	fd;
 
@@ -44,16 +44,19 @@ void	redir_fd(t_data *data, t_lexer *node)
 	else if (temp->type == REDIR_IN)
 		fd = open(temp->next->word, O_RDONLY);
 	if (fd == -1)
-		ft_error(data);//TODO
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO
 	else if (temp->type == REDIR_IN)
 	{
 		if (dup2(fd, STDIN_FILENO) == -1)
-			ft_error(data);//TODO
+			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//			ft_error(data);//TODO
 	}
 	else if (temp->type == REDIR_OUT || temp->type == REDIR_OUT_APP)
 	{
 		if (dup2(fd, STDOUT_FILENO) == -1)
-			ft_error(data);//TODO
+			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//			ft_error(data);//TODO
 	}
 	close(fd);
 }
@@ -67,14 +70,17 @@ static	void	redir_temp_file_fd(t_data *data, int fd)
 	fd = -1;
 	fd = open("here_doc_temp", O_RDONLY);
 	if (fd == -1)
-		ft_error(data);//TODO
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO
 	if (dup2(fd, STDIN_FILENO) == -1)
-		ft_error(data);//TODO
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO
 	if (unlink("here_doc_temp") == -1)
-		ft_error(data);//TODO
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO
 	//TODO free readline memory?
 	close(fd);
-	signal(SIGINT, sigint_handler);
+//	signal(SIGINT, sigint_handler);
 }
 
 /*
@@ -92,7 +98,8 @@ void	here_doc_in(t_data *data, t_lexer *node)
 
 	if (check_heredoc_meaning(node))
 	{
-		printf("Choose a better delimier name, pid %d\n", getpid());
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+		printf("Choose an unique delimier name\n");
 //		ft_error(data);//TODO free, delimiter matches a commad
 		exit(EXIT_FAILURE);
 	}
@@ -102,14 +109,16 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	fd = -1;
 	fd = open("here_doc_temp", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (fd == -1)
-		ft_error(data);//TODO	
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO	
 	while (1)
 	{
 		here_line = readline("\033[37m> \033[m ");
 		if (!here_line)
 		{
 			if (ft_putchar_fd('\n', 1) < 0)
-				ft_error(data);//TODO message write failed, clean, exit
+				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//				ft_error(data);//TODO message write failed, clean, exit
 			break ;
 		}
 		if (!adv_strncmp(here_line, delimiter))
@@ -117,12 +126,13 @@ void	here_doc_in(t_data *data, t_lexer *node)
 		write(fd, here_line, ft_strlen(here_line));
 		write(fd, "\n", 1);
 	}
-	redir_temp_file_fd(data, fd);
+	redir_temp_file_fd(data, fd);	
 }
 
 void	expand_status(t_data *data)
 {
 	ft_putnbr_fd(data->exit_status, 1);
 	if (ft_putstr_fd(": command not found\n", 1) < 0)
-		ft_error(data);//TODO msg write failed
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO msg write failed
 }

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/02 10:04:43 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 13:14:56 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,19 +47,6 @@ static char	***init_cmd(t_data *data)
 }
 
 /*
-@parent			close all pipefds for parent pocesss.
-@if 400			special case to handle SIGINT inside heredoc
-*/
-
-static void	close_fd_set_g(t_data *data, pid_t *pids, int **pipefd, int i)
-{
-	parent_close_all_fds(data, pipefd);
-//	else
-//		g_child_pid = pids[i];
-//printf("parent OUT WHILE  @ child in exec g_pid %d - getpid %d -- pids[i] %d\n", g_child_pid, getpid(), pids[i]);
-}
-
-/*
 @if				check for fork failure
 @2nd if			update cur_node in case there are pipes. pipeline mgmt.
 */
@@ -68,12 +55,12 @@ static void	resume_parent(t_data *data, pid_t *pids, int i)
 {
 	if (pids[i] < 0)
 	{
-		perror("fork");
+//		perror("fork");
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
 		exit(EXIT_FAILURE);//TODO free
 	}
 	if (data->cmd_count > 1)
 		update_cur_node(data, i);
-//	printf("is type 400 --- %d\n", data->lexer_list->next->type);
 	if (data->lexer_list->next)
 	{
 		if (data->lexer_list->next->type == 400)
@@ -93,6 +80,7 @@ static void	resume_parent(t_data *data, pid_t *pids, int i)
 @redir			make pipe fd redirections.
 @close			unused fd-s will be closed for child process.
 @execve			call command executive file. Normally child exits here.
+@parent			close all pipefds for parent pocesss.
  */
 
 void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
@@ -121,8 +109,7 @@ void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 		resume_parent(data, pids, i);
 		i++;
 	}
-	close_fd_set_g(data, pids, pipefd, i);
-//	printf("parent prorcess here, child still sleeping\n");
+	parent_close_all_fds(data, pipefd);
 }
 
 /*
@@ -150,12 +137,12 @@ void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 int	execution(t_data *data, t_env *env_list)
 {
 	char	***cmd;
-	char	*path;
 	pid_t	*pids;
 
 	if (check_meaning(data) != 0)
 	{
 		printf("meaning missing\n");//TODO
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
 		data->exit_status = 127;
 //		ft_error(data);//TODO msg no meaning/command missing,set exitstatus 127
 		return (0);

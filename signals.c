@@ -6,30 +6,11 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 11:32:00 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/02 12:54:12 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 10:04:16 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*
-void reset_terminal()
-{
-	printf("reset test 00\n");
-    if (tgetent(NULL, getenv("TERM")) < 1) {
-	  	//TODO ft_getenv needed Load the terminal entry 
-		printf("reset test 01\n");
-	  	return;  // Error handling or fallback
-    }
-    char *reset_cmd = tgetstr("rs1", NULL); 
-// Fetch the reset command, if available
-    if (reset_cmd)
-		printf("reset test 0\n");
-	if (reset_cmd) {
-        tputs(reset_cmd, 30, ft_putchar);  // Execute the reset command
-			printf("reset test\n");
-    }
-}*/
 
 /*
 @glance			initate signals prior readline()
@@ -88,18 +69,13 @@ void	init_signals(t_data *data)
 void	sigint_handler(int signum)
 {
 		
-	write(STDOUT_FILENO, "\n", 1);
+	(void)signum;
 	if (g_child_pid > 0)
-	{
-//		if (g_child_pid == 2147483647)
-		{
-//			write(STDOUT_FILENO, "\n", 1);
-//			rl_on_new_line();
-		}
-	}
+		write(STDOUT_FILENO, "\n", 1);
 	else
 	{
 		rl_replace_line("", 0);
+		write(STDOUT_FILENO, "\n", 1);
 		rl_on_new_line();
 		rl_redisplay();
 	}

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 16:08:07 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/01 07:21:49 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 14:02:13 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,11 @@ static void	split_inc_term(t_data *data, char *env_var, t_env **head)
 
 	str = ft_split(env_var, '=');
 	if (!str)
-		ft_error(data);//TODO ft_split malloc failure
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO ft_split malloc failure
 	if (str[0])
 	{
-		new_node = create_env_node(str[0], str[1]);
+		new_node = create_env_node(data, str[0], str[1]);
 		add_to_end(head, new_node);
 	}
 	free(str);
@@ -50,7 +51,8 @@ static int	is_key_in_env(t_data *data, char **new_env, t_env *env_list)
 		{
 			new_value = ft_strdup(new_env[1]);
 			if (!new_value)
-				ft_error(data);//TODO ft_dup malloc failure
+				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//				ft_error(data);//TODO ft_dup malloc failure
 			free(temp->value);
 			temp->value = new_value;
 			return (1);
@@ -65,7 +67,8 @@ static void	check_args(t_data *data, char **cmd, t_env *env_list)
 	if (!cmd[1])
 		env_builtin(data, env_list);
 	else if (!cmd[2])
-		ft_error(data);//TODO free, msg too many arguments
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO free, msg too many arguments
 }
 
 /*
@@ -93,7 +96,8 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 			j++;
 		}
 		if (cmd[i][j] != '=')
-			ft_error(data);//TODO "export: CMD[i]: not a valid identifier"
+			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//			ft_error(data);//TODO "export: CMD[i]: not a valid identifier"
 		new_env = ft_split(cmd[i], '=');//TODO ft_calloc fail
 		if (!is_key_in_env(data, new_env, env_list))
 			split_inc_term(data, cmd[i], &env_list);

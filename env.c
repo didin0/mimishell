@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:00:26 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/29 12:30:16 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 16:13:53 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,21 @@
 			This helps to maintain stability and predictability of the program.
 */
 
-t_env	*create_env_node(char *key, char *value)
+t_env	*create_env_node(t_data *data, char *key, char *value)
 {
 	t_env	*new_env;
 
 	new_env = malloc(sizeof(t_env));
-	if (new_env == NULL)
+	if (!new_env)
 	{
-		perror("Memory allocation failed");
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		perror("Memory allocation failed");
 		exit(EXIT_FAILURE);
 	}
-	new_env->key = ft_strdup(key);//TODO in case key = strdup(key) then calloc failed
+	new_env->key = ft_strdup(key);
 	new_env->value = ft_strdup(value);
+	if (!new_env->key || !new_env->value)
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//seperate check needed
 	new_env->next = NULL;
 	return (new_env);
 }
@@ -52,21 +55,23 @@ void	add_to_end(t_env **head, t_env *new_node)
 	}
 }
 
-void	split_and_add(char *env_var, t_env **head)
+static void	split_and_add(t_data *data, char *env_var, t_env **head)
 {
 	char	**str;
 	t_env	*new_node;
 
-	str = ft_split(env_var, '=');//TOOD ft_split calloc failure
+	str = ft_split(env_var, '=');
+	if (!str)	
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO
 	if (str[0] && str[1])
 	{
-		new_node = create_env_node(str[0], str[1]);
+		new_node = create_env_node(data, str[0], str[1]);
 		add_to_end(head, new_node);
 	}
-	free(str);
+	free_array(str);
 }
 
-t_env	*get_env_to_list(char **envp)
+t_env	*get_env_to_list(t_data *data, char **envp)
 {
 	t_env	*env_list;
 	int		i;
@@ -75,8 +80,9 @@ t_env	*get_env_to_list(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		split_and_add(envp[i], &env_list);
+		split_and_add(data, envp[i], &env_list);
 		i++;
 	}
+	data->env_list = env_list;
 	return (env_list);
 }

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 07:38:24 by rsainas           #+#    #+#             */
-/*   Updated: 2024/04/30 08:43:48 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 12:47:12 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,11 @@ void	pwd_builtin(t_data *data, t_env *env_list)
 		if (!ft_strncmp(temp->key, "PWD", ft_strlen(temp->key)))
 		{
 			if (ft_putstr_fd(temp->value, 1) < 0)
-				ft_error(data);//TODO message write failed
+				ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 			if (ft_putchar_fd('\n', 1) < 0)
-				ft_error(data);//TODO message write failed
+				ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+			if (ft_putchar_fd('\n', 1) < 0)
+				ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 		}
 		temp = temp->next;
 	}
@@ -46,13 +48,15 @@ void	env_builtin(t_data *data, t_env *env_list)
 	while (temp)
 	{
 		if (ft_putstr_fd(temp->key, 1) < 0)
-			ft_error(data);//TODO msg write failed
-		if (ft_putchar_fd('=', 1) < 0)
-			ft_error(data);//TODO msg write failed
-		if (ft_putstr_fd(temp->value, 1) < 0)
-			ft_error(data);//TODO msg write failed
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 		if (ft_putchar_fd('\n', 1) < 0)
-			ft_error(data);//TODO msg write failed
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+		if (ft_putchar_fd('=', 1) < 0)
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+		if (ft_putstr_fd(temp->value, 1) < 0)
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+		if (ft_putchar_fd('\n', 1) < 0)
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 		temp = temp->next;
 	}
 }

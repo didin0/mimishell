@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/01 19:55:19 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 13:03:43 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,19 @@ static void	echo_stdout(t_data *data, char **cmd, int line_break)
 		if (line_break == 0 && option_flag == 0)
 			j = 2;
 		if (ft_putstr_fd(cmd[j], 1) < 0)
-			ft_error(data);//TODO message write failed
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 		j++;
 		if (cmd[j])
 		{
 			if (ft_putchar_fd(' ', 1) < 0)
-				ft_error(data);//TODO message write failed
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 		}
 		option_flag = 1;
 	}
 	if (line_break == 1)
 	{
 		if (ft_putchar_fd('\n', 1) < 0)
-			ft_error(data);//TODO message write failed
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 	}
 }
 
@@ -59,7 +59,6 @@ static void	echo_builtin(t_data *data, char **cmd)
 {
 	int		j;
 	int		line_break;
-	t_lexer	*cur_node;
 
 	line_break = 1;
 	j = 1;

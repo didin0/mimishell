@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:15:45 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/02 19:35:54 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/03 13:16:54 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static char	**clean_cmd_from_redir(t_data *data, t_lexer *node, char **temp)
 @2nd if		in case there is a pipeline, the cur node is not the first node
  */
 
-static char	**change_cmd(char **cmd, t_data *data, int i)
+static char	**change_cmd(t_data *data, int i)
 {
 	char	**temp;
 	t_lexer	*node;
@@ -72,7 +72,9 @@ static char	**change_cmd(char **cmd, t_data *data, int i)
 
 	temp = ft_calloc(adv_list_size(data->lexer_list), sizeof(char *));
 	if (!temp)
-		ft_error(data);//TODO malloc failure
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO malloc failure
+	node = NULL;
 	node = keep_cur_node(node, ASK);
 	j = 0;
 	if (node != data->lexer_list)
@@ -90,7 +92,7 @@ static char	**change_cmd(char **cmd, t_data *data, int i)
 	return (temp);
 }
 
-static void	array_contains_redir(char **cmd, t_data *data)
+static void	array_contains_redir(t_data *data)
 {
 	t_lexer	*node;
 
@@ -104,14 +106,7 @@ static void	array_contains_redir(char **cmd, t_data *data)
 				|| node->type == REDIR_IN)
 				redir_fd(data, node);
 			else if (node->type == HERE_DOC)
-			{
-				if (node->type != OTHER)
-				{
-					printf("this is a better error\n");
-					exit(EXIT_FAILURE);
-				}
 				here_doc_in(data, node);
-			}
 		}
 		node = node->next;
 	}
@@ -126,7 +121,7 @@ char	**look_for_redirs(char **cmd, t_data *data, int i)
 	t_lexer	*node;
 
 	node = data->lexer_list;
-	array_contains_redir(cmd, data);
-	cmd = change_cmd(cmd, data, i);
+	array_contains_redir(data);
+	cmd = change_cmd(data, i);
 	return (cmd);
 }
