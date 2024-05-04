@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/03 16:37:52 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/04 11:35:10 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,8 @@ void	str_to_list(t_data *data, t_stat *stat, char *buff)
 	if (data->line)
 		buff = ft_substr(data->line, stat->ibis, stat->i - stat->ibis);
 	if (!buff)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO
-	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(buff));
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_LIST);
+	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(data, buff));
 }
 
 /*
@@ -67,22 +66,23 @@ void	str_to_list(t_data *data, t_stat *stat, char *buff)
 
 static void	splitting_lexer(t_data *data, t_stat *stat)
 {
-	char	*buff;
 	int		ret;
 
 	ret = 0;
-	buff = NULL;
+	data->buff = ft_calloc(1 , sizeof(char));
+   	if (!data->buff)
+		ft_error(data, ERR_MALLOC_L, STDERR_FILENO, FREE_BUFF);
 	while (data->line && data->line[stat->i] == ' ')
 		stat->i++;
 	stat->ibis = stat->i;
 	while (data->line && data->line[stat->i])
 	{
 		if (is_token(data->line, stat->i) || data->line[stat->i] == '\0')
-			create_node_is_token(data, stat, buff);
+			create_node_is_token(data, stat, data->buff);
 		else if (data->line[stat->i] == ' ' || data->line[stat->i + 1] == '\0')
-			ret = create_node_space_term(data, stat, buff);
+			ret = create_node_space_term(data, stat, data->buff);
 		else if (data->line[stat->i] == '"' || data->line[stat->i] == '\'')
-			ret = create_node_quotes(data, stat, buff);
+			ret = create_node_quotes(data, stat, data->buff);
 		if (ret == 1)
 			break ;
 		else if (ret == 2)
@@ -92,24 +92,21 @@ static void	splitting_lexer(t_data *data, t_stat *stat)
 }
 
 /*
+@glance		split data->line into tokens, as part of calloced linked list nodes.
+@2nd if		spaces on data.line lead to word NULL.
 @return		return needed for readline loop continue.
-@3rd if		spaces on data.line lead to word NULL.
 */
 
 int	lexing(t_data *data)
 {
 	t_stat	stat;
 
-	data->lexer_list = ft_calloc(sizeof(t_lexer), 1);
+	data->lexer_list = ft_calloc(1, sizeof(t_lexer));
 	if (!data->lexer_list)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);
+		ft_error(data, ERR_MALLOC_L, STDERR_FILENO, FREE_LINE);
 	stat.i = 0;
 	stat.ibis = 0;
 	splitting_lexer(data, &stat);
-	if (!data->lexer_list)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);
 	if (!data->lexer_list->word)
 		return (1);
 	return (0);

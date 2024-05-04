@@ -6,13 +6,16 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/16 15:49:53 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/12 17:27:10 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/04 11:44:48 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Add a node to the end of the linked list type 't_lexer'
+/*
+@glance		Add a node to the end of the linked list type 't_lexer'
+*/
+
 void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new)
 {
 	t_lexer	*tmp;
@@ -30,15 +33,17 @@ void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new)
 	}
 }
 
-// Create a new node
-t_lexer	*ft_lstlex_new(void *word)
+/*
+@glance		Create a new node
+*/
+
+t_lexer	*ft_lstlex_new(t_data *data, void *word)
 {
 	t_lexer *result;
 
-	result = (t_lexer *)ft_calloc(sizeof(t_lexer), 1);//TODO calloc fail
-	result->word = malloc(sizeof(char *) + 1);//TODO malloc fail
-	if (!result)
-		return (NULL);
+	result = (t_lexer *)ft_calloc(1, sizeof(t_lexer));
+	if (!result)	
+		ft_error(data, ERR_MALLOC_LI, STDERR_FILENO, FREE_LIST);
 	result->word = word;
 	result->type = -1;
 	result->next = NULL;

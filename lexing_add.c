@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/03 13:02:27 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/04 14:20:46 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static t_lexer	*categorize_tokens(t_data *data, t_lexer *temp, t_env *env_list)
 {
+	build_builtin_names(data);
 	if (is_builtin(data, temp->word) == 1)
 		temp->type = 0;
 	else if (!is_cmd(data, temp, env_list))
@@ -35,6 +36,7 @@ static t_lexer	*categorize_tokens(t_data *data, t_lexer *temp, t_env *env_list)
 	else if (temp->word[0] == '|')
 		temp->type = 5;
 	return (temp);
+	free_array(data->builtin_names);
 }
 
 void	token_type(t_data *data, t_env *env_list)

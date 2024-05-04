@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 12:23:41 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/03 13:09:56 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/04 11:46:32 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 /*
 @glance		creates a node to linked list where the line includes token ie
-			a metacharacter..
+			a metacharacter.
 */
 
 void	create_node_is_token(t_data *data, t_stat *stat, char *buff)
@@ -25,16 +25,14 @@ void	create_node_is_token(t_data *data, t_stat *stat, char *buff)
 	{
 		buff = ft_substr(data->line, stat->i, 2);
 		if (!buff)
-			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//			ft_error(data);//TODO
+			ft_error(data, ERR_MALLOC_LUS, STDERR_FILENO, FREE_BUFF);
 		stat->i++;
 	}
 	else
 		buff = ft_substr(data->line, stat->i, 1);
 	if (!buff)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO
-	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(buff));
+		ft_error(data, ERR_MALLOC_LUS, STDERR_FILENO, FREE_BUFF);
+	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(data, buff));
 	while (data->line[stat->i + 1] == ' ')
 		stat->i++;
 	stat->ibis = stat->i + 1;
@@ -75,9 +73,6 @@ int	create_node_space_term(t_data *data, t_stat *stat, char *buff)
 
 int	create_node_quotes(t_data *data, t_stat *stat, char *buff)
 {
-	if (is_quote_closed(data->line, data->line[stat->i]) != 0)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO exit, no free
 	stat->i = ft_strchr_end(data->line,
 			data->line[stat->i], stat->i) + 1;
 	while ((data->line[stat->i] != '\0' && is_token(data->line,

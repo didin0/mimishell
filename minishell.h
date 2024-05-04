@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/03 18:58:38 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/05/04 21:45:52 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,38 @@
 // Error defines
 #define ERR_WRITE_FAIL "Write call failed\n"
 #define ERR_MALLOC "Malloc failed\n"
+#define ERR_MALLOC_L "Malloc failed, lexing.c\n"
+#define ERR_MALLOC_LUS "Malloc failed, lexing_utils_split.c\n"
+#define ERR_MALLOC_NAMES "Malloc failed, lexing_utils.c\n"
+#define ERR_MALLOC_PATH "Malloc failed, find_paths.c\n"
+#define ERR_MALLOC_LI "Malloc failed, list.c\n"
 #define ERR_READLINE "Readline fail of EOF sent to process\n"
+#define ERR_QUOTE_CLOSE "Quotes shall be closed.\n"
+#define ERR_MEANING "Meaning/command missing\n"
+
 #define ERR_UNSET "UNSET needs an argument\n"
 
-#define NO_STDOUT 0
-#define STDOUT 1 //duplicate error message to stdout
-#define FREE_PAR 10
-#define FREE_ENV 3
 
+#define NO_STDOUT 0
+#define STDOUT 1 //error message to stdout
+#define FREE_ENV 2
+#define FREE_LINE 3
+#define FREE_LINE_RET 4
+#define FREE_LIST 5
+#define FREE_NAMES 6//bookmark for ft_err
+#define FREE_NAMES_A 7//bookmark for ft_err
+#define FREE_BUFF 8
+#define FREE_MEANING 9
+#define FREE_PATH 10
+
+
+
+
+#define FREE_PATH_ALL 11//later
+
+
+
+#define FREE_PAR 10
 extern pid_t g_child_pid;
 extern void rl_replace_line(const char *str, int i);
 
@@ -91,6 +115,9 @@ typedef struct s_data
 	int					list_size;
 	struct sigaction	sa;
 	t_env		 		*env_list;
+	char				*buff;
+	char				**builtin_names;
+	char				**all_paths;
 }					t_data;
 
 //Lexing splitting local struct
@@ -109,8 +136,9 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag);
 void	ft_error_errno(t_data *data, char **cmd);
 	
 // List
-t_lexer	*ft_lstlex_new(void *word);
+t_lexer	*ft_lstlex_new(t_data *data, void *word);
 void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
+void	build_builtin_names(t_data *data);
 void	create_node_is_token(t_data *data, t_stat *stat, char *buff);
 int		create_node_space_term(t_data *data, t_stat *stat, char *buff);
 int		create_node_quotes(t_data *data, t_stat *stat, char *buff);

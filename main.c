@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/03 16:40:31 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/04 19:40:48 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,23 @@ void	show_cmd(char ***cmd, t_data *data)
 	}
 }
 
-static int	line_is_empty(t_data *data)
+static int	start_lexing(t_data *data)
 {
 	if (!data->line)
 			ft_error(data, "exit\n", STDOUT_FILENO, FREE_ENV);
-	if (!adv_strncmp(data->line, "") || lexing(data))
+	if (!adv_strncmp(data->line, ""))
+	{
+		free(data->line);
+		return (1);
+	}
+	if (is_quote_closed(data->line, '"') != 0
+			|| is_quote_closed(data->line, '\'') != 0)
+	{
+		add_history(data->line);
+		ft_error(data, ERR_QUOTE_CLOSE, STDOUT_FILENO, FREE_LINE_RET);
+		return (1);
+	}
+	if (lexing(data))
 	{
 		free(data->line);
 		return (1);
@@ -72,7 +84,7 @@ static int	line_is_empty(t_data *data)
 	return (0);
 }
 
-/*
+/*OUTDATED
 @if			handle ctrl-D EOF (signal/char) in shell interactive mode
 			with exit message.
 @2nd if		path for linebreak/enter on line
@@ -92,7 +104,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		init_signals(&data);
 		data.line = readline("\033[36mminishell :\033[m ");
-		if (line_is_empty(&data))
+		if (start_lexing(&data))
 			continue;
 		token_type(&data, env_list);
 //		parsing(&data, env_list);

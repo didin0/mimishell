@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/03 13:14:56 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/04 13:18:03 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 @pids			pids have to be an array, for the parerent process to reap
 				children correctly.
 @keep_cur		keep a list node pointer as static variable, for redirections
-				in pipeline.
+				in pipeline. ASSIGN flag means node assigning.
 @stat_from		call custom waitpid to store exit statuses. more in signals.c
 @global			store child pid in parent process and
 				reset child pid after child terminated.
@@ -141,15 +141,13 @@ int	execution(t_data *data, t_env *env_list)
 
 	if (check_meaning(data) != 0)
 	{
-		printf("meaning missing\n");//TODO
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-		data->exit_status = 127;
-//		ft_error(data);//TODO msg no meaning/command missing,set exitstatus 127
+		add_history(data->line);
+		ft_error(data, ERR_MEANING, STDOUT_FILENO, FREE_MEANING);
 		return (0);
 	}
 	cmd = init_cmd(data);
 	pids = alloc_pids(data);
-	keep_cur_node(data->lexer_list, ASSIGN);//initialize the cur_node, for redis
+	keep_cur_node(data->lexer_list, ASSIGN);
 	if (!exec_builtin_parent(data, cmd[0], env_list))
 		return (0);
 	else
