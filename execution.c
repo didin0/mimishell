@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/04 13:18:03 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/05 15:52:57 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 		i++;
 	}
 	parent_close_all_fds(data, pipefd);
+//	free_array(paths);TODO needed but segfults.
 }
 
 /*

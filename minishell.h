@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/04 21:45:52 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/05 21:43:40 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,16 +62,15 @@
 #define FREE_LINE 3
 #define FREE_LINE_RET 4
 #define FREE_LIST 5
-#define FREE_NAMES 6//bookmark for ft_err
-#define FREE_NAMES_A 7//bookmark for ft_err
-#define FREE_BUFF 8
-#define FREE_MEANING 9
+#define FREE_BUFF 6
+#define FREE_MEANING 7
+#define FREE_NAMES 8
+#define FREE_NAMES_A 9
 #define FREE_PATH 10
+#define FREE_PATHS 11//not in the right place. is called in organize_paths
+#define FREE_PATH_A 12
 
-
-
-
-#define FREE_PATH_ALL 11//later
+//#define FREE_PATH_ALL 15//later
 
 
 
@@ -117,7 +116,9 @@ typedef struct s_data
 	t_env		 		*env_list;
 	char				*buff;
 	char				**builtin_names;
+	char				**paths;
 	char				**all_paths;
+	char				*final_path;
 }					t_data;
 
 //Lexing splitting local struct
@@ -148,7 +149,7 @@ void	show_env_list(t_env *list);
 
 // Env
 t_env	*get_env_to_list(t_data *data, char **envp);
-char	**get_paths(t_data *data, t_env *env_list);
+void	get_paths(t_data *data, t_env *env_list);
 t_env	*create_env_node(t_data *data, char *key, char *value);
 void	add_to_end(t_env **head, t_env *new_node);
 

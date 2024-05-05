@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/04 21:20:21 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/05 20:15:22 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,26 @@ void	free_lexer_list(t_data *data)
 	while (data->lexer_list)
 	{
 		node = data->lexer_list;
-		data->lexer_list = data->lexer_list->next;//TODO
+		data->lexer_list = data->lexer_list->next;
 		free(node->word);
 		free(node);
+	}
+}
+
+/*
+free a null terminated 3D char array
+*/
+
+void	free_3D_array(char ***str)
+{
+	int i;
+
+	i = 0;
+	if (str)
+	{
+		while (str[i])
+			free_array(str[i++]);
+		free(str);
 	}
 }
 
@@ -58,7 +75,27 @@ void	free_array(char **str)
 		free(str);
 	}
 }
-//should I write malloc fails also to fd 2???
+
+static void ft_error_add(t_data *data, const char *msg, int fd, int flag)
+{
+	if (flag != FREE_NAMES)
+		free_array(data->builtin_names);
+	if ((flag != FREE_NAMES && flag != FREE_NAMES_A) && flag != FREE_PATH)
+		free_array(data->paths);
+	if (((flag != FREE_NAMES && flag != FREE_NAMES_A) && flag != FREE_PATH)
+		&& flag != FREE_PATH_A)
+		free(data->final_path);
+//	if (((flag != FREE_NAMES && flag != FREE_NAMES_A) && flag != FREE_PATH)
+//		&& flag != FREE_ONE_PATH_A)
+//		free(data->slash_path);
+	
+
+//	if (flag != FREE_PATHS && flag != FREE_NAMES_A)
+//			free_array(data->all_paths);
+	if (flag != FREE_LINE_RET)//TODO
+		exit(EXIT_FAILURE);
+}
+
 void	ft_error(t_data *data, const char *msg, int fd, int flag)
 {
 	if (flag != FREE_ENV)
@@ -80,14 +117,8 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 	if (((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET)
 			&& flag != FREE_LIST)
 		free(data->buff);
-	if ((((((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET)
-		&& flag != FREE_LIST) && flag != FREE_NAMES) && flag != FREE_PATH)
-		&& flag != FREE_MEANING)
-			free_array(data->builtin_names);//all the next ones since this is freed
-	if ((((((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET)
-		&& flag != FREE_LIST) && flag != FREE_NAMES) && flag != FREE_PATH)
-		&& flag != FREE_MEANING)
-			free_array(data->all_paths);//starting form FREE_PATH_ALL
+	if (flag > 7)
+		ft_error_add(data, msg, fd, flag);
 	if (flag != FREE_LINE_RET && flag != FREE_MEANING)
 		exit(EXIT_FAILURE);
 }
