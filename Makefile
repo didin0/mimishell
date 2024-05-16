@@ -30,9 +30,9 @@ NAME = minishell
 DEBUG=#  -fsanitize=address
 READLINEFLAGS = -L /Users/$(shell whoami)/.brew/opt/readline/lib  -I /Users/$(shell whoami)/.brew/opt/readline/include
 ifeq ($(shell uname), Darwin)
-	CFLAGS =  $(READLINEFLAGS) -lreadline -ltermcap -g# -Wall -Werror -Wextra ${DEBUG}
+	CFLAGS =  $(READLINEFLAGS) -lreadline -ltermcap -g -Wall -Werror -Wextra ${DEBUG}
 else 
-	CFLAGS = -L. -lreadline -ltermcap -g# -Wall -Werror -Wextra ${DEBUG}
+	CFLAGS = -L. -lreadline -ltermcap -g -Wall -Werror -Wextra ${DEBUG}
 endif
 
 ${NAME} : ${SRCS} ${HEADERS}

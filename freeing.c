@@ -59,7 +59,6 @@ void	free_3D_array(char ***str)
 	{
 		while (str[i])
 			free_array(str[i++]);
-		free(str);
 	}
 }
 
@@ -76,14 +75,14 @@ void	free_array(char **str)
 	}
 }
 
-static void ft_error_add(t_data *data, const char *msg, int fd, int flag)
+static void ft_error_add(t_data *data,  int flag)
 {
-	if (flag != FREE_NAMES)
+	if (flag != FREE_NAMES && flag != FREE_PATH_A)
 		free_array(data->builtin_names);
 	if ((flag != FREE_NAMES && flag != FREE_NAMES_A) && flag != FREE_PATH)
 		free_array(data->paths);
-	if (((flag != FREE_NAMES && flag != FREE_NAMES_A) && flag != FREE_PATH)
-		&& flag != FREE_PATH_A)
+	if ((((flag != FREE_NAMES && flag != FREE_NAMES_A) && flag != FREE_PATH)
+		&& flag!= FREE_FINAL_PATH) && flag != FREE_PATH_A)
 		free(data->final_path);
 //	if (((flag != FREE_NAMES && flag != FREE_NAMES_A) && flag != FREE_PATH)
 //		&& flag != FREE_ONE_PATH_A)
@@ -118,7 +117,7 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 			&& flag != FREE_LIST)
 		free(data->buff);
 	if (flag > 7)
-		ft_error_add(data, msg, fd, flag);
+		ft_error_add(data, flag);
 	if (flag != FREE_LINE_RET && flag != FREE_MEANING)
 		exit(EXIT_FAILURE);
 }
@@ -133,7 +132,7 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 
 void	ft_error_errno(t_data *data, char **cmd)
 {
-
+	(void)data;
 	write(STDERR_FILENO, *cmd, ft_strlen(*cmd));
 	write(STDERR_FILENO, ": command not found\n", 20);
 	exit(EXIT_FAILURE);//TODO free data

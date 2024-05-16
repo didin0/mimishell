@@ -16,9 +16,7 @@ long long	ft_atoll(const char *str)
 {
 	long long	sum;
 	int			sign;
-	int			i;
 
-	i = 0;
 	sum = 0;
 	sign = 1;
 	while (*str == ' ' || *str == '\t' || *str == '\n' || *str == '\f'

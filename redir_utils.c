@@ -118,9 +118,6 @@ static void	array_contains_redir(t_data *data)
 
 char	**look_for_redirs(char **cmd, t_data *data, int i)
 {
-	t_lexer	*node;
-
-	node = data->lexer_list;
 	array_contains_redir(data);
 	cmd = change_cmd(data, i);
 	return (cmd);

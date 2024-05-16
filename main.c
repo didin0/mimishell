@@ -66,7 +66,7 @@ static int	start_lexing(t_data *data)
 	if (!adv_strncmp(data->line, ""))
 	{
 		free(data->line);
-		return (1);
+			return (1);
 	}
 	if (is_quote_closed(data->line, '"') != 0
 			|| is_quote_closed(data->line, '\'') != 0)
@@ -78,6 +78,8 @@ static int	start_lexing(t_data *data)
 	if (lexing(data))
 	{
 		free(data->line);
+		if (data->lexer_list)
+			free_lexer_list(data);
 		return (1);
 	}
 	add_history(data->line);
@@ -109,7 +111,9 @@ int	main(int argc, char **argv, char **envp)
 		token_type(&data, env_list);
 //		parsing(&data, env_list);
 		execution(&data, env_list);
+		
+	
 	}
-	free(data.line);//normal exit, is this at all viable path???
+	free(data.line);
 	return (0);
 }

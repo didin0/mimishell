@@ -16,34 +16,37 @@
 
 /*
 @glance		cmd[] array takes in all node words(tokens) up until redir or pipe
+@strdup		is allocating the last level of 3D array cmd
+TODO		There are some tangling pointers or something in last cmd layer.
+			case cat main.c | grep void | grep list
 */
 
-static char	***init_cmd(t_data *data)
+static void	init_cmd(t_data *data)
 {
-	char	***cmd;
 	int		i;
 	int		j;
 	t_lexer	*node;
 
 	node = data->lexer_list;
-	cmd = allocate_cmd(data);
+	allocate_cmd(data);
 	i = 0;
 	j = 0;
 	while (node)
 	{
 		if (node->type != PIPE)
-			cmd[i][j++] = node->word;
+		{
+			data->cmd[i][j] = NULL;//TODO initalization of a pointer
+			data->cmd[i][j++] = ft_strdup(node->word);
+		}
 		else
 		{
-			j++;
-			cmd[i][j] = NULL;
+			data->cmd[i][j] = NULL;
 			i++;
 			j = 0;
 		}
 		node = node->next;
 	}
-	cmd[i][j] = NULL;
-	return (cmd);
+	data->cmd[i][j] = NULL;
 }
 
 /*
@@ -86,11 +89,11 @@ static void	resume_parent(t_data *data, pid_t *pids, int i)
 void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 {
 	int		i;
-	char	**paths;
+//	char	**paths;
 	int		**pipefd;
 
 	pipefd = create_pipes(data);
-	paths = organize_good_paths(cmd, data, env_list);
+	data->paths = organize_good_paths(cmd, data);
 	i = 0;
 	while (i < data->cmd_count)
 	{
@@ -103,12 +106,13 @@ void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 			if (!exec_builtin_child(data, cmd[i], env_list))
 				exit(EXIT_SUCCESS);
 			else
-				if (execve(paths[i], cmd[i], NULL) == -1)
+				if (execve(data->paths[i], cmd[i], NULL) == -1)
 					ft_error_errno(data, cmd[i]);//TODO check
 		}
 		resume_parent(data, pids, i);
 		i++;
 	}
+//	free_array(paths);no help resolving leaks thus logical 0705 case echo a
 	parent_close_all_fds(data, pipefd);
 //	free_array(paths);TODO needed but segfults.
 }
@@ -137,7 +141,6 @@ void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
 
 int	execution(t_data *data, t_env *env_list)
 {
-	char	***cmd;
 	pid_t	*pids;
 
 	if (check_meaning(data) != 0)
@@ -146,16 +149,20 @@ int	execution(t_data *data, t_env *env_list)
 		ft_error(data, ERR_MEANING, STDOUT_FILENO, FREE_MEANING);
 		return (0);
 	}
-	cmd = init_cmd(data);
+	init_cmd(data);
 	pids = alloc_pids(data);
 	keep_cur_node(data->lexer_list, ASSIGN);
-	if (!exec_builtin_parent(data, cmd[0], env_list))
+	if (!exec_builtin_parent(data, data->cmd[0], env_list))
 		return (0);
 	else
 	{
-		exec_child(cmd, env_list, data, pids);
+		exec_child(data->cmd, env_list, data, pids);
 		stat_from_waitpid(data, pids);
 	}
 	g_child_pid = -1;
+	free_3D_array(data->cmd);
+	free_lexer_list(data);
+	free(data->final_path);
+//	free_array(data->paths);
 	return (0);
 }

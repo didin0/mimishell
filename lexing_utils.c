@@ -20,9 +20,12 @@
 
 int	is_cmd(t_data *data, t_lexer *token, t_env *env_list)
 {
+	
 	get_paths(data, env_list);
-	if (find_good_path(data, token->word, data->paths))//TODO 
+	if (find_good_path(data, token->word))//TODO 
 	{
+		if (data->paths)
+			free_array(data->paths);
 		return (0);
 	}
 	return (1);
@@ -32,7 +35,7 @@ void	build_builtin_names(t_data *data)
 {
 	int i;
 	
-	data->builtin_names = (char **)ft_calloc(8, sizeof(char *));
+	data->builtin_names = ft_calloc(8, sizeof(char *));
 	if (!data->builtin_names)
 		ft_error(data, ERR_MALLOC_NAMES, STDERR_FILENO, FREE_NAMES);
 	data->builtin_names[0] = ft_strdup("echo");

@@ -1,3 +1,26 @@
+LEAKS SUITE TEST CASES => test one case, resolve leaks, test all cases over.
+cases where I found previosly leaks. RESOLVING make a change, check I did not break functionality. check leaks.
+
+10-437 echo a TODO
+11-231 echo a C-D
+catcat main.c clean
+1-18 cat main.c | grep void - seg fault
+
+Get echo a leak free.
+cat main.c | grep void segfault. something is wrong with env and pwd. 
+Bookmark---> echo a
+8-427 echo a
+4-12-410 echo a
+normal operations do not work cat main.c | grep env
+echo a | sort
+
+
+
+open case to be solved 1 block in case o  find_path.c:57 data->final_path
+echo "a""
+cat main.c C_D
+
+
 
 redir and bultin and pipeline
 env | grep PWD

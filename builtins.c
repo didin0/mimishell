@@ -103,9 +103,11 @@ int	exec_builtin_parent(t_data *data, char **cmd, t_env *env_list)
 
 int	exec_builtin_child(t_data *data, char **cmd, t_env *env_list)
 {
+//	free(data->org_paths);
 	if (!adv_strncmp(cmd[0], "echo"))
 	{
 		echo_builtin(data, cmd);
+//		free_array(cmd);//TODO for all paths
 		return (0);
 	}
 	if (!adv_strncmp(cmd[0], "pwd"))

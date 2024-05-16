@@ -89,6 +89,7 @@ static void	splitting_lexer(t_data *data, t_stat *stat)
 			continue ;
 		stat->i++;
 	}
+	free(data->buff);
 }
 
 /*

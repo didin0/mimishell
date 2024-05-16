@@ -9,7 +9,15 @@
 /*   Updated: 2024/05/05 21:43:40 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+///start_lexing
+//221 line break all clear ex readline
+//221 spaces on the line Ctrl-D
+//222  " Ctrl-D one block in start_lexing not cleared by rl_clear_history
+//238 echo "a"a" 
+//27-241 cat main.c C-D
+///lexing
+//221 i
+//227 echo a
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -67,8 +75,9 @@
 #define FREE_NAMES 8
 #define FREE_NAMES_A 9
 #define FREE_PATH 10
-#define FREE_PATHS 11//not in the right place. is called in organize_paths
-#define FREE_PATH_A 12
+#define FREE_FINAL_PATH 11
+#define FREE_PATHS 12//not in the right place. is called in organize_paths
+#define FREE_PATH_A 13
 
 //#define FREE_PATH_ALL 15//later
 
@@ -106,18 +115,18 @@ typedef struct s_lexer
 typedef struct s_data
 {	
 	char				*line;
+//	data->builtin_names = NULL;
 	t_lexer				*lexer_list;
 	int					exit_status;
 	char				***cmd;
 	int					cmd_count;
 	int					pipe_count;
-	int					list_size;
+//	int					list_size;
 	struct sigaction	sa;
 	t_env		 		*env_list;
 	char				*buff;
 	char				**builtin_names;
 	char				**paths;
-	char				**all_paths;
 	char				*final_path;
 }					t_data;
 
@@ -131,7 +140,9 @@ typedef struct s_stat
 
 // Utils
 void	free_array(char **str);
+void	free_3D_array(char ***str);
 void	free_env_list(t_env *head);
+void	free_lexer_list(t_data *data);
 void	init_data(t_data *data);
 void	ft_error(t_data *data, const char *msg, int fd, int flag);
 void	ft_error_errno(t_data *data, char **cmd);
@@ -155,12 +166,13 @@ void	add_to_end(t_env **head, t_env *new_node);
 
 // Exec
 int		check_meaning(t_data *data);
-char	***allocate_cmd(t_data *data);
+void	allocate_cmd(t_data *data);
 int		count_token_type(t_data *data, int	type1, int type2);
 int		**create_pipes(t_data *data);
-char	 **organize_good_paths(char ***cmd, t_data *data, t_env *env_list);
+char	 **organize_good_paths(char ***cmd, t_data *data);
 int		execution(t_data *data, t_env *env_list);
-char    *find_good_path(t_data *data, char *cmd, char **paths);
+char    *find_good_path_1(t_data *data, char *cmd);
+char    *find_good_path(t_data *data, char *cmd);
 pid_t	*alloc_pids(t_data *data);
 int		adv_strncmp(const char *s1, const char *s2);
 void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids);
