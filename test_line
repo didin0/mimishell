@@ -14,6 +14,19 @@ Bookmark---> echo a
 normal operations do not work cat main.c | grep env
 echo a | sort
 
+NOT working cases:
+pwd pwd - double free
+ls -solved
+env - solved
+pwd solved
+cd - solved
+echo asd > t1 --solved
+cat << EOF > t1 -- solved
+cat main.c | sort -- solved
+echo a b | sort --solved
+
+Bookmark pwd pwd not working, execution.c:106 needs cleanup.
+5-10-416 echo a 
 
 
 open case to be solved 1 block in case o  find_path.c:57 data->final_path

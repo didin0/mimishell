@@ -17,31 +17,37 @@
 @if !cmd[i][j]		in case allocation partially fails, 
 					free all previously alloc.	
 */
-/*
-static void	allocate_cmd_arrays(t_data *data, char ***cmd, int i)
+
+static void	allocate_cmd_arrays(t_data *data, int i)
 {
 	int		j;
 
 	j = 0;
 	while (j < data->list_size)
 	{
-		cmd[i][j] = ft_calloc(1000, sizeof(char));
-		if (!cmd[i][j])
+		data->cmd[i][j] = ft_calloc(1001, sizeof(char));
+		if (!data->cmd[i][j])
 		{
 			while (--i >= 0)
-				free_array(cmd[i]);
-			free(cmd);
+				free_array(data->cmd[i]);
+			free(data->cmd);
 			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
 //			ft_error(data);//TODO msg Allocation fail cmd array, exit
 		}
 		j++;
 	}
+	data->cmd[i][j] = NULL;//terminating 2D array
 }
-*/
+
 /*
 @glance			cmd is a pointer to an array of char arrays. The array of arrays
 				is null terminated for execve and loop safety.
 
+3D array		outer layer is char*** that has blocks size of char** to the
+				amount of cmd_count.
+				middle layer is char ** that has block sixe of char * to the
+				amount of tokens until pipe.
+				deepest layer is a char *.
 @if !cmd[i]		in case allocation partially fails, free all previously alloc.	
 ???				in case of echo a I have 2 arrays allocated cmd_count+1
 
@@ -52,15 +58,15 @@ void	allocate_cmd(t_data *data)
 //	char	***cmd;
 	int		i;
 
-//	data->list_size = adv_list_size(data->lexer_list);
-	data->cmd = malloc(1 * sizeof(char **));
+	data->list_size = adv_list_size(data->lexer_list);
+	data->cmd = malloc((data->cmd_count + 1) * sizeof(char **));
 	if (!data->cmd)
 		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
 //		ft_error(data);//TODO msg Allocation fail cmd array, exit
 	i = 0;
 	while (i < data->cmd_count)
 	{
-		data->cmd[i] = malloc((data->cmd_count + 1) * sizeof(char *));
+		data->cmd[i] = malloc((data->list_size + 1) * sizeof(char *));
 		if (!data->cmd[i])
 		{
 			while (--i >= 0)
@@ -69,15 +75,10 @@ void	allocate_cmd(t_data *data)
 			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
 //			ft_error(data);//TODO msg Alloc fail cmd array, free cmd[i]!!, exit
 		}
-//		allocate_cmd_arrays(data, cmd, i);
+		allocate_cmd_arrays(data, i);
 		i++;
 	}
-//	cmd[i] = malloc(1 * sizeof(char **));
-//	if (!cmd[i])
-//			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-	data->cmd[data->cmd_count] = NULL;//TODO terminating arrray of arrays where the last
-	//array has allready been malloced!!!!
-//	return (cmd);
+	data->cmd[data->cmd_count] = NULL;//TODO terminating 3D array
 }
 
 int	**create_pipes(t_data *data)

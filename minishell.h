@@ -121,7 +121,7 @@ typedef struct s_data
 	char				***cmd;
 	int					cmd_count;
 	int					pipe_count;
-//	int					list_size;
+	int					list_size;
 	struct sigaction	sa;
 	t_env		 		*env_list;
 	char				*buff;
@@ -169,13 +169,12 @@ int		check_meaning(t_data *data);
 void	allocate_cmd(t_data *data);
 int		count_token_type(t_data *data, int	type1, int type2);
 int		**create_pipes(t_data *data);
-char	 **organize_good_paths(char ***cmd, t_data *data);
+char	 **organize_good_paths(t_data *data, t_env *env_list);
 int		execution(t_data *data, t_env *env_list);
-char    *find_good_path_1(t_data *data, char *cmd);
 char    *find_good_path(t_data *data, char *cmd);
 pid_t	*alloc_pids(t_data *data);
 int		adv_strncmp(const char *s1, const char *s2);
-void	exec_child(char*** cmd, t_env *env_list, t_data *data, pid_t *pids);
+void	exec_child(t_env *env_list, t_data *data, pid_t *pids);
 void	parent_close_all_fds(t_data *data, int **pipefd);
 void	redirect_close_fds(t_data *data, int **pipefd, int i);
 void	close_unused_fds(t_data *data, int **pipefd, int i);
@@ -207,7 +206,7 @@ char	*clean_quote(char *str);
 
 //Redirections
 
-char	**look_for_redirs(char **cmd, t_data *data, int i);
+void	look_for_redirs(t_data *data, int i);
 void	redir_fd(t_data *data, t_lexer *node);
 void	create_empty_file(char *name);
 void	here_doc_in(t_data *data, t_lexer *node);

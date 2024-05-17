@@ -79,7 +79,7 @@ char	*find_good_path(t_data *data, char *cmd)
 				with the same sequence as cmd array.
 */
 
-char	**organize_good_paths(char ***cmd, t_data *data)
+char	**organize_good_paths(t_data *data, t_env *env_list)
 {
 	char	**asked_paths;
 	int		i;
@@ -88,9 +88,11 @@ char	**organize_good_paths(char ***cmd, t_data *data)
 	if (!asked_paths)
 		ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATHS);//TODO
 	i = 0;
+	if (!data->paths)
+		get_paths(data, env_list);//TODO note in case of env, pwd
 	while (i < data->cmd_count)
 	{
-		find_good_path(data, cmd[i][0]);
+		find_good_path(data, data->cmd[i][0]);
 		asked_paths[i] = ft_strdup(data->final_path);
 		i++;
 	}

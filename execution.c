@@ -33,11 +33,10 @@ static void	init_cmd(t_data *data)
 	j = 0;
 	while (node)
 	{
-		if (node->type != PIPE)
-		{
+		if (j == 0)
 			data->cmd[i][j] = NULL;//TODO initalization of a pointer
+		if (node->type != PIPE)
 			data->cmd[i][j++] = ft_strdup(node->word);
-		}
 		else
 		{
 			data->cmd[i][j] = NULL;
@@ -86,28 +85,28 @@ static void	resume_parent(t_data *data, pid_t *pids, int i)
 @parent			close all pipefds for parent pocesss.
  */
 
-void	exec_child(char ***cmd, t_env *env_list, t_data *data, pid_t *pids)
+void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 {
 	int		i;
 //	char	**paths;
 	int		**pipefd;
 
 	pipefd = create_pipes(data);
-	data->paths = organize_good_paths(cmd, data);
+	data->paths = organize_good_paths(data, env_list);
 	i = 0;
 	while (i < data->cmd_count)
 	{
 		pids[i] = fork();
 		if (pids[i] == 0)
 		{
-			cmd[i] = look_for_redirs(cmd[i], data, i);
+			look_for_redirs(data, i);
 			redirect_close_fds(data, pipefd, i);
 			close_unused_fds(data, pipefd, i);
-			if (!exec_builtin_child(data, cmd[i], env_list))
+			if (!exec_builtin_child(data, data->cmd[i], env_list))
 				exit(EXIT_SUCCESS);
 			else
-				if (execve(data->paths[i], cmd[i], NULL) == -1)
-					ft_error_errno(data, cmd[i]);//TODO check
+				if (execve(data->paths[i], data->cmd[i], NULL) == -1)
+					ft_error_errno(data, data->cmd[i]);//TODO check
 		}
 		resume_parent(data, pids, i);
 		i++;
@@ -156,7 +155,7 @@ int	execution(t_data *data, t_env *env_list)
 		return (0);
 	else
 	{
-		exec_child(data->cmd, env_list, data, pids);
+		exec_child(env_list, data, pids);
 		stat_from_waitpid(data, pids);
 	}
 	g_child_pid = -1;

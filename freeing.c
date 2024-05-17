@@ -60,6 +60,7 @@ void	free_3D_array(char ***str)
 		while (str[i])
 			free_array(str[i++]);
 	}
+	free(str);
 }
 
 void	free_array(char **str)
