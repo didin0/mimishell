@@ -26,4 +26,5 @@ void	init_data(t_data *data, t_lexer *lexer_list)
 void init_data(t_data *data)
 {		
 	data->exit_status = 0;
+//	data->lexer_list = NULL;
 }

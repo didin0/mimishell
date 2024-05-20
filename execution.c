@@ -36,14 +36,24 @@ static void	init_cmd(t_data *data)
 		if (j == 0)
 			data->cmd[i][j] = NULL;//TODO initalization of a pointer
 		if (node->type != PIPE)
-			data->cmd[i][j++] = ft_strdup(node->word);
+		{
+			data->cmd[i][j] = ft_strdup(node->word);
+			if (!data->cmd[i][j])
+			{
+				while (--i >= 0)//TODO test the backward freeing without leaks
+					free_array(data->cmd[i]);
+				free(data->cmd);
+				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO
+			}
+		}
 		else
 		{
 			data->cmd[i][j] = NULL;
 			i++;
-			j = 0;
+			j = -1;
 		}
 		node = node->next;
+		j++;
 	}
 	data->cmd[i][j] = NULL;
 }
@@ -92,7 +102,7 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 	int		**pipefd;
 
 	pipefd = create_pipes(data);
-	data->paths = organize_good_paths(data, env_list);
+	organize_good_paths(data, env_list);
 	i = 0;
 	while (i < data->cmd_count)
 	{
@@ -103,9 +113,17 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 			redirect_close_fds(data, pipefd, i);
 			close_unused_fds(data, pipefd, i);
 			if (!exec_builtin_child(data, data->cmd[i], env_list))
+			{
+				free_3D_array(data->cmd);
+				free_lexer_list(data);
+				free_array(data->paths);
+				free_array(data->asked_paths);
+				free(pids);
+				free_int_array(pipefd);	
 				exit(EXIT_SUCCESS);
+			}
 			else
-				if (execve(data->paths[i], data->cmd[i], NULL) == -1)
+				if (execve(data->asked_paths[i], data->cmd[i], NULL) == -1)
 					ft_error_errno(data, data->cmd[i]);//TODO check
 		}
 		resume_parent(data, pids, i);
@@ -161,7 +179,9 @@ int	execution(t_data *data, t_env *env_list)
 	g_child_pid = -1;
 	free_3D_array(data->cmd);
 	free_lexer_list(data);
-	free(data->final_path);
-//	free_array(data->paths);
+//	free(data->final_path);
+	if (data->paths)	
+		free_array(data->paths);
+	free(data->line);
 	return (0);
 }

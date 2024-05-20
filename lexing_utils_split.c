@@ -17,22 +17,22 @@
 			a metacharacter.
 */
 
-void	create_node_is_token(t_data *data, t_stat *stat, char *buff)
+void	create_node_is_token(t_data *data, t_stat *stat)
 {
 	if (stat->ibis != stat->i)
-		str_to_list(data, stat, buff);
+		str_to_list(data, stat);
 	if (is_token(data->line, stat->i) == 2)
 	{
-		buff = ft_substr(data->line, stat->i, 2);
-		if (!buff)
+		data->buff = ft_substr(data->line, stat->i, 2);
+		if (!data->buff)
 			ft_error(data, ERR_MALLOC_LUS, STDERR_FILENO, FREE_BUFF);
 		stat->i++;
 	}
 	else
-		buff = ft_substr(data->line, stat->i, 1);
-	if (!buff)
+		data->buff = ft_substr(data->line, stat->i, 1);
+	if (!data->buff)
 		ft_error(data, ERR_MALLOC_LUS, STDERR_FILENO, FREE_BUFF);
-	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(data, buff));
+	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(data, data->buff));
 	while (data->line[stat->i + 1] == ' ')
 		stat->i++;
 	stat->ibis = stat->i + 1;
@@ -44,16 +44,16 @@ void	create_node_is_token(t_data *data, t_stat *stat, char *buff)
 @return		return 1 indicates a break to the main lexing loop and 2 continue.
 */
 
-int	create_node_space_term(t_data *data, t_stat *stat, char *buff)
+int	create_node_space_term(t_data *data, t_stat *stat)
 {
 	if (data->line[stat->i + 1] == '\0')
 	{
 		if (data->line[stat->i] != ' ')
 			stat->i++;
-		str_to_list(data, stat, buff);
+		str_to_list(data, stat);
 		return (1);
 	}
-	str_to_list(data, stat, buff);
+	str_to_list(data, stat);
 	while (data->line [stat->i + 1] == ' '
 		&& data->line[stat->i + 1] != '\0')
 		stat->i++;
@@ -71,14 +71,14 @@ int	create_node_space_term(t_data *data, t_stat *stat, char *buff)
 @ft_strchr_end	look for second char " or ' in line, return char pos.
 */
 
-int	create_node_quotes(t_data *data, t_stat *stat, char *buff)
+int	create_node_quotes(t_data *data, t_stat *stat)
 {
 	stat->i = ft_strchr_end(data->line,
 			data->line[stat->i], stat->i) + 1;
 	while ((data->line[stat->i] != '\0' && is_token(data->line,
 				stat->i) == 0) && data->line[stat->i] != ' ')
 		stat->i++;
-	str_to_list(data, stat, buff);
+	str_to_list(data, stat);
 	if (data->line[stat->i] == '\0')
 		return (1);
 	if (data->line[stat->i + 1] == '\0'

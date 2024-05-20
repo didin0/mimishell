@@ -1,3 +1,9 @@
+WIERD CASES
+cat line brak Cntr +\
+grep x line break Cntr+\
+./minishell - custom error needed.
+
+
 LEAKS SUITE TEST CASES => test one case, resolve leaks, test all cases over.
 cases where I found previosly leaks. RESOLVING make a change, check I did not break functionality. check leaks.
 

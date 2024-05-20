@@ -44,6 +44,7 @@ void	free_lexer_list(t_data *data)
 		free(node->word);
 		free(node);
 	}
+	
 }
 
 /*
@@ -73,6 +74,19 @@ void	free_array(char **str)
 		while (str[i])
 			free(str[i++]);
 		free(str);
+	}
+}
+
+void	free_int_array(int **arr)
+{
+	int	i;
+
+	i = 0;
+	if (arr)
+	{
+		while (arr[i])
+			free(arr[i++]);
+		free(arr);
 	}
 }
 

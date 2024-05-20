@@ -25,13 +25,14 @@ int	adv_list_size(t_lexer *list)
 	return (i);
 }
 
-static void	reassign_str(t_data *data, int i, int k, const char *new_str)
+static void	reassign_str(t_data *data, int i, int k, char *new_str)
 {
 	if (data->cmd[i][k])
 		free(data->cmd[i][k]);
 	data->cmd[i][k] = ft_strdup(new_str);
 	if (!data->cmd[i][k])
 		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO
+//	free(new_str);//TODO has no effect.
 }	
 
 

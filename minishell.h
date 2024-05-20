@@ -128,6 +128,7 @@ typedef struct s_data
 	char				**builtin_names;
 	char				**paths;
 	char				*final_path;
+	char				**asked_paths;
 }					t_data;
 
 //Lexing splitting local struct
@@ -140,6 +141,7 @@ typedef struct s_stat
 
 // Utils
 void	free_array(char **str);
+void	free_int_array(int **arr);
 void	free_3D_array(char ***str);
 void	free_env_list(t_env *head);
 void	free_lexer_list(t_data *data);
@@ -151,10 +153,10 @@ void	ft_error_errno(t_data *data, char **cmd);
 t_lexer	*ft_lstlex_new(t_data *data, void *word);
 void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new);
 void	build_builtin_names(t_data *data);
-void	create_node_is_token(t_data *data, t_stat *stat, char *buff);
-int		create_node_space_term(t_data *data, t_stat *stat, char *buff);
-int		create_node_quotes(t_data *data, t_stat *stat, char *buff);
-void	str_to_list(t_data *data, t_stat *stat, char *buff);
+void	create_node_is_token(t_data *data, t_stat *stat);
+int		create_node_space_term(t_data *data, t_stat *stat);
+int		create_node_quotes(t_data *data, t_stat *stat);
+void	str_to_list(t_data *data, t_stat *stat);
 void	show_list(t_lexer *lexer_list);
 void	show_env_list(t_env *list);
 
@@ -169,7 +171,7 @@ int		check_meaning(t_data *data);
 void	allocate_cmd(t_data *data);
 int		count_token_type(t_data *data, int	type1, int type2);
 int		**create_pipes(t_data *data);
-char	 **organize_good_paths(t_data *data, t_env *env_list);
+void	organize_good_paths(t_data *data, t_env *env_list);
 int		execution(t_data *data, t_env *env_list);
 char    *find_good_path(t_data *data, char *cmd);
 pid_t	*alloc_pids(t_data *data);
@@ -186,7 +188,6 @@ void	print_str_array(char **array, int len);
 
 // Lexer
 int	lexing(t_data *data);
-int	add_substr_to_list(t_lexer **lexer_list, char *buff, char *line, int i, int ibis);
 int	is_token(char *c, int i);
 void	token_type(t_data *data, t_env *env_list);
 int	is_cmd(t_data *data, t_lexer *token, t_env *env_list);

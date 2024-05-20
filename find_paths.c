@@ -18,6 +18,7 @@
 
 void	get_paths(t_data *data, t_env *env_list)
 {
+	data->paths = NULL;
 	while (env_list->next)
 	{
 		if (ft_strncmp(env_list->key, "PATH", 4) == 0)
@@ -58,9 +59,10 @@ char	*find_good_path(t_data *data, char *cmd)
 			ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATH_A);//no free
 		if (access(one_path, F_OK) == 0)
 		{
-			data->final_path = malloc(sizeof(char *));
-			if (!data->final_path)
-				ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_FINAL_PATH);//TODO
+//			data->final_path = malloc(sizeof(char *));
+//			if (!data->final_path)
+//				ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_FINAL_PATH);//TODO
+			data->final_path = NULL;
 			data->final_path = strdup(one_path);//TODO bookmark 060424 flight
 			free(one_path);
 			if (!data->final_path)
@@ -79,23 +81,24 @@ char	*find_good_path(t_data *data, char *cmd)
 				with the same sequence as cmd array.
 */
 
-char	**organize_good_paths(t_data *data, t_env *env_list)
+void	organize_good_paths(t_data *data, t_env *env_list)
 {
-	char	**asked_paths;
+//	char	**asked_paths;
 	int		i;
 
-	asked_paths = ft_calloc(data->cmd_count, sizeof(char *));
-	if (!asked_paths)
+	data->asked_paths = ft_calloc(data->cmd_count + 1, sizeof(char *));
+	if (!data->asked_paths)
 		ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATHS);//TODO
 	i = 0;
-	if (!data->paths)
+//	if (!data->paths)
 		get_paths(data, env_list);//TODO note in case of env, pwd
 	while (i < data->cmd_count)
 	{
 		find_good_path(data, data->cmd[i][0]);
-		asked_paths[i] = ft_strdup(data->final_path);
+		data->asked_paths[i] = ft_strdup(data->final_path);
+		free(data->final_path);
 		i++;
 	}
-	asked_paths[i] = NULL;
-	return (asked_paths);
+	data->asked_paths[i] = NULL;	
+//	return (asked_paths);
 }
