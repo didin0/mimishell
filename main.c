@@ -109,7 +109,7 @@ int	main(int argc, char **argv, char **envp)
 		if (start_lexing(&data))
 			continue;
 		token_type(&data, env_list);
-//		parsing(&data, env_list);
+		parsing(&data, env_list);
 		execution(&data, env_list);
 		
 	

@@ -65,6 +65,7 @@ char	*expen(char *str, t_env *env_list)
 			str = ft_strdup(env_list->value);
 			ft_strlcat(str, remaining, ft_strlen(str) + ft_strlen(remaining)
 				+ 1);
+			free(remaining);
 			return (str);
 		}
 		env_list = env_list->next;
@@ -76,29 +77,28 @@ char	*expen(char *str, t_env *env_list)
 void	parsing_loop(char **word, t_env *env_list)
 {
 	char	*new_str;
-	char	*head;
 	int		before;
+	char 	*expended;
+	char 	*str;
 
-	char *str = *word;
-	head = str;
+	str = *word;
 	while (*str)
 	{
 		if (*str == '$')
 		{
 			before = str - *word + 1;
-			str = expen(str, env_list);
-			new_str = malloc(ft_strlen(*word) + ft_strlen(str) + 1);
+			expended = expen(str, env_list);
+			new_str = malloc(ft_strlen(*word) + ft_strlen(expended) + 1);
 			ft_strlcpy(new_str, *word, before);
-			ft_strlcat(new_str, str, ft_strlen(str) + before);
+			ft_strlcat(new_str, expended, ft_strlen(expended) + before);
 			free(*word);
 			*word = ft_strdup(new_str);
 			free(new_str);
-			while (*head + 1 == '$')
-				head++;
-			str = head;
+			while (*str + 1 == '$')
+				str++;
+			free(expended);
 		}
 		str++;
-		head = str;
 	}
 }
 
