@@ -88,7 +88,7 @@ void	parsing_loop(char **word, t_env *env_list)
 		{
 			before = str - *word + 1;
 			expended = expen(str, env_list);
-			new_str = malloc(ft_strlen(*word) + ft_strlen(expended) + 1);
+			new_str = malloc(ft_strlen(*word) + ft_strlen(expended));
 			ft_strlcpy(new_str, *word, before);
 			ft_strlcat(new_str, expended, ft_strlen(expended) + before);
 			free(*word);
