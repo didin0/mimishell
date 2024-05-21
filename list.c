@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/16 15:49:53 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/04 11:44:48 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/20 19:53:19 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@ void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new)
 	if (new == NULL)
 		return ;
 	if ((*lst)->word == NULL)
+	{
+		free(*lst);
 		*lst = new;
+	}
 	else
 	{
 		tmp = *lst;
@@ -40,6 +43,7 @@ void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new)
 t_lexer	*ft_lstlex_new(t_data *data, void *word)
 {
 	t_lexer *result;
+
 
 	result = (t_lexer *)ft_calloc(1, sizeof(t_lexer));
 	if (!result)	

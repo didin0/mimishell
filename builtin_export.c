@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 16:08:07 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/03 14:02:13 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/21 14:32:46 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	split_inc_term(t_data *data, char *env_var, t_env **head)
 		new_node = create_env_node(data, str[0], str[1]);
 		add_to_end(head, new_node);
 	}
-	free(str);
+	free_array(str);
 }
 
 /*
@@ -66,8 +66,8 @@ static void	check_args(t_data *data, char **cmd, t_env *env_list)
 {
 	if (!cmd[1])
 		env_builtin(data, env_list);
-	else if (!cmd[2])
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//	else if (!cmd[2])
+//		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
 //		ft_error(data);//TODO free, msg too many arguments
 }
 
@@ -84,6 +84,7 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 	int		j;
 	char	**new_env;
 
+	new_env = NULL;
 	check_args(data, cmd, env_list);
 	i = 1;
 	while (cmd[i])
@@ -103,5 +104,9 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 			split_inc_term(data, cmd[i], &env_list);
 		i++;
 	}
-	free(new_env);
+	if (new_env)
+		free_array(new_env);
+	free(data->pids);
+	free_lexer_list(data);
+	free_3D_array(data->cmd);
 }

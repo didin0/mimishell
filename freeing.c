@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/05 20:15:22 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/21 11:06:57 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	free_lexer_list(t_data *data)
 		free(node->word);
 		free(node);
 	}
+	
 }
 
 /*
@@ -73,6 +74,19 @@ void	free_array(char **str)
 		while (str[i])
 			free(str[i++]);
 		free(str);
+	}
+}
+
+void	free_int_array(int **arr)
+{
+	int	i;
+
+	i = 0;
+	if (arr)
+	{
+		while (arr[i])
+			free(arr[i++]);
+		free(arr);
 	}
 }
 
@@ -114,8 +128,8 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 		rl_clear_history();
 	if (((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET))	
 		free_lexer_list(data);
-	if (((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET)
-			&& flag != FREE_LIST)
+	if ((((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET)
+			&& flag != FREE_LIST) && flag != FREE_MEANING)
 		free(data->buff);
 	if (flag > 7)
 		ft_error_add(data, flag);
