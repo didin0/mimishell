@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/05 15:52:57 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/21 14:03:45 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 
 int	execution(t_data *data, t_env *env_list)
 {
-	pid_t	*pids;
+//	pid_t	*pids;
 
 	if (check_meaning(data) != 0)
 	{
@@ -167,21 +167,23 @@ int	execution(t_data *data, t_env *env_list)
 		return (0);
 	}
 	init_cmd(data);
-	pids = alloc_pids(data);
+	alloc_pids(data);
 	keep_cur_node(data->lexer_list, ASSIGN);
 	if (!exec_builtin_parent(data, data->cmd[0], env_list))
 		return (0);
 	else
 	{
-		exec_child(env_list, data, pids);
-		stat_from_waitpid(data, pids);
+		exec_child(env_list, data, data->pids);
+		stat_from_waitpid(data, data->pids);
 	}
 	g_child_pid = -1;
 	free_3D_array(data->cmd);
 	free_lexer_list(data);
-//	free(data->final_path);
 	if (data->paths)	
 		free_array(data->paths);
+//	if (pids)
+//		free(pids);
 	free(data->line);
+	free_array(data->asked_paths);
 	return (0);
 }

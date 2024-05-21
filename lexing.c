@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/04 11:35:10 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/20 20:07:52 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ int	is_token(char *c, int i)
 	return (0);
 }
 
+/*
+@data->buff		pointer will be freed with the lexer_list
+*/
+
 void	str_to_list(t_data *data, t_stat *stat)
 {
 	if (stat->i == stat->ibis)
@@ -69,9 +73,6 @@ static void	splitting_lexer(t_data *data, t_stat *stat)
 	int		ret;
 
 	ret = 0;
-//	data->buff = ft_calloc(1 , sizeof(char));
-  // 	if (!data->buff)
-	//	ft_error(data, ERR_MALLOC_L, STDERR_FILENO, FREE_BUFF);
 	while (data->line && data->line[stat->i] == ' ')
 		stat->i++;
 	stat->ibis = stat->i;
@@ -89,7 +90,6 @@ static void	splitting_lexer(t_data *data, t_stat *stat)
 			continue ;
 		stat->i++;
 	}
-//	free(data->buff);
 }
 
 /*

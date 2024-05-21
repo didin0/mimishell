@@ -6,39 +6,12 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 03:20:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/03 13:11:09 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/21 15:14:55 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
-@glance				alloc one cmd array with the size of token list.
-@if !cmd[i][j]		in case allocation partially fails, 
-					free all previously alloc.	
-*/
-/*
-static void	allocate_cmd_arrays(t_data *data, int i)
-{
-	int		j;
-
-	j = 0;
-	while (j < data->list_size)
-	{
-		data->cmd[i][j] = ft_calloc(1001, sizeof(char));
-		if (!data->cmd[i][j])
-		{
-			while (--i >= 0)
-				free_array(data->cmd[i]);
-			free(data->cmd);
-			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//			ft_error(data);//TODO msg Allocation fail cmd array, exit
-		}
-		j++;
-	}
-	data->cmd[i][j] = NULL;//terminating 2D array
-}
-*/
 /*
 @glance			cmd is a pointer to an array of char arrays. The array of arrays
 				is null terminated for execve and loop safety.
@@ -113,15 +86,12 @@ int	**create_pipes(t_data *data)
 	return (pipefd);
 }
 
-pid_t	*alloc_pids(t_data *data)
+void	alloc_pids(t_data *data)
 {
-	pid_t	*pids;
-
-	pids = malloc(data->cmd_count * sizeof(pid_t));
-	if (!pids)
+	data->pids = malloc(data->cmd_count * sizeof(pid_t));
+	if (!data->pids)
 		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO put to data->
 //		ft_error(data);//TODO msg Allocation faily, exit
-	return (pids);
 }
 
 int	adv_strncmp(const char *s1, const char *s2)

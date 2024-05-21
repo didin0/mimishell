@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:11:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/05 21:43:33 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/20 20:39:34 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,15 @@ int	is_cmd(t_data *data, t_lexer *token, t_env *env_list)
 	if (find_good_path(data, token->word))//TODO 
 	{
 		if (data->paths)
-			free_array(data->paths);	
+			free_array(data->paths);
+		if (data->final_path)	
+			free(data->final_path);
 		return (0);
 	}
-		if (data->paths)
-			free_array(data->paths);
+	if (data->paths)
+		free_array(data->paths);
+//	if (data->final_path)	
+//		free(data->final_path);
 	return (1);
 }
 

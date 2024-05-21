@@ -14,11 +14,24 @@ catcat main.c clean
 
 Get echo a leak free.
 cat main.c | grep void segfault. something is wrong with env and pwd. 
-Bookmark---> echo a
+echo a
 8-427 echo a
 4-12-410 echo a
 normal operations do not work cat main.c | grep env
 echo a | sort
+echo a echo a cat main.c | grep void 2-414
+echo a > t1 2-404
+grep void < t1 | grep a --cmd is wrong
+grep void < t1 | grep list >> t2
+grep void < t1 | grep list >> t2 | grep lex > t3
+ecco ctrl-D
+cat << EOF >> t1 -- in the middle of the heredoc ctrl-C if ctrl-D then clean
+export aa=1000 cntr-D
+export cntr-D -- still reachablesi, conditional jumps
+
+BOOKMARK (normal paths for builtin parents, builtin child (pwd)
+unset
+export aa=1000 unset aa 4-225
 
 NOT working cases:
 pwd pwd - double free

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 15:32:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/05 21:43:28 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/20 20:44:24 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,6 @@ char	*find_good_path(t_data *data, char *cmd)
 			ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATH_A);//no free
 		if (access(one_path, F_OK) == 0)
 		{
-//			data->final_path = malloc(sizeof(char *));
-//			if (!data->final_path)
-//				ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_FINAL_PATH);//TODO
 			data->final_path = NULL;
 			data->final_path = strdup(one_path);//TODO bookmark 060424 flight
 			free(one_path);

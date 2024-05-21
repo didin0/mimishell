@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/05 21:43:40 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/21 14:03:50 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 ///start_lexing
@@ -129,6 +129,7 @@ typedef struct s_data
 	char				**paths;
 	char				*final_path;
 	char				**asked_paths;
+	pid_t				*pids;
 }					t_data;
 
 //Lexing splitting local struct
@@ -174,7 +175,7 @@ int		**create_pipes(t_data *data);
 void	organize_good_paths(t_data *data, t_env *env_list);
 int		execution(t_data *data, t_env *env_list);
 char    *find_good_path(t_data *data, char *cmd);
-pid_t	*alloc_pids(t_data *data);
+void	alloc_pids(t_data *data);
 int		adv_strncmp(const char *s1, const char *s2);
 void	exec_child(t_env *env_list, t_data *data, pid_t *pids);
 void	parent_close_all_fds(t_data *data, int **pipefd);

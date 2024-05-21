@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:15:45 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/03 13:16:54 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/21 13:40:59 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,10 @@ static void	reassign_str(t_data *data, int i, int k, char *new_str)
 static void	clean_cmd_from_redir(t_data *data, t_lexer *node, int i)
 {
 	int	k;
+	int l;
 
 	k = 0;
-	//here rewrite the memory allocated and assigned
-	//free, allocate, assign new block
+	l = 0;
 	while (node && node->type != PIPE)
 	{
 		if (is_token(node->word, 0) && node->type != EXP_STATUS)
@@ -69,9 +69,22 @@ static void	clean_cmd_from_redir(t_data *data, t_lexer *node, int i)
 			reassign_str(data, i, k, node->word);
 //		if (node)//TODO was for a special case. 
 //			reassign_str(data, i, k, node->word);
+		if (node->type == PIPE)
+		{
+			l = k;
+			while (data->cmd[i][l])
+				free(data->cmd[i][l++]);
+			data->cmd[i][k] = NULL;
+			i++;
+			k = 0;
+		}
+		else
+			k++;
 		node = node->next;
-		k++;
 	}
+	l = k;//TODO new function
+	while (data->cmd[i][l])
+		free(data->cmd[i][l++]);
 	data->cmd[i][k] = NULL;
 }
 
@@ -81,14 +94,9 @@ static void	clean_cmd_from_redir(t_data *data, t_lexer *node, int i)
 
 static void	change_cmd(t_data *data, int i)
 {
-//	char	**temp;
 	t_lexer	*node;
 	int		j;
 
-//	temp = ft_calloc(adv_list_size(data->lexer_list), sizeof(char *));
-//	if (!temp)
-//		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO malloc failure
 	node = NULL;
 	node = keep_cur_node(node, ASK);
 	j = 0;
