@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 21:22:37 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/03 13:00:43 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/22 12:24:39 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,11 @@ void	exit_builtin(t_data *data, char **cmd)
 				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
 //				ft_error(data);//TODO msg write failed
 			else
-				exit(EXIT_FAILURE);
+				exit(EXIT_FAILURE);//TODO msg write failed
 		}
 		data->exit_status = ft_atoi(cmd[1]) % 256;
 	}
+	free_env_list(data->env_list);	
+	free_regular(data);
 	exit(data->exit_status);
 }

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 16:08:07 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/21 14:32:46 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/22 09:41:39 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static void	split_inc_term(t_data *data, char *env_var, t_env **head)
 	char	**str;
 	t_env	*new_node;
 
+	new_node = NULL;
 	str = ft_split(env_var, '=');
 	if (!str)
 		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
@@ -103,10 +104,8 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 		if (!is_key_in_env(data, new_env, env_list))
 			split_inc_term(data, cmd[i], &env_list);
 		i++;
+		if (new_env)
+			free_array(new_env);
 	}
-	if (new_env)
-		free_array(new_env);
-	free(data->pids);
-	free_lexer_list(data);
-	free_3D_array(data->cmd);
+	free_regular(data);
 }

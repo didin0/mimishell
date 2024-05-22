@@ -6,18 +6,10 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/21 14:03:50 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/22 21:11:21 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-///start_lexing
-//221 line break all clear ex readline
-//221 spaces on the line Ctrl-D
-//222  " Ctrl-D one block in start_lexing not cleared by rl_clear_history
-//238 echo "a"a" 
-//27-241 cat main.c C-D
-///lexing
-//221 i
-//227 echo a
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -54,7 +46,7 @@
 #define ERR_MALLOC "Malloc failed\n"
 #define ERR_MALLOC_L "Malloc failed, lexing.c\n"
 #define ERR_MALLOC_LUS "Malloc failed, lexing_utils_split.c\n"
-#define ERR_MALLOC_NAMES "Malloc failed, lexing_utils.c\n"
+#define ERR_MALLOC_LU "Malloc failed, lexing_utils.c\n"
 #define ERR_MALLOC_PATH "Malloc failed, find_paths.c\n"
 #define ERR_MALLOC_LI "Malloc failed, list.c\n"
 #define ERR_READLINE "Readline fail of EOF sent to process\n"
@@ -71,13 +63,20 @@
 #define FREE_LINE_RET 4
 #define FREE_LIST 5
 #define FREE_BUFF 6
-#define FREE_MEANING 7
-#define FREE_NAMES 8
-#define FREE_NAMES_A 9
-#define FREE_PATH 10
-#define FREE_FINAL_PATH 11
-#define FREE_PATHS 12//not in the right place. is called in organize_paths
-#define FREE_PATH_A 13
+#define FREE_RESULT 7
+#define FREE_NAMES_P 8
+#define FREE_NAMES 9
+#define FREE_PATHS 10//check again in execution. is called in organize_paths
+#define FREE_SLASH 11
+#define FREE_ONE 12
+#define FREE_FINAL 13
+
+
+
+#define FREE_MEANING 81//part of execution??
+#define FREE_NAMES_A 100
+#define FREE_PATH 101
+#define FREE_PATH_A 130
 
 //#define FREE_PATH_ALL 15//later
 
@@ -122,6 +121,7 @@ typedef struct s_data
 	int					cmd_count;
 	int					pipe_count;
 	int					list_size;
+	int					pwd_flag;
 	struct sigaction	sa;
 	t_env		 		*env_list;
 	char				*buff;
@@ -130,6 +130,8 @@ typedef struct s_data
 	char				*final_path;
 	char				**asked_paths;
 	pid_t				*pids;
+	char				*new_path;
+	int					**pipefd;
 }					t_data;
 
 //Lexing splitting local struct
@@ -146,6 +148,7 @@ void	free_int_array(int **arr);
 void	free_3D_array(char ***str);
 void	free_env_list(t_env *head);
 void	free_lexer_list(t_data *data);
+void	free_regular(t_data *data);
 void	init_data(t_data *data);
 void	ft_error(t_data *data, const char *msg, int fd, int flag);
 void	ft_error_errno(t_data *data, char **cmd);
@@ -171,16 +174,16 @@ void	add_to_end(t_env **head, t_env *new_node);
 int		check_meaning(t_data *data);
 void	allocate_cmd(t_data *data);
 int		count_token_type(t_data *data, int	type1, int type2);
-int		**create_pipes(t_data *data);
+void	create_pipes(t_data *data);
 void	organize_good_paths(t_data *data, t_env *env_list);
 int		execution(t_data *data, t_env *env_list);
 char    *find_good_path(t_data *data, char *cmd);
 void	alloc_pids(t_data *data);
 int		adv_strncmp(const char *s1, const char *s2);
 void	exec_child(t_env *env_list, t_data *data, pid_t *pids);
-void	parent_close_all_fds(t_data *data, int **pipefd);
-void	redirect_close_fds(t_data *data, int **pipefd, int i);
-void	close_unused_fds(t_data *data, int **pipefd, int i);
+void	parent_close_all_fds(t_data *data);
+void	redirect_close_fds(t_data *data, int i);
+void	close_unused_fds(t_data *data, int i);
 int		count_tokens(t_data *data);
 void	stat_from_waitpid(t_data *data, pid_t *pids);
 t_lexer	*keep_cur_node(t_lexer *cur_node, int i);

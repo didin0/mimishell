@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 03:20:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/21 15:14:55 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/22 20:03:26 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,32 +58,28 @@ void	allocate_cmd(t_data *data)
 @ifs		in case there are no pipes, pipefd[0] needs to be initializedi
 */
 
-int	**create_pipes(t_data *data)
+void	create_pipes(t_data *data)
 {
-	int	**pipefd;
-	int	pipe_count;
 	int	j;
 
-	pipe_count = count_token_type(data, PIPE, EMPTY);
-	pipefd = malloc((pipe_count + 1) * sizeof(int *));
-	if (!pipefd)
+	data->pipefd = malloc((data->pipe_count + 1) * sizeof(int *));
+	if (!data->pipefd)
 		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
 //		ft_error(data);//TODO msg Allocation fail, exit
 	j = 0;
-	while (j < pipe_count)
+	while (j < data->pipe_count)
 	{
-		pipefd[j] = malloc(2 * sizeof(int));
-		if (!pipefd[j])
+		data->pipefd[j] = malloc(2 * sizeof(int));
+		if (!data->pipefd[j])
 			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
 //			ft_error(data);//TODO msg Allocation fail, exit
-		pipe(pipefd[j]);
+		pipe(data->pipefd[j]);
 		j++;
 	}
 	if (j > 0)
-		pipefd[j] = NULL;
+		data->pipefd[j] = NULL;
 	if (j == 0)
-		pipefd[0] = NULL;
-	return (pipefd);
+		data->pipefd[0] = NULL;
 }
 
 void	alloc_pids(t_data *data)
