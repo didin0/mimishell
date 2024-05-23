@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/22 21:11:38 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/23 18:28:44 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 		if (ft_putstr_fd((char *)msg, fd) < 0)
 			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 	}
-	if (flag != FREE_LINE_RET && flag != FREE_MEANING)	
+	if ((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != FREE_0)	
 		free_env_list(data->env_list);
 	if (flag != FREE_ENV)
 	{
@@ -141,10 +141,13 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 		rl_clear_history();
 	if (((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET))	
 		free_lexer_list(data);
-//	if ((((((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET)
-//			&& flag != FREE_LIST) && flag != FREE_MEANING)
-//			&& flag != FREE_RESULT) && flag != FREE_NAMES_P)
-//		free(data->buff);
+	if (flag == FREE_PAR_RE)
+		free(data->remaining);
+	if ((flag == FREE_PARSER || flag == FREE_PAR_NEW) && flag != FREE_PAR_RES)
+	{
+		free(data->result);
+		free(data->new_str);
+	}
 	if (flag > 7)
 		ft_error_add(data, flag);
 	if (flag != FREE_LINE_RET && flag != FREE_MEANING)//TODO meaning is bigger than 7 check if meaing is freed properly

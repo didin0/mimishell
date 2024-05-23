@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:00:26 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/21 15:33:56 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/23 14:56:03 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ t_env	*create_env_node(t_data *data, char *key, char *value)
 	new_env = malloc(sizeof(t_env));
 	if (!new_env)
 	{
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+		ft_error(data, ERR_MALLOC_ENV, STDERR_FILENO, FREE_PAR);
 //		perror("Memory allocation failed");
 		exit(EXIT_FAILURE);
 	}
@@ -62,7 +62,7 @@ static void	split_and_add(t_data *data, char *env_var, t_env **head)
 
 	str = ft_split(env_var, '=');
 	if (!str)	
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO
+		ft_error(data, ERR_MALLOC_ENV, STDERR_FILENO, FREE_0);
 	if (str[0] && str[1])
 	{
 		new_node = create_env_node(data, str[0], str[1]);

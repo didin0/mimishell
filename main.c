@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/22 12:36:16 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/23 10:55:59 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,10 +109,8 @@ int	main(int argc, char **argv, char **envp)
 		if (start_lexing(&data))
 			continue;
 		token_type(&data, env_list);
-//		parsing(&data, env_list);
-		execution(&data, env_list);
-		
-	
+		parsing(&data, env_list);
+		execution(&data, env_list);	
 	}
 	free(data.line);
 	return (0);

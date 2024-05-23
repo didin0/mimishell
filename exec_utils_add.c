@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 03:20:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/22 20:03:26 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/23 14:43:07 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,12 @@
 
 void	allocate_cmd(t_data *data)
 {
-//	char	***cmd;
 	int		i;
 
 	data->list_size = adv_list_size(data->lexer_list);
 	data->cmd = malloc((data->cmd_count + 1) * sizeof(char **));
 	if (!data->cmd)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO msg Allocation fail cmd array, exit
+		ft_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_PAR_RES);
 	i = 0;
 	while (i < data->cmd_count)
 	{
@@ -45,7 +43,7 @@ void	allocate_cmd(t_data *data)
 			while (--i >= 0)
 				free_array(data->cmd[i]);
 			free(data->cmd);
-			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+			ft_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_PAR_RES);
 //			ft_error(data);//TODO msg Alloc fail cmd array, free cmd[i]!!, exit
 		}
 //		allocate_cmd_arrays(data, i);

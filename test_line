@@ -48,11 +48,12 @@ pwd
 move backwards, since there are mistakes, I also have added free, so can double
 malloc @ list.c:48 214 still reachables is ok. 
 lexing_utils:44 invalid free leaks like hell. 
+parsing echo $PWD -- invalid reads in 3 blocks.
 
---BOOKMARK-- (error management, malloc failures, after that other errors)
+--BOOKMARK-- (error management, malloc failures execution, after that other error)
+exec_utils_add:41
+
 find_paths.c61 access == 2
-parsing
-execution
 
 
 HANDLE in ERROR handling PHASE
