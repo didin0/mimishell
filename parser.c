@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 16:16:49 by abaccari          #+#    #+#             */
-/*   Updated: 2024/05/23 21:07:16 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/05/23 21:11:08 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char	*expen(t_data *data, char *str, t_env *env_list)
 	size = key_size(str);
 	while (env_list)
 	{
-		if (!ft_strncmp(str, env_list->key, size))
+		if (!ft_strncmp(str, env_list->key, size) && !ft_strncmp(str, env_list->key, ft_strlen(env_list->key)))
 		{
 			data->remaining = ft_strdup(str + ft_strlen(env_list->key));
 			if (!data->remaining)
