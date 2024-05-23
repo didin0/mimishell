@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/21 14:03:45 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/22 20:05:00 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,8 @@ static void	resume_parent(t_data *data, pid_t *pids, int i)
 void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 {
 	int		i;
-//	char	**paths;
-	int		**pipefd;
 
-	pipefd = create_pipes(data);
+	create_pipes(data);
 	organize_good_paths(data, env_list);
 	i = 0;
 	while (i < data->cmd_count)
@@ -110,8 +108,8 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 		if (pids[i] == 0)
 		{
 			look_for_redirs(data, i);
-			redirect_close_fds(data, pipefd, i);
-			close_unused_fds(data, pipefd, i);
+			redirect_close_fds(data, i);
+			close_unused_fds(data, i);
 			if (!exec_builtin_child(data, data->cmd[i], env_list))
 			{
 				free_3D_array(data->cmd);
@@ -119,7 +117,7 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 				free_array(data->paths);
 				free_array(data->asked_paths);
 				free(pids);
-				free_int_array(pipefd);	
+				free_int_array(data->pipefd);
 				exit(EXIT_SUCCESS);
 			}
 			else
@@ -130,7 +128,7 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 		i++;
 	}
 //	free_array(paths);no help resolving leaks thus logical 0705 case echo a
-	parent_close_all_fds(data, pipefd);
+	parent_close_all_fds(data);
 //	free_array(paths);TODO needed but segfults.
 }
 

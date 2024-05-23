@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/04 19:40:48 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/23 21:06:44 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	show_cmd(char ***cmd, t_data *data)
 static int	start_lexing(t_data *data)
 {
 	if (!data->line)
-			ft_error(data, "exit\n", STDOUT_FILENO, FREE_ENV);
+		ft_error(data, "exit\n", STDOUT_FILENO, FREE_ENV);
 	if (!adv_strncmp(data->line, ""))
 	{
 		free(data->line);
@@ -110,9 +110,7 @@ int	main(int argc, char **argv, char **envp)
 			continue;
 		token_type(&data, env_list);
 		parsing(&data, env_list);
-		execution(&data, env_list);
-		
-	
+		execution(&data, env_list);	
 	}
 	free(data.line);
 	return (0);

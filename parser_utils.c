@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/03 15:43:22 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/05/23 10:56:44 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ echo "'$USER'"
 
 */
 // Clean all quotes of the same type and expend if you meet double quote
-char	*clean_quote(char *str)
+char	*clean_quote(t_data *data, char *str)
 {
 	int		i;
 	int		j;
@@ -36,7 +36,7 @@ char	*clean_quote(char *str)
 	j = 0;
 	result = malloc(ft_strlen(str) + 1);
 	if (!result)
-		return (NULL);
+		ft_error(data, ERR_MALLOC_PAR_U, STDERR_FILENO, FREE_PAR_U);
 	while (str[i])
 	{
 		if ((str[i] == '\"' || str[i] == '\'') && !quote)

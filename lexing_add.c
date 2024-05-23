@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/05 15:23:38 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/22 21:08:08 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,23 @@ static t_lexer	*categorize_tokens(t_data *data, t_lexer *temp, t_env *env_list)
 	return (temp);
 }
 
+static void	is_token_file(t_lexer *node)
+{
+	int	fd;
+
+	fd = open(node->word, O_RDONLY);
+	if (fd != -1)
+	{
+		node->type = 10;
+		close(fd);
+	}
+}	
+
 void	token_type(t_data *data, t_env *env_list)
 {
 	t_lexer	*temp;
-	int		fd;
 
 	temp = data->lexer_list;
-	fd = 0;
 	while (temp)
 	{
 		temp = categorize_tokens(data, temp, env_list);
@@ -56,13 +66,8 @@ void	token_type(t_data *data, t_env *env_list)
 			else
 				temp->type = 7;
 		}
-		fd = open(temp->word, O_RDONLY);
-		if (fd != -1)
-		{
-			temp->type = 10;
-			close(fd);
-		}
-		else if (temp->type == -1)
+		is_token_file(temp);
+		if (temp->type == -1)
 			temp->type = 3;
 		temp = temp->next;
 	}

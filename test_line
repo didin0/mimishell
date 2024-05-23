@@ -28,10 +28,42 @@ ecco ctrl-D
 cat << EOF >> t1 -- in the middle of the heredoc ctrl-C if ctrl-D then clean
 export aa=1000 cntr-D
 export cntr-D -- still reachablesi, conditional jumps
-
-BOOKMARK (normal paths for builtin parents, builtin child (pwd)
-unset
 export aa=1000 unset aa 4-225
+unset
+export aa=100
+export aa=100 bb=101, env, unset
+export aa=101 changing the value of an existing env.
+export aa=100 bb=101 , unset aa
+export all cases still reachables.
+cd ctrl-D
+cd -
+cd tilde
+cd Minishell - leaks like hell
+cd /nfs/homes/rsainas
+exit
+exit 5
+ecco + $? + Ctrl-D more cases needed, ecco, cat main.cd, env
+env
+pwd
+move backwards, since there are mistakes, I also have added free, so can double
+malloc @ list.c:48 214 still reachables is ok. 
+lexing_utils:44 invalid free leaks like hell. 
+parsing echo $PWD -- invalid reads in 3 blocks.
+
+--BOOKMARK-- (error management, malloc failures execution, after that other error)
+exec_utils_add:41
+
+find_paths.c61 access == 2
+
+
+HANDLE in ERROR handling PHASE
+export aa=100 bb100, missing = sign, part of error handling.
+exit asd
+exit 1 1
+cd Minishell - in minishell folder has a double free
+cd non_existing_folder - error case
+
+
 
 NOT working cases:
 pwd pwd - double free

@@ -6,11 +6,15 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 14:05:36 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/21 14:55:38 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/22 09:41:50 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*
+@if&else		if a middle node, else untie an end node from env_list.
+*/
 
 static void	untie_mid_node(t_env *node, t_env *env_list)
 {
@@ -21,52 +25,39 @@ static void	untie_mid_node(t_env *node, t_env *env_list)
 	{
 		if (temp->next == node)
 		{
-			temp->next = node->next;
+			free(node->key);
+			free(node->value);
+			if (node->next)
+				temp->next = node->next;
+			else
+				temp->next = NULL;
+			free(node);
 			break ;
 		}
 		temp = temp->next;
 	}
-	free(node);
-}
-
-static void	untie_last_node(t_env *node, t_env *env_list)
-{
-	t_env	*temp;
-
-	temp = env_list;
-	while (temp->next)
-	{
-		if (temp->next == node)
-		{
-			temp->next = NULL;
-			break ;
-		}
-		temp = temp->next;
-	}
-	free(node);
 }
 
 /*
 @glance			find the env in list
 @1st if			untie the node from the middle of the list
 @2nd if			untie the node from the end of the list
- *
- * */
+*/
 
 static void	is_key_in_env(char *del_env, t_env *env_list)
 {
 	t_env	*temp;
 
 	temp = env_list;
-	while (temp->next)
+	while (temp)
 	{
-		if (!ft_strncmp(temp->key, del_env, ft_strlen(del_env))
-			&& !ft_strncmp(temp->key, del_env, ft_strlen(temp->key)))
+		if (!adv_strncmp(temp->key, del_env))
+		{
 			untie_mid_node(temp, env_list);
+			break ;
+		}
 		temp = temp->next;
 	}
-	if (!ft_strncmp(temp->key, del_env, ft_strlen(del_env)))
-		untie_last_node(temp, env_list);
 }
 
 void	unset_builtin(t_data *data, char **cmd, t_env *env_list)
@@ -86,7 +77,5 @@ void	unset_builtin(t_data *data, char **cmd, t_env *env_list)
 		is_key_in_env(cmd[i], env_list);
 		i++;
 	}
-	free(data->pids);
-	free_lexer_list(data);
-	free_3D_array(data->cmd);
+	free_regular(data);
 }

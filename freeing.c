@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/21 11:06:57 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/23 18:28:44 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,13 +92,23 @@ void	free_int_array(int **arr)
 
 static void ft_error_add(t_data *data,  int flag)
 {
-	if (flag != FREE_NAMES && flag != FREE_PATH_A)
+	if (flag != FREE_NAMES_P && flag != FREE_ONE)//path_a in use??
 		free_array(data->builtin_names);
-	if ((flag != FREE_NAMES && flag != FREE_NAMES_A) && flag != FREE_PATH)
+	if (flag != FREE_NAMES_P && flag != FREE_NAMES_A)//names_a in use??
 		free_array(data->paths);
-	if ((((flag != FREE_NAMES && flag != FREE_NAMES_A) && flag != FREE_PATH)
-		&& flag!= FREE_FINAL_PATH) && flag != FREE_PATH_A)
+	if ((((flag != FREE_NAMES_P && flag != FREE_NAMES_A) && flag != FREE_NAMES)
+			&& flag != FREE_PATHS) && flag != FREE_SLASH)//names_a in use??
+	{
+		free_3D_array(data->cmd);
+		free(data->pids);
+		free_array(data->asked_paths);
+		free_int_array(data->pipefd);
+	}
+	if ((((flag != FREE_NAMES_P && flag != FREE_NAMES) && flag != FREE_PATHS)
+		&& flag!= FREE_SLASH) && flag != FREE_ONE)
 		free(data->final_path);
+	//next one must have FREE_FINAL
+
 //	if (((flag != FREE_NAMES && flag != FREE_NAMES_A) && flag != FREE_PATH)
 //		&& flag != FREE_ONE_PATH_A)
 //		free(data->slash_path);
@@ -120,20 +130,27 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 		if (ft_putstr_fd((char *)msg, fd) < 0)
 			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 	}
-	if (flag != FREE_LINE_RET && flag != FREE_MEANING)	
+	if ((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != FREE_0)	
 		free_env_list(data->env_list);
-	if (flag != FREE_ENV)	
+	if (flag != FREE_ENV)
+	{
+		data->exit_status = 127;//TODO, is this exit status for all errors ok.
 		free(data->line);
+	}
 	if ((flag != FREE_LINE && flag != FREE_ENV) && flag != FREE_MEANING)	
 		rl_clear_history();
 	if (((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET))	
 		free_lexer_list(data);
-	if ((((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET)
-			&& flag != FREE_LIST) && flag != FREE_MEANING)
-		free(data->buff);
+	if (flag == FREE_PAR_RE)
+		free(data->remaining);
+	if ((flag == FREE_PARSER || flag == FREE_PAR_NEW) && flag != FREE_PAR_RES)
+	{
+		free(data->result);
+		free(data->new_str);
+	}
 	if (flag > 7)
 		ft_error_add(data, flag);
-	if (flag != FREE_LINE_RET && flag != FREE_MEANING)
+	if (flag != FREE_LINE_RET && flag != FREE_MEANING)//TODO meaning is bigger than 7 check if meaing is freed properly
 		exit(EXIT_FAILURE);
 }
 

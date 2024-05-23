@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 15:32:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/20 20:44:24 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/23 09:02:11 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	get_paths(t_data *data, t_env *env_list)
 		{
 			data->paths = ft_split(env_list->value, ':');
 			if (!data->paths)
-				ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATH);
+				ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_NAMES);
 			break ;
 		}
 		env_list = env_list->next;
@@ -47,29 +47,29 @@ char	*find_good_path(t_data *data, char *cmd)
 
 	i = 0;
 
+	(void)cmd;
 	while (data->paths[i])
 	{
 		one_path = NULL;
 		slash_path = ft_strjoin("/", cmd);
 		if (!slash_path)
-			ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATH_A);//no free
+			ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATHS);
 		one_path = ft_strjoin(data->paths[i], slash_path);
 		free(slash_path);
 		if (!one_path)
-			ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATH_A);//no free
+			ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_SLASH);
 		if (access(one_path, F_OK) == 0)
 		{
 			data->final_path = NULL;
-			data->final_path = strdup(one_path);//TODO bookmark 060424 flight
+			data->final_path = strdup(one_path);
 			free(one_path);
 			if (!data->final_path)
-				ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATH_A);
+				ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_ONE);
 			return (data->final_path);
 		}
 		i++;
 		free(one_path);
 	}	
-//	free(one_path);
 	return (NULL);
 }
 
