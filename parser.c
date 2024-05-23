@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 16:16:49 by abaccari          #+#    #+#             */
-/*   Updated: 2024/05/03 16:36:21 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/05/23 17:42:27 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,29 +49,33 @@ int	key_size(char *str)
 }
 
 // Performs variable expansion in a string based on the environment list
-char	*expen(char *str, t_env *env_list)
-{
-	int		size;
-	char	*remaining;
+char *expen(char *str, t_env *env_list) {
+    int size;
+    char *remaining;
+    char *result;
 
-	if (ft_strlen(str) > 1)
-		str++;
-	size = key_size(str);
-	while (env_list)
-	{
-		if (ft_strncmp(str, env_list->key, ft_strlen(env_list->key)) == 0)
-		{
-			remaining = ft_strdup(str + ft_strlen(env_list->key));
-			str = ft_strdup(env_list->value);
-			ft_strlcat(str, remaining, ft_strlen(str) + ft_strlen(remaining)
-				+ 1);
-			free(remaining);
-			return (str);
-		}
-		env_list = env_list->next;
-	}
-	return (ft_strremove(str, 0, size));
+    if (ft_strlen(str) > 1)
+        str++;
+    size = key_size(str);
+
+    while (env_list) {
+        if (ft_strncmp(str, env_list->key, ft_strlen(env_list->key)) == 0) {
+            remaining = ft_strdup(str + ft_strlen(env_list->key));
+            result = malloc(ft_strlen(env_list->value) + ft_strlen(remaining) + 1);
+            if (!result) {
+                free(remaining);
+                return NULL;
+            }
+            ft_strlcpy(result, env_list->value, ft_strlen(env_list->value) + 1);
+            ft_strlcat(result, remaining, ft_strlen(result) + ft_strlen(remaining) + 1);
+            free(remaining);
+            return result;
+        }
+        env_list = env_list->next;
+    }
+    return ft_strremove(str, 0, size);
 }
+
 
 // Iterates over a word string and expend variables
 void	parsing_loop(char **word, t_env *env_list)
@@ -84,19 +88,23 @@ void	parsing_loop(char **word, t_env *env_list)
 	str = *word;
 	while (*str)
 	{
+		expended = NULL;
 		if (*str == '$')
 		{
 			before = str - *word + 1;
 			expended = expen(str, env_list);
-			new_str = malloc(ft_strlen(*word) + ft_strlen(expended));
-			ft_strlcpy(new_str, *word, before);
-			ft_strlcat(new_str, expended, ft_strlen(expended) + before);
-			free(*word);
-			*word = ft_strdup(new_str);
-			free(new_str);
+			if (expended)
+			{
+				new_str = malloc(ft_strlen(*word) + ft_strlen(expended) + 1);
+				ft_strlcpy(new_str, *word, before);
+				ft_strlcat(new_str, expended, ft_strlen(new_str) + ft_strlen(expended) + 1);
+				free(*word);
+				*word = new_str;
+				free(expended);
+				str = *word + before - 1;
+			}
 			while (*str + 1 == '$')
 				str++;
-			free(expended);
 		}
 		str++;
 	}
