@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 09:20:38 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/22 11:56:52 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 19:27:38 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,11 @@ static void	change_env(t_data *data, t_env *env_list, char *env, char *path)
 			free(temp->value);
 			temp->value = ft_strdup(path);
 			if (!temp->value)
-				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+				ft_error(data, ERR_MALLOC_BU_CD, STDERR_FILENO, FREE_NEW_ENV);
 		}
 		temp = temp->next;
 	}
+	(void)path;//TODO
 }
 
 static void	get_abs_path(t_data *data, t_env *env_list)
@@ -84,7 +85,7 @@ static void	expand_tilde(t_data *data, char **cmd, t_env *env_list)
 			home = our_get_env(env_list, "HOME");
 			new_path = malloc(ft_strlen(home) + ft_strlen(cmd[1]));
 			if (!new_path)
-				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+				ft_error(data, ERR_MALLOC_BU_CD, STDERR_FILENO, FREE_NEW_ENV);
 			new_len = ft_strlen(home) + ft_strlen(cmd[1]);
 			ft_strlcpy(new_path, home, ft_strlen(home) + 1);
 			ft_strlcat(new_path, cmd[1] + 1, new_len);

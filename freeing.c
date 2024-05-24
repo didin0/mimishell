@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/24 14:06:56 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 21:11:16 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,19 @@ static void ft_error_cont(t_data *data,  int flag)
 		free(data->result);
 		free(data->new_str);
 	}
-	if (flag == FREE_CMD_1)
+	if (flag == FREE_CMD_1 || flag == EX_ARG || flag == FREE_NEW_ENV)
 		free_3D_array(data->cmd);
-	if (flag == FREE_PIDS)
+	if (flag == FREE_PIDS || flag == EX_ARG || flag == FREE_NEW_ENV
+			|| flag == FREE_CHIL)
 		free(data->pids);
+	if (flag == FREE_NEW_ENV)
+		free_array(data->new_env);
+	if (flag == FREE_CHIL)
+	{
+		free_array(data->paths);
+		free_array(data->asked_paths);
+		free_int_array(data->pipefd);
+	}
 }
 
 static void ft_error_add(t_data *data,  int flag)
@@ -123,7 +132,7 @@ static void ft_error_add(t_data *data,  int flag)
 	if ((((flag != FREE_NAMES_P && flag != FREE_NAMES) && flag != FREE_PATHS)
 		&& flag!= FREE_SLASH) && flag != FREE_ONE)
 		free(data->final_path);
-	if (flag != FREE_LINE_RET && flag != FREE_MEANING)//TODO
+	if ((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != EX_ARG)//TODO
 		exit(EXIT_FAILURE);
 }
 
@@ -149,9 +158,11 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 	if (((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET))	
 		free_lexer_list(data);
 	ft_error_cont(data, flag);
-	if (flag > 7)
+	if (((flag > 7 && flag != EX_ARG) && flag != FREE_NEW_ENV)
+		&& flag != FREE_CHIL)
 		ft_error_add(data, flag);
-	if (flag != FREE_LINE_RET && flag != FREE_MEANING)//TODO meaning is bigger than 7 check if meaing is freed properly
+//TODO meaning is bigger than 7 check if meaing is freed properly
+	if ((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != EX_ARG)//TODO
 		exit(EXIT_FAILURE);
 }
 

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/21 14:05:12 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 19:36:53 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,9 @@ int	exec_builtin_parent(t_data *data, char **cmd, t_env *env_list)
 
 int	exec_builtin_child(t_data *data, char **cmd, t_env *env_list)
 {
-//	free(data->org_paths);
 	if (!adv_strncmp(cmd[0], "echo"))
 	{
 		echo_builtin(data, cmd);
-//		free_array(cmd);//TODO for all paths
 		return (0);
 	}
 	if (!adv_strncmp(cmd[0], "pwd"))

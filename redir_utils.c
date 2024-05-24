@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:15:45 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/21 13:40:59 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 21:14:39 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,16 @@ static void	reassign_str(t_data *data, int i, int k, char *new_str)
 		free(data->cmd[i][k]);
 	data->cmd[i][k] = ft_strdup(new_str);
 	if (!data->cmd[i][k])
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO
-//	free(new_str);//TODO has no effect.
+	{
+		while (--i >= 0)
+			free_array(data->cmd[i]);
+		if (i == -1 && data->list_size > 1)
+			free(data->cmd[0][1]);
+		if (i == -1)
+			free(data->cmd[0]);
+		free(data->cmd);
+		ft_error(data, ERR_MALLOC_RE_U, STDERR_FILENO, FREE_CHIL);
+	}
 }	
 
 

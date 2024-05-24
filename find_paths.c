@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 15:32:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/23 09:02:11 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 21:16:23 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,15 +80,13 @@ char	*find_good_path(t_data *data, char *cmd)
 
 void	organize_good_paths(t_data *data, t_env *env_list)
 {
-//	char	**asked_paths;
 	int		i;
 
 	data->asked_paths = ft_calloc(data->cmd_count + 1, sizeof(char *));
 	if (!data->asked_paths)
-		ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATHS);//TODO
+		ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATHS);
 	i = 0;
-//	if (!data->paths)
-		get_paths(data, env_list);//TODO note in case of env, pwd
+		get_paths(data, env_list);
 	while (i < data->cmd_count)
 	{
 		find_good_path(data, data->cmd[i][0]);
@@ -97,5 +95,4 @@ void	organize_good_paths(t_data *data, t_env *env_list)
 		i++;
 	}
 	data->asked_paths[i] = NULL;	
-//	return (asked_paths);
 }

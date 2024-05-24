@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/24 14:09:12 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 19:56:23 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@
 #define ERR_MALLOC_EX_UA "Malloc failed, exec_utils_add.c\n"
 #define ERR_MALLOC_EX "Malloc failed, execution.c\n"
 #define ERR_MALLOC_BU_EX "Malloc failed, builtin_export.c\n"
-
+#define ERR_MALLOC_BU_CD "Malloc failed, builtin_cd.c\n"
+#define ERR_MALLOC_RE_U "Malloc failed, redir_utils.c\n"
 
 #define ERR_EX_ARG "Export needs alphanumerical chars prior =\n"
 
@@ -88,10 +89,11 @@
 #define FREE_0 2//
 #define FREE_CMD_0 7
 #define FREE_CMD_1 7
-#define FREE_PIDS 7
+#define FREE_PIDS 7//these new 7 values dont they interrupt the previus 7
+#define FREE_NEW_ENV 15
+#define FREE_CHIL 16
 
-
-#define EX_ARG 7
+#define EX_ARG 20//take a new number each case!!!!
 
 #define FREE_NAMES_A 100
 #define FREE_PATH 101
