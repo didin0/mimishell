@@ -6,24 +6,60 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/23 10:56:44 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 10:12:54 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-echo $OLDPWD
-echo $USER$USER
-echo $USER$
-echo $USER" $USER"
-echo $USER " $USER "
-echo '"$USER"'
-echo "'$USER'"
-
-
+Removes a substring from a string starting from a given position
 */
-// Clean all quotes of the same type and expend if you meet double quote
+
+char	*ft_strremove(t_data *data, char *s, int start, int n)
+{
+	int	len;
+	int	i;
+
+	if (!s)
+		ft_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_PAR_RES_1);
+	len = 0;
+	while (s[len])
+		len++;
+	if (start >= len)
+		return (NULL);
+	i = start;
+	while (s[i + n] != '\0')
+	{
+		s[i] = s[i + n];
+		i++;
+	}
+	s[i] = '\0';
+	return (s);
+}
+
+/*
+Determines the size of a key in a string (used in the expansion function)
+*/
+
+int	key_size(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' || str[i] == '\"' || str[i] == '$' || str[i] == ' ')
+			break ;
+		i++;
+	}
+	return (i);
+}
+
+/*
+Clean all quotes of the same type and expend if you meet double quote
+*/
+
 char	*clean_quote(t_data *data, char *str)
 {
 	int		i;
@@ -48,7 +84,7 @@ char	*clean_quote(t_data *data, char *str)
 		i++;
 	}
 	result[j] = '\0';
-    free(str);
+	free(str);
 	return (result);
 }
 
@@ -64,20 +100,4 @@ int	check_sq(char *str)
 		i++;
 	}
 	return (0);
-}
-
-int count_$(char *str)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	while (str[i])
-	{
-		if (str[i] == '$')
-			j++;
-		i++;
-	}
-	return (j);
 }

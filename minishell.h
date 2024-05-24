@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/23 18:22:25 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 10:03:00 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,11 @@
 #define FREE_ONE 12
 #define FREE_PAR_RE 6//
 #define FREE_PARSER 6//
-#define FREE_PAR_NEW 7//
+#define FREE_PAR_NEW 7//not freeing anything new
 #define FREE_PAR_U 7
 #define FREE_MEANING 8
 #define FREE_PAR_RES 7//
+#define FREE_PAR_RES_1 7//
 #define FREE_0 2//
 
 
@@ -149,6 +150,7 @@ typedef struct s_data
 	char				*result;
 	char				*remaining;
 	char				*new_str;
+	char				*str;
 }					t_data;
 
 //Lexing splitting local struct
@@ -222,9 +224,10 @@ int is_builtin(t_data *data, char *word);
 // Parser
 t_lexer *parsing(t_data *data, t_env *env_list);
 char	**ft_new_split(char const *s, char c);
-int count_$(char *str);
-int check_sq(char *str);
+int		check_sq(char *str);
 char	*clean_quote(t_data *data, char *str);
+char	*ft_strremove(t_data *data, char *s, int start, int n);
+int	key_size(char *str);
 
 //Redirections
 

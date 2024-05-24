@@ -49,12 +49,27 @@ move backwards, since there are mistakes, I also have added free, so can double
 malloc @ list.c:48 214 still reachables is ok. 
 lexing_utils:44 invalid free leaks like hell. 
 parsing echo $PWD -- invalid reads in 3 blocks.
+echo $OLDPWD
+echo $USER$USER
+echo $USER$
+echo $USER" $USER"
+echo $USER " $USER "
+echo '"$USER"'
+echo "'$USER'"
 
 --BOOKMARK-- (error management, malloc failures execution, after that other error)
+norminette
+parser all mallocs again.
+
 exec_utils_add:41
 
 find_paths.c61 access == 2
 
+OPEN CASES
+echo $ --- one block still reachable, in case malloc fail parser.c:59 and 54
+echo $PWDa --- one block still reachable, in case strdup fail parser.c:54
+
+echo $PWDa$PWD --not behaving well
 
 HANDLE in ERROR handling PHASE
 export aa=100 bb100, missing = sign, part of error handling.

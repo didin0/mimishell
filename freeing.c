@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/23 18:28:44 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 10:18:03 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,18 @@ void	free_int_array(int **arr)
 	}
 }
 
+static void ft_error_cont(t_data *data,  int flag)
+{
+	if (flag == FREE_PAR_RE)
+		free(data->remaining);
+	if (((flag == FREE_PARSER || flag == FREE_PAR_NEW) && flag != FREE_PAR_RES)
+		&& flag != FREE_PAR_RES_1)
+	{
+		free(data->result);
+		free(data->new_str);
+	}
+}
+
 static void ft_error_add(t_data *data,  int flag)
 {
 	if (flag != FREE_NAMES_P && flag != FREE_ONE)//path_a in use??
@@ -141,13 +153,7 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 		rl_clear_history();
 	if (((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET))	
 		free_lexer_list(data);
-	if (flag == FREE_PAR_RE)
-		free(data->remaining);
-	if ((flag == FREE_PARSER || flag == FREE_PAR_NEW) && flag != FREE_PAR_RES)
-	{
-		free(data->result);
-		free(data->new_str);
-	}
+	ft_error_cont(data, flag);
 	if (flag > 7)
 		ft_error_add(data, flag);
 	if (flag != FREE_LINE_RET && flag != FREE_MEANING)//TODO meaning is bigger than 7 check if meaing is freed properly
