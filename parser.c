@@ -6,85 +6,72 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 16:16:49 by abaccari          #+#    #+#             */
-/*   Updated: 2024/05/23 21:11:08 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/05/24 14:16:35 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Removes a substring from a string starting from a given position
-char	*ft_strremove(char *s, int start, int n)
+static void	store_remaining(t_data *data, char *str, t_env *env_list)
 {
-	int	len;
-	int	i;
-
-	len = 0;
-	while (s[len])
-		len++;
-	if (start >= len)
-		return (NULL);
-	i = start;
-	while (s[i + n] != '\0')
-	{
-		s[i] = s[i + n];
-		i++;
-	}
-	s[i] = '\0';
-	return (s);
+	data->remaining = ft_strdup(str + ft_strlen(env_list->key));
+	if (!data->remaining)
+		ft_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_PAR_NEW);
+	data->result = malloc(ft_strlen(env_list->value)
+			+ ft_strlen(data->remaining) + 1);
+	if (!data->result)
+		ft_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_PAR_RE);
 }
 
-// Determines the size of a key in a string (used in the expansion function)
-int	key_size(char *str)
-{
-	int	i;
+/*
+Performs variable expansion in a string based on the environment list
+*/
 
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '\'' || str[i] == '\"' || str[i] == '$' || str[i] == ' ')
-			break ;
-		i++;
-	}
-	return (i);
-}
-
-// Performs variable expansion in a string based on the environment list
-char	*expen(t_data *data, char *str, t_env *env_list)
+static char	*expen(t_data *data, char *str, t_env *env_list)
 {
 	int		size;
+	char	*temp;
 
 	if (ft_strlen(str) > 1)
 		str++;
 	size = key_size(str);
 	while (env_list)
 	{
-		if (!ft_strncmp(str, env_list->key, size) && !ft_strncmp(str, env_list->key, ft_strlen(env_list->key)))
+		if (!ft_strncmp(str, env_list->key, size)
+			&& !ft_strncmp(str, env_list->key, ft_strlen(env_list->key)))
 		{
-			data->remaining = ft_strdup(str + ft_strlen(env_list->key));
-			if (!data->remaining)
-				ft_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_PAR_RE);
-			data->result = malloc(ft_strlen(env_list->value)
-					+ ft_strlen(data->remaining) + 1);
-			if (!data->result)
-				ft_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_PAR_RE);
+			store_remaining(data, str, env_list);
 			ft_strlcpy(data->result, env_list->value, ft_strlen(env_list->value)
-					+ 1);
+				+ 1);
 			ft_strlcat(data->result, data->remaining, ft_strlen(data->result)
-					+ ft_strlen(data->remaining) + 1);
+				+ ft_strlen(data->remaining) + 1);
 			free(data->remaining);
 			return (data->result);
 		}
 		env_list = env_list->next;
 	}
-	return (ft_strremove(ft_strdup(str), 0, size));
+	temp = ft_strdup(str);
+	return (ft_strremove(data, temp, 0, size));
 }
 
+static void	alloc_new(t_data *data, char **word, char *expanded, int before)
+{
+	data->new_str = malloc(ft_strlen(*word) + ft_strlen(expanded) + 1);
+	if (!data->new_str)
+		ft_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_PARSER);
+	ft_strlcpy(data->new_str, *word, before);
+	ft_strlcat(data->new_str, expanded, ft_strlen(data->new_str)
+		+ ft_strlen(expanded) + 1);
+}
 
-// Iterates over a word string and expend variables
-void	parsing_loop(t_data *data, char **word, t_env *env_list)
+/*
+Iterates over a word string and expend variables
+*/
+
+static void	parsing_loop(t_data *data, char **word, t_env *env_list)
 {
 	int		before;
-	char	*expended;
+	char	*expanded;
 	char	*str;
 
 	str = *word;
@@ -94,14 +81,9 @@ void	parsing_loop(t_data *data, char **word, t_env *env_list)
 		if (*str == '$')
 		{
 			before = str - *word + 1;
-			expended = expen(data, str, env_list);
-			data->new_str = malloc(ft_strlen(*word) + ft_strlen(expended) + 1);
-			if (!data->new_str)
-				ft_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_PARSER);
-			ft_strlcpy(data->new_str, *word, before);
-			ft_strlcat(data->new_str, expended, ft_strlen(data->new_str)
-					+ ft_strlen(expended) + 1);
-			free(expended);
+			expanded = expen(data, str, env_list);
+			alloc_new(data, word, expanded, before);
+			free(expanded);
 			free(*word);
 			*word = data->new_str;
 			if (!*word)
@@ -115,7 +97,10 @@ void	parsing_loop(t_data *data, char **word, t_env *env_list)
 	}
 }
 
-// Iterates over the list and applies variable expansion for each
+/*
+Iterates over the list and applies variable expansion for each
+*/
+
 t_lexer	*parsing(t_data *data, t_env *env_list)
 {
 	t_lexer	*lexer_list;

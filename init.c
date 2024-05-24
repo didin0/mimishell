@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:01:57 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/23 18:29:22 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 13:00:23 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,5 @@ void init_data(t_data *data)
 	data->result = NULL;
 	data->remaining = NULL;
 	data->new_str = NULL;
+	data->new_env = NULL;
 }

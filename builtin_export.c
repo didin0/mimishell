@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 16:08:07 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/22 09:41:39 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 14:00:12 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,39 @@ static int	is_key_in_env(t_data *data, char **new_env, t_env *env_list)
 	return (0);
 }
 
+/*
+@2nd if		minimum needed for an env is a letter followed by = sign
+			start looking from the secound char and return
+*/
+
 static void	check_args(t_data *data, char **cmd, t_env *env_list)
 {
+//	int	i;
+//	int j;
+
 	if (!cmd[1])
 		env_builtin(data, env_list);
-//	else if (!cmd[2])
-//		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO free, msg too many arguments
 }
+/*	else
+	{
+		i = 1;
+		j = 0;
+		while (cmd[i] && cmd[i][j] != '=')
+		{
+			j = 0;
+			while (cmd[i][j])
+			{
+				if (!ft_isalnum(cmd[i][j]))					
+					ft_error(data, ERR_EX_ARG, STDERR_FILENO, EX_ARG);
+				j++;
+			}
+			if (cmd[i][j] == '=')
+				return;
+			i++;
+		}
+	}
+//	return (1);
+}*/
 
 /*
 @glance			main while looks at each string in array.
@@ -83,9 +108,7 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 {
 	int		i;
 	int		j;
-	char	**new_env;
 
-	new_env = NULL;
 	check_args(data, cmd, env_list);
 	i = 1;
 	while (cmd[i])
@@ -100,12 +123,14 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 		if (cmd[i][j] != '=')
 			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
 //			ft_error(data);//TODO "export: CMD[i]: not a valid identifier"
-		new_env = ft_split(cmd[i], '=');//TODO ft_calloc fail
-		if (!is_key_in_env(data, new_env, env_list))
+		data->new_env = ft_split(cmd[i], '=');//TODO ft_calloc fail
+		if (!data->new_env)	
+			ft_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_PIDS);//TODO
+		if (!is_key_in_env(data, data->new_env, env_list))
 			split_inc_term(data, cmd[i], &env_list);
 		i++;
-		if (new_env)
-			free_array(new_env);
+		if (data->new_env)
+			free_array(data->new_env);
 	}
 	free_regular(data);
 }

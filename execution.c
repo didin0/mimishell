@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/22 20:05:00 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 13:04:26 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,24 @@
 
  pid_t	g_child_pid = -1;
 
+static void	init_cmd_loop(t_data *data, char *word, int i, int j)
+{
+	data->cmd[i][j] = ft_strdup(word);
+	if (!data->cmd[i][j])
+	{
+		while (--i >= 0)
+			free_array(data->cmd[i]);
+		if (i == -1)
+			free(data->cmd[0]);
+		free(data->cmd);
+		ft_error(data, ERR_MALLOC_EX, STDERR_FILENO, FREE_CMD_0);
+	}
+}
+
 /*
 @glance		cmd[] array takes in all node words(tokens) up until redir or pipe
 @strdup		is allocating the last level of 3D array cmd
-TODO		There are some tangling pointers or something in last cmd layer.
-			case cat main.c | grep void | grep list
+@NULL		initialization of last layer of 3D array
 */
 
 static void	init_cmd(t_data *data)
@@ -34,18 +47,9 @@ static void	init_cmd(t_data *data)
 	while (node)
 	{
 		if (j == 0)
-			data->cmd[i][j] = NULL;//TODO initalization of a pointer
+			data->cmd[i][j] = NULL;
 		if (node->type != PIPE)
-		{
-			data->cmd[i][j] = ft_strdup(node->word);
-			if (!data->cmd[i][j])
-			{
-				while (--i >= 0)//TODO test the backward freeing without leaks
-					free_array(data->cmd[i]);
-				free(data->cmd);
-				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO
-			}
-		}
+			init_cmd_loop(data, node->word, i, j);
 		else
 		{
 			data->cmd[i][j] = NULL;
@@ -156,7 +160,6 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 
 int	execution(t_data *data, t_env *env_list)
 {
-//	pid_t	*pids;
 
 	if (check_meaning(data) != 0)
 	{
@@ -179,8 +182,6 @@ int	execution(t_data *data, t_env *env_list)
 	free_lexer_list(data);
 	if (data->paths)	
 		free_array(data->paths);
-//	if (pids)
-//		free(pids);
 	free(data->line);
 	free_array(data->asked_paths);
 	return (0);
