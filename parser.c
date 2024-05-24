@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 16:16:49 by abaccari          #+#    #+#             */
-/*   Updated: 2024/05/24 14:16:35 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/05/24 14:17:42 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ static void	parsing_loop(t_data *data, char **word, t_env *env_list)
 	str = *word;
 	while (*str)
 	{
-		expended = NULL;
+		expanded = NULL;
 		if (*str == '$')
 		{
 			before = str - *word + 1;
