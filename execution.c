@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/24 13:04:26 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 16:29:07 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,8 +125,12 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 				exit(EXIT_SUCCESS);
 			}
 			else
+			{
+				signal(SIGQUIT, SIG_DFL);
+				signal(SIGINT, SIG_DFL);
 				if (execve(data->asked_paths[i], data->cmd[i], NULL) == -1)
 					ft_error_errno(data, data->cmd[i]);//TODO check
+			}
 		}
 		resume_parent(data, pids, i);
 		i++;
