@@ -56,19 +56,26 @@ echo $USER" $USER"
 echo $USER " $USER "
 echo '"$USER"'
 echo "'$USER'"
+parser all mallocs again. norm
+exec_utils_add:41
+execution:19, function >25 lines.
+exec_utils_add:83
 
 --BOOKMARK-- (error management, malloc failures execution, after that other error)
-norminette
-parser all mallocs again.
+export a leaks, error handling.
 
-exec_utils_add:41
+Error rmanagment for write fails
+
+FUNCTIONALITY
+$? not getting past the parser
+echo $?
+export a
 
 find_paths.c61 access == 2
 
 OPEN CASES
 echo $ --- one block still reachable, in case malloc fail parser.c:59 and 54
 echo $PWDa --- one block still reachable, in case strdup fail parser.c:54
-
 echo $PWDa$PWD --not behaving well
 
 HANDLE in ERROR handling PHASE

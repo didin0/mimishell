@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/24 10:03:00 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 14:09:12 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,11 @@
 #define ERR_QUOTE_CLOSE "Quotes shall be closed.\n"
 #define ERR_MEANING "Meaning/command missing\n"
 #define ERR_MALLOC_EX_UA "Malloc failed, exec_utils_add.c\n"
+#define ERR_MALLOC_EX "Malloc failed, execution.c\n"
+#define ERR_MALLOC_BU_EX "Malloc failed, builtin_export.c\n"
 
 
+#define ERR_EX_ARG "Export needs alphanumerical chars prior =\n"
 
 #define ERR_UNSET "UNSET needs an argument\n"
 
@@ -83,11 +86,12 @@
 #define FREE_PAR_RES 7//
 #define FREE_PAR_RES_1 7//
 #define FREE_0 2//
+#define FREE_CMD_0 7
+#define FREE_CMD_1 7
+#define FREE_PIDS 7
 
 
-
-
-
+#define EX_ARG 7
 
 #define FREE_NAMES_A 100
 #define FREE_PATH 101
@@ -151,6 +155,7 @@ typedef struct s_data
 	char				*remaining;
 	char				*new_str;
 	char				*str;
+	char				**new_env;
 }					t_data;
 
 //Lexing splitting local struct

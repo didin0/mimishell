@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 03:20:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/23 14:43:07 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 12:42:41 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 				deepest layer is a char *.
 @if !cmd[i]		in case allocation partially fails, free all previously alloc.	
 ???				in case of echo a I have 2 arrays allocated cmd_count+1
-
+@NULL			terminating 3D array, to array level
 */
 
 void	allocate_cmd(t_data *data)
@@ -44,12 +44,10 @@ void	allocate_cmd(t_data *data)
 				free_array(data->cmd[i]);
 			free(data->cmd);
 			ft_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_PAR_RES);
-//			ft_error(data);//TODO msg Alloc fail cmd array, free cmd[i]!!, exit
 		}
-//		allocate_cmd_arrays(data, i);
 		i++;
 	}
-	data->cmd[data->cmd_count] = NULL;//TODO terminating 3D array
+	data->cmd[data->cmd_count] = NULL;
 }
 
 /*
@@ -84,8 +82,7 @@ void	alloc_pids(t_data *data)
 {
 	data->pids = malloc(data->cmd_count * sizeof(pid_t));
 	if (!data->pids)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO put to data->
-//		ft_error(data);//TODO msg Allocation faily, exit
+		ft_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_CMD_1);
 }
 
 int	adv_strncmp(const char *s1, const char *s2)
