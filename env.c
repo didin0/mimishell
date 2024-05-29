@@ -60,6 +60,7 @@ static void	split_and_add(t_data *data, char *env_var, t_env **head)
 	char	**str;
 	t_env	*new_node;
 
+	(void)env_var;//TDOD
 	str = ft_split(env_var, '=');
 	if (!str)	
 		ft_error(data, ERR_MALLOC_ENV, STDERR_FILENO, FREE_0);

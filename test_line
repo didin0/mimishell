@@ -66,7 +66,10 @@ export a leaks, error handling.
 builtin_export:127
 
 --BOOKMARK-- (error management, malloc failures execution, write fails, after that other error)
-
+func inprovment relative and abs path instead of a command.
+alter data->final_path in case token type ABS_PATH
+in case token starts with / then final path == token.
+error case cd Minishell/ in home
 
 
 Error rmanagment for write fails

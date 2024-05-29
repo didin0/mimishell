@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static char	*our_get_env(t_env *env_list, char *env)
+char	*our_get_env(t_env *env_list, char *env)
 {
 	t_env	*temp;
 
@@ -23,6 +23,8 @@ static char	*our_get_env(t_env *env_list, char *env)
 			break ;
 		temp = temp->next;
 	}
+	if (!temp)
+		return (NULL);
 	return (temp->value);
 }
 
@@ -59,10 +61,9 @@ static void	get_abs_path(t_data *data, t_env *env_list)
 	if (getcwd(abs_path, sizeof(abs_path)) != NULL)
 		change_env(data, env_list, "PWD", abs_path);
 	else
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO message cd: error retrieving currend directory
+		ft_error(data, ERR_CD_GET, STDERR_FILENO, CD_PWD);
 	if (data->pwd_flag == 1)
-		pwd_builtin(data, env_list);//todo need to print OLDPWD
+		pwd_builtin(data, env_list);
 	data->pwd_flag = 0;
 }
 
@@ -77,8 +78,7 @@ static void	expand_tilde(t_data *data, char **cmd, t_env *env_list)
 	size_t	new_len;
 
 	if (cmd[2])
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO message cd: too many arguments
+		ft_error(data, ERR_CD_MAX, STDERR_FILENO, CD_ARG);
 	else if (cmd[1][1] == '\0' || cmd[1][1] == '/'
 				|| !ft_strncmp(cmd[1], "~/.", 3))
 		{
@@ -90,8 +90,7 @@ static void	expand_tilde(t_data *data, char **cmd, t_env *env_list)
 			ft_strlcpy(new_path, home, ft_strlen(home) + 1);
 			ft_strlcat(new_path, cmd[1] + 1, new_len);
 			if (chdir(new_path) == -1)
-				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//				ft_error(data);//TODO err STDERR "cd: $new_path no such file or dir"
+				ft_error(data, ERR_CD_ARG, STDERR_FILENO, CD_ARG);	
 			free(new_path);
 			get_abs_path(data, env_list);
 			free_regular(data);
@@ -108,29 +107,28 @@ static void	expand_tilde(t_data *data, char **cmd, t_env *env_list)
 
 void	cd_builtin(t_data *data, char **cmd, t_env *env_list)
 {
-	char	*home;
-
-	home = our_get_env(env_list, "HOME");
-	if (!home)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO
-	if (!cmd[1])
-		data->new_path = home;
+	if (!cmd[1] || !is_token_path(cmd[1]))
+		cd_also_path(data, cmd, env_list);	
 	else if (cmd[1][0] == '-')
 	{
-		if (cmd[1][1] != '\0')
-			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO
 		data->pwd_flag = 1;
 		data->new_path = our_get_env(env_list, "OLDPWD");
 	}
-	else if (cmd[1][0] == '~')
+	else if (cmd[1][0] == '-' || cmd[1][0] == '~' || cmd[2])
 	{
-		expand_tilde(data, cmd, env_list);
-		return ;
+		if (cmd[1][0] == '~')
+			expand_tilde(data, cmd, env_list);
+		else if (cmd[2])
+			ft_error(data, ERR_CD_MAX, STDERR_FILENO, CD_ARG);
+	return ;
 	}
 	else
 		data->new_path = cmd[1];
 	if (chdir(data->new_path) == -1)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO err STDERR "cd: $new_path no such file or dir"
+	{
+		ft_error(data, ERR_CD_ARG, STDERR_FILENO, CD_ARG);	
+		return ;
+	}
 	get_abs_path(data, env_list);
 	free_regular(data);
 }

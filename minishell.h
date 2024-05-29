@@ -62,6 +62,10 @@
 #define ERR_MALLOC_RE_U "Malloc failed, redir_utils.c\n"
 
 #define ERR_EX_ARG "Export needs alphanumerical chars prior =\n"
+#define ERR_CD_ARG "cd: no-such/check path, dir \n"
+#define ERR_CD_MAX "cd: too many arguments\n"
+#define ERR_CD_HOME "cd: HOME env missing\n"
+#define ERR_CD_GET "cd: PWD env missing\n"
 
 #define ERR_UNSET "UNSET needs an argument\n"
 
@@ -86,14 +90,17 @@
 #define FREE_MEANING 8
 #define FREE_PAR_RES 7//
 #define FREE_PAR_RES_1 7//
-#define FREE_0 2//
+#define FREE_0 22
 #define FREE_CMD_0 7
 #define FREE_CMD_1 7
 #define FREE_PIDS 7//these new 7 values dont they interrupt the previus 7
 #define FREE_NEW_ENV 15
 #define FREE_CHIL 16
 
-#define EX_ARG 20//take a new number each case!!!!
+#define EX_ARG 20//take a new number each case, incase I add to ft_error as a condition!!!!
+#define CD_ARG 21
+#define CD_HOME 23
+#define CD_PWD 24
 
 #define FREE_NAMES_A 100
 #define FREE_PATH 101
@@ -221,6 +228,7 @@ int	lexing(t_data *data);
 int	is_token(char *c, int i);
 void	token_type(t_data *data, t_env *env_list);
 int	is_cmd(t_data *data, t_lexer *token, t_env *env_list);
+int	is_token_path(char *cmd);
 int	all_tokens_categorized(t_lexer *temp);
 int	ft_strchr_from(char *s, char c, int i);
 int	ft_strchr_end(char *s, char c, int i);
@@ -251,7 +259,9 @@ int	exec_builtin_child(t_data *data, char **cmd, t_env *env_list);
 void	pwd_builtin(t_data *data, t_env *env_list);
 void	env_builtin(t_data *data, t_env *env_list);
 void	cd_builtin(t_data *data, char **cmd, t_env *env_list);
+void	cd_also_path(t_data *data, char **cmd, t_env *env_list);
 void	export_builtin(t_data *data, char **cmd, t_env *env_list);
+char	*our_get_env(t_env *env_list, char *env);
 void	unset_builtin(t_data *data, char **cmd, t_env *env_list);
 int		ft_isdigit_sign(char *str);
 void	exit_builtin(t_data *data, char **cmd);

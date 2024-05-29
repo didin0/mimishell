@@ -32,15 +32,32 @@ static void	is_array_allocated(t_data *data, char **arr, int len)
 }
 
 /*
+@glance	categorize abs path /bin/ls & this rel ./a.out  as a command
+*/
+
+int	is_token_path(char *cmd)
+{
+	int i;
+	int	j;
+
+	i = 0;
+	j = 1;
+	if (cmd[i] == '/' || (cmd[i] == '.' && (cmd[j] == '.' || cmd[j] == '/')))
+			return (0);
+	return (1);
+}
+
+/*
 @glance 	needed to figure out token_type.
 			look at one token, is it a command found in $PATH.
 @temp_cmd	a forced solution to use existing func of find_good_path()
 */
 
 int	is_cmd(t_data *data, t_lexer *token, t_env *env_list)
-{
-	
+{	
 	get_paths(data, env_list);
+	if (!is_token_path(token->word))
+		return (0);
 	if (find_good_path(data, token->word))
 	{
 		if (data->paths)

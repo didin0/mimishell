@@ -113,6 +113,9 @@ static void ft_error_cont(t_data *data,  int flag)
 		free_array(data->asked_paths);
 		free_int_array(data->pipefd);
 	}
+	if (flag == CD_ARG || flag == CD_HOME || flag == CD_PWD)	
+		free_regular(data);
+
 }
 
 static void ft_error_add(t_data *data,  int flag)
@@ -146,23 +149,28 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 		if (ft_putstr_fd((char *)msg, fd) < 0)
 			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 	}
-	if ((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != FREE_0)	
+	if (((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != FREE_0)
+		&& flag != CD_ARG)
 		free_env_list(data->env_list);
 	if (flag != FREE_ENV)
 	{
 		data->exit_status = 127;//TODO, is this exit status for all errors ok.
 		free(data->line);
 	}
-	if ((flag != FREE_LINE && flag != FREE_ENV) && flag != FREE_MEANING)	
+	if (((flag != FREE_LINE && flag != FREE_ENV) && flag != FREE_MEANING)
+			&& flag != CD_ARG)	
 		rl_clear_history();
-	if (((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET))	
+	if (((flag != FREE_ENV && flag != FREE_LINE) && flag != FREE_LINE_RET)
+		&& flag != FREE_0)
 		free_lexer_list(data);
 	ft_error_cont(data, flag);
-	if (((flag > 7 && flag != EX_ARG) && flag != FREE_NEW_ENV)
-		&& flag != FREE_CHIL)
+	if (((((((flag > 7 && flag != EX_ARG) && flag != FREE_NEW_ENV)
+		&& flag != FREE_CHIL) && flag != CD_ARG) && flag != FREE_0)
+		&& flag != CD_HOME) && flag != CD_PWD)
 		ft_error_add(data, flag);
 //TODO meaning is bigger than 7 check if meaing is freed properly
-	if ((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != EX_ARG)//TODO
+	if (((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != EX_ARG)
+		&& flag != CD_ARG)//TODO
 		exit(EXIT_FAILURE);
 }
 

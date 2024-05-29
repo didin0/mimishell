@@ -37,6 +37,7 @@ void	get_paths(t_data *data, t_env *env_list)
 @return(NULL)		path not valid.
 @var				if a static variable is assigned a NULL by ft_strjoin
 					this needs to freeing in ft_error().
+you can give abs path within the executive folder.
 */
 
 char	*find_good_path(t_data *data, char *cmd)
@@ -51,10 +52,13 @@ char	*find_good_path(t_data *data, char *cmd)
 	while (data->paths[i])
 	{
 		one_path = NULL;
-		slash_path = ft_strjoin("/", cmd);
+			slash_path = ft_strjoin("/", cmd);
 		if (!slash_path)
 			ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATHS);
-		one_path = ft_strjoin(data->paths[i], slash_path);
+		if (!is_token_path(cmd))
+			one_path = strdup(cmd); 
+		else
+			one_path = ft_strjoin(data->paths[i], slash_path);
 		free(slash_path);
 		if (!one_path)
 			ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_SLASH);

@@ -38,7 +38,7 @@ static t_lexer	*categorize_tokens(t_data *data, t_lexer *temp, t_env *env_list)
 	free_array(data->builtin_names);
 	return (temp);
 }
-
+/*
 static void	is_token_file(t_lexer *node)
 {
 	int	fd;
@@ -50,7 +50,7 @@ static void	is_token_file(t_lexer *node)
 		close(fd);
 	}
 }	
-
+*/
 void	token_type(t_data *data, t_env *env_list)
 {
 	t_lexer	*temp;
@@ -66,7 +66,7 @@ void	token_type(t_data *data, t_env *env_list)
 			else
 				temp->type = 7;
 		}
-		is_token_file(temp);
+//		is_token_file(temp);
 		if (temp->type == -1)
 			temp->type = 3;
 		temp = temp->next;
