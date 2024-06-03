@@ -39,7 +39,7 @@ int	check_meaning(t_data *data)
 				data->cmd_count = data->cmd_count;// cat << cat several children
 		}
 	}
-	if (data->cmd_count == 0)
+	if (data->cmd_count == 0 || (data->cmd_count != data->pipe_count + 1))
 		return (1);
 	return (0);
 }

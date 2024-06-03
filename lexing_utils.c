@@ -57,7 +57,10 @@ int	is_cmd(t_data *data, t_lexer *token, t_env *env_list)
 {	
 	get_paths(data, env_list);
 	if (!is_token_path(token->word))
+	{
+		free_array(data->paths);
 		return (0);
+	}
 	if (find_good_path(data, token->word))
 	{
 		if (data->paths)

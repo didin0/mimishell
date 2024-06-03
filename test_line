@@ -64,8 +64,17 @@ execution:19, function >25 lines.
 exec_utils_add:83
 export a leaks, error handling.
 builtin_export:127
+----BOOKMARK--- functionality
+echo a"a"a makes 3 nodes preceeding ""
+/bin/lsfilaeadfasdf may be an issue Syscall param execve(filename) points to unaddressable byte(s)
+echo "a | a" - more than 2 nodes.
+quotes closed error does not add to history. 
 
---BOOKMARK-- (error management, malloc failures execution, write fails, after that other error)
+echo echos a line break!!!!
+block command cat enter + cntr-C displays the readline twice. - ask someone!
+
+
+--BOOKMARK_ERROR-- (error management, malloc failures execution, write fails, after that other error)
 func inprovment relative and abs path instead of a command.
 alter data->final_path in case token type ABS_PATH
 in case token starts with / then final path == token.

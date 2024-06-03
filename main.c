@@ -110,6 +110,7 @@ int	main(int argc, char **argv, char **envp)
 			continue;
 		token_type(&data, env_list);
 		parsing(&data, env_list);
+		show_list(data.lexer_list);
 		execution(&data, env_list);	
 	}
 	free(data.line);

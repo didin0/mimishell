@@ -35,6 +35,13 @@ static char	*expen(t_data *data, char *str, t_env *env_list)
 	if (ft_strlen(str) > 1)
 		str++;
 	size = key_size(str);
+//	if (!adv_strncmp(str, "?"))
+	if (str[0] == '?')
+	{
+		data->result = ft_itoa(data->exit_status);
+		return (data->result);
+	}
+	else
 	while (env_list)
 	{
 		if (!ft_strncmp(str, env_list->key, size)
@@ -98,9 +105,10 @@ static void	parsing_loop(t_data *data, char **word, t_env *env_list)
 
 /*
 Iterates over the list and applies variable expansion for each
+@EXP_STATUS			in case first token in list is $?
 */
 
-t_lexer	*parsing(t_data *data, t_env *env_list)
+void	parsing(t_data *data, t_env *env_list)
 {
 	t_lexer	*lexer_list;
 
@@ -113,5 +121,4 @@ t_lexer	*parsing(t_data *data, t_env *env_list)
 			lexer_list->word = clean_quote(data, lexer_list->word);
 		lexer_list = lexer_list->next;
 	}
-	return (data->lexer_list);
 }

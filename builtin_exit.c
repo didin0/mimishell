@@ -36,9 +36,6 @@ void	exit_builtin(t_data *data, char **cmd)
 //			ft_error(data);//TODO msg write failed
 		exit(EXIT_FAILURE);
 	}
-	if (ft_putstr_fd("exit\n", 1) < 0)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO msg write failed
 	if (cmd[1])
 	{
 		if (ft_isdigit_sign(cmd[1]) == 0)
@@ -51,6 +48,9 @@ void	exit_builtin(t_data *data, char **cmd)
 		}
 		data->exit_status = ft_atoi(cmd[1]) % 256;
 	}
+	if (ft_putstr_fd("exit\n", 1) < 0)
+		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+//		ft_error(data);//TODO msg write failed
 	free_env_list(data->env_list);	
 	free_regular(data);
 	exit(data->exit_status);

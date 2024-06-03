@@ -135,7 +135,7 @@ static void ft_error_add(t_data *data,  int flag)
 	if ((((flag != FREE_NAMES_P && flag != FREE_NAMES) && flag != FREE_PATHS)
 		&& flag!= FREE_SLASH) && flag != FREE_ONE)
 		free(data->final_path);
-	if ((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != EX_ARG)//TODO
+	if (flag != FREE_LINE_RET && flag != FREE_MEANING)//TODO
 		exit(EXIT_FAILURE);
 }
 
@@ -149,8 +149,8 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 		if (ft_putstr_fd((char *)msg, fd) < 0)
 			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
 	}
-	if (((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != FREE_0)
-		&& flag != CD_ARG)
+	if ((((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != FREE_0)
+		&& flag != EX_ARG) && flag != CD_ARG)
 		free_env_list(data->env_list);
 	if (flag != FREE_ENV)
 	{
@@ -184,8 +184,14 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 
 void	ft_error_errno(t_data *data, char **cmd)
 {
-	(void)data;
-	write(STDERR_FILENO, *cmd, ft_strlen(*cmd));
-	write(STDERR_FILENO, ": command not found\n", 20);
-	exit(EXIT_FAILURE);//TODO free data
+	if (ft_putstr_fd(*cmd, STDOUT_FILENO) < 0)
+		ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);//TODO
+	if (ft_putstr_fd(": command not found\n", STDOUT_FILENO) < 0)
+		ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);//TODO
+	free_array(data->asked_paths);
+	free_array(data->paths);
+	free(data->line);
+	free_int_array(data->pipefd);
+	free_regular(data);
+	exit(EXIT_FAILURE);
 }

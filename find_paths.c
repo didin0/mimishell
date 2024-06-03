@@ -48,7 +48,7 @@ char	*find_good_path(t_data *data, char *cmd)
 
 	i = 0;
 
-	(void)cmd;
+	data->final_path = NULL;
 	while (data->paths[i])
 	{
 		one_path = NULL;
@@ -91,7 +91,7 @@ void	organize_good_paths(t_data *data, t_env *env_list)
 		ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATHS);
 	i = 0;
 		get_paths(data, env_list);
-	while (i < data->cmd_count)
+	while (i < data->cmd_count && data->lexer_list->type != EXP_STATUS)
 	{
 		find_good_path(data, data->cmd[i][0]);
 		data->asked_paths[i] = ft_strdup(data->final_path);

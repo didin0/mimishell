@@ -34,8 +34,6 @@ int	is_token(char *c, int i)
 		else
 			return (1);
 	}
-	else if (c[i] == '$' && c[i + 1] == '?')
-		return (2);
 	return (0);
 }
 

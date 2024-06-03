@@ -129,11 +129,11 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	redir_temp_file_fd(data, fd);	
 }
 
-void	expand_status(t_data *data)
+/*void	expand_status(t_data *data)
 {
 	ft_putnbr_fd(data->exit_status, 1);
 	if (ft_putstr_fd(": command not found\n", 1) < 0)
 		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
 //		ft_error(data);//TODO msg write failed	
 	free_regular(data);
-}
+}*/

@@ -60,19 +60,15 @@ static void	clean_cmd_from_redir(t_data *data, t_lexer *node, int i)
 	l = 0;
 	while (node && node->type != PIPE)
 	{
-		if (is_token(node->word, 0) && node->type != EXP_STATUS)
+		if (((is_token(node->word, 0) && node->type != EXP_STATUS)
+		   && node->type != 31) && node->type != 32)
 			node = node->next->next;
-		if (((node && is_token(node->word, 0)) && node->type != PIPE)
+		if (((((node && is_token(node->word, 0)) && node->type != PIPE)
 			&& node->type != EXP_STATUS)
+		   && node->type != 31) && node->type != 32)
 			node = node->next->next;
 		if (!node)
 			break ;
-		if (node && node->type == EXP_STATUS)
-		{
-			data->cmd[i][k] = ft_itoa(data->exit_status);
-			node = node->next;
-			k++;
-		}
 		if (node && node->type != PIPE)
 			reassign_str(data, i, k, node->word);
 //		if (node)//TODO was for a special case. 

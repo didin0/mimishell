@@ -62,12 +62,12 @@ static void	echo_builtin(t_data *data, char **cmd)
 
 	line_break = 1;
 	j = 1;
-	if (cmd[1][0] == '-')
+	if (cmd[1] && cmd[1][0] == '-')
 	{
 		while (cmd[1][j] == 'n')
 			j++;
 	}
-	if (cmd[1][0] == '-' && cmd[1][j] == '\0')
+	if (cmd[1] && (cmd[1][0] == '-' && cmd[1][j] == '\0'))
 		line_break = 0;
 	echo_stdout(data, cmd, line_break);
 }
@@ -93,11 +93,11 @@ int	exec_builtin_parent(t_data *data, char **cmd, t_env *env_list)
 		exit_builtin(data, cmd);
 		return (0);
 	}
-	else if (!adv_strncmp(cmd[0], "$?"))
+	/*else if (!adv_strncmp(cmd[0], "$?"))
 	{
 		expand_status(data);
 		return (0);
-	}
+	}*/
 	return (1);
 }
 

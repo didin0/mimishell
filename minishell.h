@@ -237,7 +237,7 @@ int is_builtin(t_data *data, char *word);
 
 
 // Parser
-t_lexer *parsing(t_data *data, t_env *env_list);
+void	parsing(t_data *data, t_env *env_list);
 char	**ft_new_split(char const *s, char c);
 int		check_sq(char *str);
 char	*clean_quote(t_data *data, char *str);

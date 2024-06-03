@@ -73,11 +73,15 @@ int	create_node_space_term(t_data *data, t_stat *stat)
 
 int	create_node_quotes(t_data *data, t_stat *stat)
 {
-	stat->i = ft_strchr_end(data->line,
-			data->line[stat->i], stat->i) + 1;
-	while ((data->line[stat->i] != '\0' && is_token(data->line,
-				stat->i) == 0) && data->line[stat->i] != ' ')
+	char quote;
+
+	quote = data->line[stat->i];
+	stat->i++;
+//	stat->i = ft_strchr_end(data->line,
+//			data->line[stat->i], stat->i) + 1;
+	while (data->line[stat->i] != '\0' && data->line[stat->i] != quote)//TODO incalid read?
 		stat->i++;
+//	stat->i++;
 	str_to_list(data, stat);
 	if (data->line[stat->i] == '\0')
 		return (1);
