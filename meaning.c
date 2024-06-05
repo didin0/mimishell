@@ -6,11 +6,26 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:36:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/03 12:07:38 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/05 10:25:47 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	check_path(t_data *data)
+{
+	t_env *temp;
+
+	temp = data->env_list;
+	while (temp)
+	{
+		if (!adv_strncmp(temp->key, "PATH"))
+			return (0);
+		temp = temp->next;
+	}
+	ft_error(data, ERR_PATH, STDOUT_FILENO, FREE_LINE_RET);
+	return (1);
+}
 
 /*
 @glance		for the cases that do not include a command or builtin

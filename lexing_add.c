@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/22 21:08:08 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/03 21:18:05 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,19 +38,7 @@ static t_lexer	*categorize_tokens(t_data *data, t_lexer *temp, t_env *env_list)
 	free_array(data->builtin_names);
 	return (temp);
 }
-/*
-static void	is_token_file(t_lexer *node)
-{
-	int	fd;
 
-	fd = open(node->word, O_RDONLY);
-	if (fd != -1)
-	{
-		node->type = 10;
-		close(fd);
-	}
-}	
-*/
 void	token_type(t_data *data, t_env *env_list)
 {
 	t_lexer	*temp;
@@ -66,30 +54,10 @@ void	token_type(t_data *data, t_env *env_list)
 			else
 				temp->type = 7;
 		}
-//		is_token_file(temp);
 		if (temp->type == -1)
 			temp->type = 3;
 		temp = temp->next;
 	}
-}
-
-/*
-@glance 	loop until the next pipe of redirection
-			loop back until the closing quote
-			return closing quote position.
-*/
-
-int	ft_strchr_end(char *s, char c, int i)
-{
-	while (is_token(s, i) == 0 && s[i] != '\0')
-		i++;
-	while (i >= 0)
-	{
-		if (s[i] == c)
-			return (i);
-		i--;
-	}
-	return (0);
 }
 
 int	is_quote_closed(char *s, char c)

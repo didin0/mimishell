@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/24 19:56:23 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/05 22:14:39 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <errno.h>//error number codes
 # include <limits.h>//PATH_MAX
 # include <signal.h>//signal
+# include <stdbool.h>//bool in lexing
 
 #define BUILTIN 0
 #define COMMAND 1
@@ -47,6 +48,7 @@
 #define ERR_MALLOC_ENV "Malloc failed, env.c\n"
 #define ERR_MALLOC_L "Malloc failed, lexing.c\n"
 #define ERR_MALLOC_LUS "Malloc failed, lexing_utils_split.c\n"
+#define ERR_MALLOC_LUA "Malloc failed, lexing_utils_add.c\n"
 #define ERR_MALLOC_LU "Malloc failed, lexing_utils.c\n"
 #define ERR_MALLOC_PATH "Malloc failed, find_paths.c\n"
 #define ERR_MALLOC_LI "Malloc failed, list.c\n"
@@ -54,21 +56,22 @@
 #define ERR_MALLOC_PAR_U "Malloc failed, parser_utils.c\n"
 #define ERR_READLINE "Readline fail of EOF sent to process\n"
 #define ERR_QUOTE_CLOSE "Quotes shall be closed.\n"
-#define ERR_MEANING "Meaning/command missing\n"
+#define ERR_PATH "PATH env missing.\n"
+#define ERR_MEANING "Meaning/command missing or with many meanings\n"
 #define ERR_MALLOC_EX_UA "Malloc failed, exec_utils_add.c\n"
 #define ERR_MALLOC_EX "Malloc failed, execution.c\n"
 #define ERR_MALLOC_BU_EX "Malloc failed, builtin_export.c\n"
 #define ERR_MALLOC_BU_CD "Malloc failed, builtin_cd.c\n"
 #define ERR_MALLOC_RE_U "Malloc failed, redir_utils.c\n"
-
 #define ERR_EX_ARG "Export needs alphanumerical chars prior =\n"
 #define ERR_CD_ARG "cd: no-such/check path, dir \n"
 #define ERR_CD_MAX "cd: too many arguments\n"
 #define ERR_CD_HOME "cd: HOME env missing\n"
 #define ERR_CD_GET "cd: PWD env missing\n"
+#define ERR_OPEN "Open/close/dup2/unlink failed in redirs.c\n"
+#define ERR_HERE "Choose an unique heredoc delimier name\n"
 
 #define ERR_UNSET "UNSET needs an argument\n"
-
 
 #define NO_STDOUT 0
 #define STDOUT 1 //error message to stdout
@@ -91,11 +94,15 @@
 #define FREE_PAR_RES 7//
 #define FREE_PAR_RES_1 7//
 #define FREE_0 22
-#define FREE_CMD_0 7
-#define FREE_CMD_1 7
+#define FREE_CMD_0 18//TODO testing
+#define FREE_CMD_1 7// TODO testing
 #define FREE_PIDS 7//these new 7 values dont they interrupt the previus 7
 #define FREE_NEW_ENV 15
 #define FREE_CHIL 16
+#define FREE_W_BU 17
+#define FREE_W_E 19
+#define FREE_W_H 30
+#define FREE_OPEN 31
 
 #define EX_ARG 20//take a new number each case, incase I add to ft_error as a condition!!!!
 #define CD_ARG 21
@@ -112,7 +119,7 @@
 
 #define FREE_PAR 10
 extern pid_t g_child_pid;
-extern void rl_replace_line(const char *str, int i);
+//extern void rl_replace_line(const char *str, int i);
 
 // linked list to copy the $ENV variable
 typedef struct s_env
@@ -142,7 +149,6 @@ typedef struct s_lexer
 typedef struct s_data
 {	
 	char				*line;
-//	data->builtin_names = NULL;
 	t_lexer				*lexer_list;
 	int					exit_status;
 	char				***cmd;
@@ -198,10 +204,12 @@ void	show_list(t_lexer *lexer_list);
 void	show_env_list(t_env *list);
 
 // Env
+char	**ft_adv_split(char const *s, char c);
 t_env	*get_env_to_list(t_data *data, char **envp);
 void	get_paths(t_data *data, t_env *env_list);
 t_env	*create_env_node(t_data *data, char *key, char *value);
 void	add_to_end(t_env **head, t_env *new_node);
+int		check_path(t_data *data);
 
 // Exec
 int		check_meaning(t_data *data);
@@ -230,8 +238,6 @@ void	token_type(t_data *data, t_env *env_list);
 int	is_cmd(t_data *data, t_lexer *token, t_env *env_list);
 int	is_token_path(char *cmd);
 int	all_tokens_categorized(t_lexer *temp);
-int	ft_strchr_from(char *s, char c, int i);
-int	ft_strchr_end(char *s, char c, int i);
 int	is_quote_closed(char *s, char c);
 int is_builtin(t_data *data, char *word);
 
@@ -271,4 +277,8 @@ void	expand_status(t_data *data);
 void	init_signals(t_data *data);
 void	sigint_handler(int signum);
 void	show_cmd(char ***cmd, t_data *data);
+
+//Garbage collection, recycle bin
+void	*re_bin(void *ptr, bool clean);
+void	adv_error(t_data *data, const char *msg, int fd, int flag);
 #endif 

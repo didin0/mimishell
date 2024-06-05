@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/24 19:36:53 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/05 15:45:07 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,19 @@ static void	echo_stdout(t_data *data, char **cmd, int line_break)
 		if (line_break == 0 && option_flag == 0)
 			j = 2;
 		if (ft_putstr_fd(cmd[j], 1) < 0)
-			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, FREE_W_BU);
 		j++;
 		if (cmd[j])
 		{
 			if (ft_putchar_fd(' ', 1) < 0)
-			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, FREE_W_BU);
 		}
 		option_flag = 1;
 	}
 	if (line_break == 1)
 	{
 		if (ft_putchar_fd('\n', 1) < 0)
-			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, FREE_W_BU);
 	}
 }
 
@@ -93,11 +93,6 @@ int	exec_builtin_parent(t_data *data, char **cmd, t_env *env_list)
 		exit_builtin(data, cmd);
 		return (0);
 	}
-	/*else if (!adv_strncmp(cmd[0], "$?"))
-	{
-		expand_status(data);
-		return (0);
-	}*/
 	return (1);
 }
 

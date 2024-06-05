@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/24 10:12:54 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/05 22:27:14 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ char	*clean_quote(t_data *data, char *str)
 	result = malloc(ft_strlen(str) + 1);
 	if (!result)
 		ft_error(data, ERR_MALLOC_PAR_U, STDERR_FILENO, FREE_PAR_U);
+	re_bin(result, 0);
 	while (str[i])
 	{
 		if ((str[i] == '\"' || str[i] == '\'') && !quote)

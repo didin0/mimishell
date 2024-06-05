@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 12:23:41 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/22 17:30:52 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/03 21:16:32 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,20 +68,24 @@ int	create_node_space_term(t_data *data, t_stat *stat)
 				single or double ones.
 @return			return 1 indicates a break to the main lexing loop
 				and 2 continue.
-@ft_strchr_end	look for second char " or ' in line, return char pos.
 */
 
 int	create_node_quotes(t_data *data, t_stat *stat)
 {
 	char quote;
+	bool open_quote;
 
 	quote = data->line[stat->i];
-	stat->i++;
-//	stat->i = ft_strchr_end(data->line,
-//			data->line[stat->i], stat->i) + 1;
-	while (data->line[stat->i] != '\0' && data->line[stat->i] != quote)//TODO incalid read?
+	open_quote = false;
+
+	while (data->line[stat->i] != '\0')
+	{
+		if (data->line[stat->i] == quote)
+			open_quote = !open_quote;
+		else if (data->line[stat->i] == ' ' && !open_quote)
+			break;
 		stat->i++;
-//	stat->i++;
+	}
 	str_to_list(data, stat);
 	if (data->line[stat->i] == '\0')
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/23 10:55:59 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/05 16:00:38 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,11 @@ static int	start_lexing(t_data *data)
 	if (is_quote_closed(data->line, '"') != 0
 			|| is_quote_closed(data->line, '\'') != 0)
 	{
-		add_history(data->line);
 		ft_error(data, ERR_QUOTE_CLOSE, STDOUT_FILENO, FREE_LINE_RET);
 		return (1);
 	}
+	if (check_path(data))
+		return (1);
 	if (lexing(data))
 	{
 		free(data->line);
@@ -82,7 +83,6 @@ static int	start_lexing(t_data *data)
 			free_lexer_list(data);
 		return (1);
 	}
-	add_history(data->line);
 	return (0);
 }
 
@@ -106,11 +106,11 @@ int	main(int argc, char **argv, char **envp)
 	{
 		init_signals(&data);
 		data.line = readline("\033[36mminishell :\033[m ");
+		add_history(data.line);
 		if (start_lexing(&data))
 			continue;
 		token_type(&data, env_list);
 		parsing(&data, env_list);
-		show_list(data.lexer_list);
 		execution(&data, env_list);	
 	}
 	free(data.line);

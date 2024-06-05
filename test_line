@@ -64,17 +64,24 @@ execution:19, function >25 lines.
 exec_utils_add:83
 export a leaks, error handling.
 builtin_export:127
-----BOOKMARK--- functionality
-echo a"a"a makes 3 nodes preceeding ""
-/bin/lsfilaeadfasdf may be an issue Syscall param execve(filename) points to unaddressable byte(s)
-echo "a | a" - more than 2 nodes.
-quotes closed error does not add to history. 
 
-echo echos a line break!!!!
+
+
+CRITICAL evv last value is not correct.
+Critical ls does not work. diff te_1 te_2 meaning missing?
+
+
+----BOOKMARK--- functionality
+/bin/lsfilaeadfasdf may be an issue Syscall param execve(filename) points to unaddressable byte(s)
+quotes closed error does not add to history.
 block command cat enter + cntr-C displays the readline twice. - ask someone!
 
+done readline fail leak check.
+done write fails leak check.
 
---BOOKMARK_ERROR-- (error management, malloc failures execution, write fails, after that other error)
+--BOOKMARK_ERROR-- (error management, malloc failures execution, after that other error)
+CRITICAL / check again all malloc leaks for flag 6, 7, 8!!!
+
 func inprovment relative and abs path instead of a command.
 alter data->final_path in case token type ABS_PATH
 in case token starts with / then final path == token.

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/24 13:04:26 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/05 22:59:52 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 static void	init_cmd_loop(t_data *data, char *word, int i, int j)
 {
-	data->cmd[i][j] = ft_strdup(word);
+	data->cmd[i][j] = re_bin(ft_strdup(word), 0);
 	if (!data->cmd[i][j])
 	{
 		while (--i >= 0)
@@ -79,7 +79,7 @@ static void	resume_parent(t_data *data, pid_t *pids, int i)
 		update_cur_node(data, i);
 	if (data->lexer_list->next)
 	{
-		if (data->lexer_list->next->type == 400)
+		if (data->lexer_list->next->type == HERE_DOC)
 			g_child_pid = 2147483647;
 		else  
 			g_child_pid = pids[i];
@@ -163,7 +163,6 @@ int	execution(t_data *data, t_env *env_list)
 
 	if (check_meaning(data) != 0)
 	{
-		add_history(data->line);
 		ft_error(data, ERR_MEANING, STDOUT_FILENO, FREE_MEANING);
 		return (0);
 	}
@@ -179,7 +178,7 @@ int	execution(t_data *data, t_env *env_list)
 	}
 	g_child_pid = -1;
 	free_3D_array(data->cmd);
-	free_lexer_list(data);
+//	free_lexer_list(data);
 	if (data->paths)	
 		free_array(data->paths);
 	free(data->line);

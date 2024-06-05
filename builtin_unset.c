@@ -6,17 +6,17 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 14:05:36 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/24 19:11:31 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/05 13:57:45 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-@if&else		if a middle node, else untie an end node from env_list.
+@glance		untie a node from env_list.
 */
 
-static void	untie_mid_node(t_env *node, t_env *env_list)
+static void	untie_node(t_env *node, t_env *env_list)
 {
 	t_env	*temp;
 
@@ -53,7 +53,7 @@ static void	is_key_in_env(char *del_env, t_env *env_list)
 	{
 		if (!adv_strncmp(temp->key, del_env))
 		{
-			untie_mid_node(temp, env_list);
+			untie_node(temp, env_list);
 			break ;
 		}
 		temp = temp->next;

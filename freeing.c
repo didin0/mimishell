@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/24 21:11:16 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/05 22:02:57 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,29 @@ void	free_int_array(int **arr)
 	}
 }
 
+void	adv_error(t_data *data, const char *msg, int fd, int flag)
+{
+	(void)data;
+	if (flag != FREE_ENV)
+		ft_putstr_fd("Error: ", fd);
+	if (flag != 0)
+		ft_putstr_fd((char *)msg, fd);	
+	re_bin(NULL, 1);
+	if (flag == FREE_ENV || flag == FREE_LIST)// || flag == FREE_W_H)	
+		exit(EXIT_FAILURE);
+
+}
+
+static void ft_error_exp(t_data *data,  int flag)
+{
+	if (flag == FREE_W_BU || flag == FREE_W_E || flag == FREE_W_H)	
+		free_3D_array(data->cmd);
+	if (flag == FREE_W_H)
+		free(data->pids);
+	if (flag == FREE_W_BU || flag == FREE_W_E || flag == FREE_W_H)	
+		exit(EXIT_FAILURE);
+}
+
 static void ft_error_cont(t_data *data,  int flag)
 {
 	if (flag == FREE_PAR_RE)
@@ -103,11 +126,11 @@ static void ft_error_cont(t_data *data,  int flag)
 	if (flag == FREE_CMD_1 || flag == EX_ARG || flag == FREE_NEW_ENV)
 		free_3D_array(data->cmd);
 	if (flag == FREE_PIDS || flag == EX_ARG || flag == FREE_NEW_ENV
-			|| flag == FREE_CHIL)
+			|| flag == FREE_CHIL || flag == FREE_W_BU || flag == FREE_W_E)
 		free(data->pids);
 	if (flag == FREE_NEW_ENV)
 		free_array(data->new_env);
-	if (flag == FREE_CHIL)
+	if (flag == FREE_CHIL || flag == FREE_W_BU || flag == FREE_W_H)
 	{
 		free_array(data->paths);
 		free_array(data->asked_paths);
@@ -115,11 +138,13 @@ static void ft_error_cont(t_data *data,  int flag)
 	}
 	if (flag == CD_ARG || flag == CD_HOME || flag == CD_PWD)	
 		free_regular(data);
-
+	ft_error_exp(data, flag);
 }
 
 static void ft_error_add(t_data *data,  int flag)
 {
+	if (flag == FREE_CMD_0)
+		return ;
 	if (flag != FREE_NAMES_P && flag != FREE_ONE)//path_a in use??
 		free_array(data->builtin_names);
 	if (flag != FREE_NAMES_P && flag != FREE_NAMES_A)//names_a in use??
@@ -142,13 +167,14 @@ static void ft_error_add(t_data *data,  int flag)
 void	ft_error(t_data *data, const char *msg, int fd, int flag)
 {
 	if (flag != FREE_ENV)
-		if (ft_putstr_fd("Error: ", fd) < 0)
-			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+		ft_putstr_fd("Error: ", fd);
 	if (flag != 0)
-	{
-		if (ft_putstr_fd((char *)msg, fd) < 0)
-			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
-	}
+		ft_putstr_fd((char *)msg, fd);
+////
+	if (flag == FREE_LIST)
+		re_bin(NULL, 1);
+
+/////	
 	if ((((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != FREE_0)
 		&& flag != EX_ARG) && flag != CD_ARG)
 		free_env_list(data->env_list);
@@ -164,9 +190,9 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 		&& flag != FREE_0)
 		free_lexer_list(data);
 	ft_error_cont(data, flag);
-	if (((((((flag > 7 && flag != EX_ARG) && flag != FREE_NEW_ENV)
+	if ((((((((flag > 7 && flag != EX_ARG) && flag != FREE_NEW_ENV)
 		&& flag != FREE_CHIL) && flag != CD_ARG) && flag != FREE_0)
-		&& flag != CD_HOME) && flag != CD_PWD)
+		&& flag != CD_HOME) && flag != CD_PWD) && flag != FREE_W_BU)
 		ft_error_add(data, flag);
 //TODO meaning is bigger than 7 check if meaing is freed properly
 	if (((flag != FREE_LINE_RET && flag != FREE_MEANING) && flag != EX_ARG)
@@ -184,10 +210,8 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 
 void	ft_error_errno(t_data *data, char **cmd)
 {
-	if (ft_putstr_fd(*cmd, STDOUT_FILENO) < 0)
-		ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);//TODO
-	if (ft_putstr_fd(": command not found\n", STDOUT_FILENO) < 0)
-		ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);//TODO
+	ft_putstr_fd(*cmd, STDOUT_FILENO);
+	ft_putstr_fd(": command not found\n", STDOUT_FILENO);
 	free_array(data->asked_paths);
 	free_array(data->paths);
 	free(data->line);

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:04:51 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/22 12:51:08 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/05 18:14:16 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,16 @@ void	redir_fd(t_data *data, t_lexer *node)
 	else if (temp->type == REDIR_IN)
 		fd = open(temp->next->word, O_RDONLY);
 	if (fd == -1)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO
+		ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
 	else if (temp->type == REDIR_IN)
 	{
 		if (dup2(fd, STDIN_FILENO) == -1)
-			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//			ft_error(data);//TODO
+			ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
 	}
 	else if (temp->type == REDIR_OUT || temp->type == REDIR_OUT_APP)
 	{
 		if (dup2(fd, STDOUT_FILENO) == -1)
-			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//			ft_error(data);//TODO
+			ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
 	}
 	close(fd);
 }
@@ -70,17 +67,13 @@ static	void	redir_temp_file_fd(t_data *data, int fd)
 	fd = -1;
 	fd = open("here_doc_temp", O_RDONLY);
 	if (fd == -1)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO
+		ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
 	if (dup2(fd, STDIN_FILENO) == -1)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO
+		ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
 	if (unlink("here_doc_temp") == -1)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO
-	//TODO free readline memory?
-	close(fd);
-//	signal(SIGINT, sigint_handler);
+		ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
+	if (close(fd) == -1)
+		ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
 }
 
 /*
@@ -97,28 +90,21 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	int		fd;
 
 	if (check_heredoc_meaning(node))
-	{
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-		printf("Choose an unique delimier name\n");
-//		ft_error(data);//TODO free, delimiter matches a commad
-		exit(EXIT_FAILURE);
-	}
+		ft_error(data, ERR_HERE, STDERR_FILENO, FREE_W_H);
 	signal(SIGINT, SIG_DFL);
 	delimiter = node->next->word;
 	here_line = NULL;
 	fd = -1;
 	fd = open("here_doc_temp", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (fd == -1)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO	
+		ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
 	while (1)
 	{
 		here_line = readline("\033[37m> \033[m ");
 		if (!here_line)
 		{
 			if (ft_putchar_fd('\n', 1) < 0)
-				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//				ft_error(data);//TODO message write failed, clean, exit
+				ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, FREE_W_H);
 			break ;
 		}
 		if (!adv_strncmp(here_line, delimiter))
@@ -128,12 +114,3 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	}
 	redir_temp_file_fd(data, fd);	
 }
-
-/*void	expand_status(t_data *data)
-{
-	ft_putnbr_fd(data->exit_status, 1);
-	if (ft_putstr_fd(": command not found\n", 1) < 0)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO msg write failed	
-	free_regular(data);
-}*/
