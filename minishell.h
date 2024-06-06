@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/05 22:14:39 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 23:48:37 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,18 @@
 #define ERR_MALLOC_BU_EX "Malloc failed, builtin_export.c\n"
 #define ERR_MALLOC_BU_CD "Malloc failed, builtin_cd.c\n"
 #define ERR_MALLOC_RE_U "Malloc failed, redir_utils.c\n"
-#define ERR_EX_ARG "Export needs alphanumerical chars prior =\n"
-#define ERR_CD_ARG "cd: no-such/check path, dir \n"
+#define ERR_EX_ARG "Export needs = and alphanumerical chars prior =\n"
+#define ERR_CD_ARG "cd: no-such/check path, dir / chdir call fail\n"
 #define ERR_CD_MAX "cd: too many arguments\n"
 #define ERR_CD_HOME "cd: HOME env missing\n"
-#define ERR_CD_GET "cd: PWD env missing\n"
+#define ERR_CD_GET "cd: PWD env missing / getcwd call failed\n"
 #define ERR_OPEN "Open/close/dup2/unlink failed in redirs.c\n"
 #define ERR_HERE "Choose an unique heredoc delimier name\n"
+#define ERR_FORK "Fork call failed in execution.c\n"
+#define ERR_WAIT "Wait/reaping failed in exec_utils.c\n"
+#define ERR_EXIT "exit\n"
+#define ERR_EXIT_ARG "exit: numeric argument required\n"
+#define ERR_EXIT_MAX "exit: too many arguments\n"
 
 #define ERR_UNSET "UNSET needs an argument\n"
 
@@ -103,7 +108,7 @@
 #define FREE_W_E 19
 #define FREE_W_H 30
 #define FREE_OPEN 31
-
+#define FREE_FORK 32
 #define EX_ARG 20//take a new number each case, incase I add to ft_error as a condition!!!!
 #define CD_ARG 21
 #define CD_HOME 23
@@ -112,6 +117,14 @@
 #define FREE_NAMES_A 100
 #define FREE_PATH 101
 #define FREE_PATH_A 130
+
+
+#define EXIT 0
+#define NO_EXIT 1
+#define EXIT_NO_ERROR 3
+#define FREE 2
+#define FREE_M 4
+#define	NO_EXIT_NO_MSG 5
 
 //#define FREE_PATH_ALL 15//later
 
@@ -185,11 +198,11 @@ typedef struct s_stat
 void	free_array(char **str);
 void	free_int_array(int **arr);
 void	free_3D_array(char ***str);
-void	free_env_list(t_env *head);
+//void	free_env_list(t_env *head);
 void	free_lexer_list(t_data *data);
 void	free_regular(t_data *data);
 void	init_data(t_data *data);
-void	ft_error(t_data *data, const char *msg, int fd, int flag);
+//void	ft_error(t_data *data, const char *msg, int fd, int flag);
 void	ft_error_errno(t_data *data, char **cmd);
 	
 // List
@@ -280,5 +293,6 @@ void	show_cmd(char ***cmd, t_data *data);
 
 //Garbage collection, recycle bin
 void	*re_bin(void *ptr, bool clean);
+void	*re_bin_prompt(void *ptr, bool clean);
 void	adv_error(t_data *data, const char *msg, int fd, int flag);
 #endif 

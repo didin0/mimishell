@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 12:23:41 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/03 21:16:32 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 14:27:19 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,14 @@ void	create_node_is_token(t_data *data, t_stat *stat)
 	{
 		data->buff = ft_substr(data->line, stat->i, 2);
 		if (!data->buff)
-			ft_error(data, ERR_MALLOC_LUS, STDERR_FILENO, FREE_LIST);
+			adv_error(data, ERR_MALLOC_LUS, STDERR_FILENO, FREE_M);
 		stat->i++;
 	}
 	else
 		data->buff = ft_substr(data->line, stat->i, 1);
 	if (!data->buff)
-		ft_error(data, ERR_MALLOC_LUS, STDERR_FILENO, FREE_LIST);
+		adv_error(data, ERR_MALLOC_LUS, STDERR_FILENO, FREE_M);
+	re_bin(data->buff, 0);
 	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(data, data->buff));
 	while (data->line[stat->i + 1] == ' ')
 		stat->i++;

@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 16:34:33 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/22 20:02:57 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 23:01:18 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,8 @@ void	parent_close_all_fds(t_data *data)
 	{
 		close(data->pipefd[j][0]);
 		close(data->pipefd[j][1]);
-		free(data->pipefd[j]);
 		j++;
 	}
-	free(data->pipefd);
 }
 
 void	redirect_close_fds(t_data *data, int i)

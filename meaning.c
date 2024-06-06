@@ -6,16 +6,20 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:36:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/05 10:25:47 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 13:12:03 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/*
+@glance		check for the case the PATH env is unset
+*/
+
 int	check_path(t_data *data)
 {
 	t_env *temp;
-
+	
 	temp = data->env_list;
 	while (temp)
 	{
@@ -23,7 +27,7 @@ int	check_path(t_data *data)
 			return (0);
 		temp = temp->next;
 	}
-	ft_error(data, ERR_PATH, STDOUT_FILENO, FREE_LINE_RET);
+	adv_error(data, ERR_PATH, STDOUT_FILENO, NO_EXIT);
 	return (1);
 }
 

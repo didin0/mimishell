@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 19:21:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/05 22:02:57 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 23:49:08 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ main : spaces -> ctrl-D // no leaks
 main : asd -> lexing -> lexer_list = NULL // no leaks
 
 */
+/*
 void	free_env_list(t_env *head)
 {
 	t_env *node;
@@ -32,7 +33,7 @@ void	free_env_list(t_env *head)
 		free(node);
 	}
 }
-
+*/
 void	free_lexer_list(t_data *data)
 {
 	t_lexer *node;
@@ -93,16 +94,19 @@ void	free_int_array(int **arr)
 void	adv_error(t_data *data, const char *msg, int fd, int flag)
 {
 	(void)data;
-	if (flag != FREE_ENV)
+	if (flag != EXIT_NO_ERROR && flag != NO_EXIT_NO_MSG)
 		ft_putstr_fd("Error: ", fd);
-	if (flag != 0)
-		ft_putstr_fd((char *)msg, fd);	
+	ft_putstr_fd((char *)msg, fd);
 	re_bin(NULL, 1);
-	if (flag == FREE_ENV || flag == FREE_LIST)// || flag == FREE_W_H)	
+	if (flag == EXIT_NO_ERROR || flag == FREE_M)
+		re_bin_prompt(NULL, 1);
+	if (flag == EXIT_NO_ERROR)		
+		exit(data->exit_status);
+	if (flag == FREE_ENV || flag == FREE_FORK || flag == EXIT
+			|| flag == FREE_M)//TODO exclusive? != NO_EXIT EXIT_NO_ERROR NO_EXIT_NO_MSG
 		exit(EXIT_FAILURE);
-
 }
-
+/*
 static void ft_error_exp(t_data *data,  int flag)
 {
 	if (flag == FREE_W_BU || flag == FREE_W_E || flag == FREE_W_H)	
@@ -199,6 +203,7 @@ void	ft_error(t_data *data, const char *msg, int fd, int flag)
 		&& flag != CD_ARG)//TODO
 		exit(EXIT_FAILURE);
 }
+*/
 
 /*
 @glance		child process writes only to STDOUT	

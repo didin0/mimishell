@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 14:05:36 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/05 13:57:45 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 20:11:38 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,10 @@ static void	untie_node(t_env *node, t_env *env_list)
 	{
 		if (temp->next == node)
 		{
-			free(node->key);
-			free(node->value);
 			if (node->next)
 				temp->next = node->next;
 			else
 				temp->next = NULL;
-			free(node);
 			break ;
 		}
 		temp = temp->next;
@@ -67,6 +64,7 @@ void	unset_builtin(t_data *data, char **cmd, t_env *env_list)
 	if (!adv_strncmp(cmd[0], "export"))
 	{
 		export_builtin(data, cmd, env_list);
+		re_bin(NULL, 1);
 		return ;
 	}
 	i = 1;
@@ -75,5 +73,5 @@ void	unset_builtin(t_data *data, char **cmd, t_env *env_list)
 		is_key_in_env(cmd[i], env_list);
 		i++;
 	}
-	free_regular(data);
+	re_bin(NULL, 1);
 }

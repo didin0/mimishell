@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 09:36:21 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/05 22:01:30 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 12:40:46 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,11 @@ static void	ft_lstclear1(t_list **lst, void (*del)(void*))
 	}
 }
 
+/*
+@glance		list to keep pointers that have to be cleaned at exit or prompt return
+			ie command tripple array cmd.
+*/
+
 void	*re_bin(void *ptr, bool clean)
 {
 	static t_list	*garbage;
@@ -85,4 +90,19 @@ void	*re_bin(void *ptr, bool clean)
 		return (ft_lstclear1(&garbage, free_ptr), NULL);
 	else
 		return (ft_lstadd_back1(&garbage, ft_lstnew1(ptr)), ptr);
+}
+
+/*
+@glance		list to keep pointers that have to accessible while prompt return
+			ie environmental variables env_list.
+*/
+
+void	*re_bin_prompt(void *ptr, bool clean)
+{
+	static t_list	*prompt;
+
+	if (clean)
+		return (ft_lstclear1(&prompt, free_ptr), NULL);
+	else
+		return (ft_lstadd_back1(&prompt, ft_lstnew1(ptr)), ptr);
 }

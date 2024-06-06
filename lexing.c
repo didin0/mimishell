@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/05 22:12:27 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 23:33:26 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,10 @@ void	str_to_list(t_data *data, t_stat *stat)
 	if (data->line)
 		data->buff = ft_substr(data->line, stat->ibis, stat->i - stat->ibis);
 	if (!data->buff)
-		adv_error(data, ERR_MALLOC_L, STDERR_FILENO, FREE_LIST);
+		adv_error(data, ERR_MALLOC_L, STDERR_FILENO, FREE_M);	
+	re_bin(data->buff, 0);
 	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(data, data->buff));
+	re_bin(data->buff, 0);
 }
 
 /*
@@ -102,7 +104,7 @@ int	lexing(t_data *data)
 
 	data->lexer_list = ft_calloc(1, sizeof(t_lexer));
 	if (!data->lexer_list)
-		ft_error(data, ERR_MALLOC_L, STDERR_FILENO, FREE_LINE);	
+		adv_error(data, ERR_MALLOC_L, STDERR_FILENO, FREE_M);
 	re_bin(data->lexer_list, 0);
 	stat.i = 0;
 	stat.ibis = 0;

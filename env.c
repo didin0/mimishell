@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:00:26 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/05 22:05:41 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 22:49:59 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ t_env	*create_env_node(t_data *data, char *key, char *value)
 	new_env = malloc(sizeof(t_env));
 	if (!new_env)
 		adv_error(data, ERR_MALLOC_ENV, STDERR_FILENO, FREE_ENV);
-	re_bin(new_env, 0);
-	new_env->key = re_bin(ft_strdup(key), 0);
-	new_env->value = re_bin(ft_strdup(value), 0);
+	re_bin_prompt(new_env, 0);
+	new_env->key = re_bin_prompt(ft_strdup(key), 0);
+	new_env->value = re_bin_prompt(ft_strdup(value), 0);
 	if (!new_env->key || !new_env->value)
 	{
 		if (ft_putstr_fd(ERR_MALLOC_ENV, 1) < 0)
@@ -62,13 +62,12 @@ static void	split_and_add(t_data *data, char *env_var)
 
 	str = ft_adv_split(env_var, '=');
 	if (!str)
-		ft_error(data, ERR_MALLOC_ENV, STDERR_FILENO, FREE_0);
+		adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);	
 	if (str[0] && str[1])
 	{
 		new_node = create_env_node(data, str[0], str[1]);
 		add_to_end(&data->env_list, new_node);
 	}
-//	free_array(str);
 }
 
 t_env	*get_env_to_list(t_data *data, char **envp)

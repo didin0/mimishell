@@ -6,23 +6,11 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:04:51 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/05 18:14:16 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 22:44:43 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*
-@glance to mimic bash in some subsequent redirections and file names
- */
-
-void	create_empty_file(char *name)
-{
-	int	fd;
-
-	fd = open(name, O_CREAT, S_IRUSR | S_IWUSR);//TODO open fail -1
-	close(fd);
-}
 
 /*
 @glance		open files, redirect output/input, this is called in child process
@@ -44,16 +32,16 @@ void	redir_fd(t_data *data, t_lexer *node)
 	else if (temp->type == REDIR_IN)
 		fd = open(temp->next->word, O_RDONLY);
 	if (fd == -1)
-		ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
+		adv_error(data, ERR_OPEN, STDERR_FILENO, FREE_M);	
 	else if (temp->type == REDIR_IN)
 	{
 		if (dup2(fd, STDIN_FILENO) == -1)
-			ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
+			adv_error(data, ERR_OPEN, STDERR_FILENO, FREE_M);	
 	}
 	else if (temp->type == REDIR_OUT || temp->type == REDIR_OUT_APP)
 	{
 		if (dup2(fd, STDOUT_FILENO) == -1)
-			ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
+			adv_error(data, ERR_OPEN, STDERR_FILENO, FREE_M);	
 	}
 	close(fd);
 }
@@ -67,13 +55,13 @@ static	void	redir_temp_file_fd(t_data *data, int fd)
 	fd = -1;
 	fd = open("here_doc_temp", O_RDONLY);
 	if (fd == -1)
-		ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
+		adv_error(data, ERR_OPEN, STDERR_FILENO, FREE_M);	
 	if (dup2(fd, STDIN_FILENO) == -1)
-		ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
+		adv_error(data, ERR_OPEN, STDERR_FILENO, FREE_M);	
 	if (unlink("here_doc_temp") == -1)
-		ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
+		adv_error(data, ERR_OPEN, STDERR_FILENO, FREE_M);	
 	if (close(fd) == -1)
-		ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
+		adv_error(data, ERR_OPEN, STDERR_FILENO, FREE_M);	
 }
 
 /*
@@ -90,21 +78,21 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	int		fd;
 
 	if (check_heredoc_meaning(node))
-		ft_error(data, ERR_HERE, STDERR_FILENO, FREE_W_H);
+		adv_error(data, ERR_HERE, STDOUT_FILENO, FREE_M);	
 	signal(SIGINT, SIG_DFL);
 	delimiter = node->next->word;
 	here_line = NULL;
 	fd = -1;
 	fd = open("here_doc_temp", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (fd == -1)
-		ft_error(data, ERR_OPEN, STDERR_FILENO, FREE_W_H);
+		adv_error(data, ERR_OPEN, STDERR_FILENO, FREE_M);	
 	while (1)
 	{
 		here_line = readline("\033[37m> \033[m ");
 		if (!here_line)
 		{
-			if (ft_putchar_fd('\n', 1) < 0)
-				ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, FREE_W_H);
+			if (ft_putchar_fd('\n', 1) < 0)	
+				adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
 			break ;
 		}
 		if (!adv_strncmp(here_line, delimiter))

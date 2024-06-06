@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/03 21:18:05 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 16:23:21 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static t_lexer	*categorize_tokens(t_data *data, t_lexer *temp, t_env *env_list)
 		temp->type = 41;
 	else if (temp->word[0] == '|')
 		temp->type = 5;
-	free_array(data->builtin_names);
 	return (temp);
 }
 

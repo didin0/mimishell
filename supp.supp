@@ -1,0 +1,23 @@
+{
+	readline_blocks
+	Memcheck:Leak
+	...
+	fun:readline
+	...
+}
+
+{
+	add_history_blocks
+	Memcheck:Leak
+	...
+	fun:add_history
+	...
+}
+
+{
+	question_blocks
+	Memcheck:Leak
+	...
+	fun:???
+	...
+}

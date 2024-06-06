@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 21:22:37 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/05 21:48:34 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 13:06:17 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,25 +30,12 @@ int	ft_isdigit_sign(char *str)
 void	exit_builtin(t_data *data, char **cmd)
 {
 	if (cmd[1] && cmd[2])
-	{
-		if (ft_putstr_fd("exit: too many arguments\n", 1) < 0)
-			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, FREE_W_E);
-		exit(EXIT_FAILURE);
-	}
+		adv_error(data, ERR_EXIT_MAX, STDERR_FILENO, EXIT_NO_ERROR);
 	if (cmd[1])
 	{
 		if (ft_isdigit_sign(cmd[1]) == 0)
-		{
-			if (ft_putstr_fd("exit: numeric argument required\n", 1) < 0)
-				ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, FREE_W_E);
-			else
-				exit(EXIT_FAILURE);//TODO msg write faile, purpose of else?
-		}
+			adv_error(data, ERR_EXIT_ARG, STDERR_FILENO, EXIT_NO_ERROR);
 		data->exit_status = ft_atoi(cmd[1]) % 256;
 	}
-	if (ft_putstr_fd("exit\n", 1) < 0)
-		ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, FREE_W_E);
-	free_env_list(data->env_list);	
-	free_regular(data);
-	exit(data->exit_status);
+	adv_error(data, ERR_EXIT, STDOUT_FILENO, EXIT_NO_ERROR);
 }

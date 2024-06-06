@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/05 16:00:38 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 16:05:08 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,25 +62,23 @@ void	show_cmd(char ***cmd, t_data *data)
 static int	start_lexing(t_data *data)
 {
 	if (!data->line)
-		ft_error(data, "exit\n", STDOUT_FILENO, FREE_ENV);
+		adv_error(data, ERR_EXIT, STDOUT_FILENO, EXIT_NO_ERROR);
 	if (!adv_strncmp(data->line, ""))
 	{
-		free(data->line);
+		re_bin(NULL, 1);
 			return (1);
 	}
 	if (is_quote_closed(data->line, '"') != 0
 			|| is_quote_closed(data->line, '\'') != 0)
 	{
-		ft_error(data, ERR_QUOTE_CLOSE, STDOUT_FILENO, FREE_LINE_RET);
+		adv_error(data, ERR_QUOTE_CLOSE, STDOUT_FILENO, NO_EXIT);
 		return (1);
 	}
 	if (check_path(data))
 		return (1);
 	if (lexing(data))
 	{
-		free(data->line);
-		if (data->lexer_list)
-			free_lexer_list(data);
+		adv_error(data, "", STDOUT_FILENO, NO_EXIT_NO_MSG);
 		return (1);
 	}
 	return (0);
@@ -106,6 +104,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		init_signals(&data);
 		data.line = readline("\033[36mminishell :\033[m ");
+		re_bin(data.line, 0);
 		add_history(data.line);
 		if (start_lexing(&data))
 			continue;

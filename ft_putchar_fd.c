@@ -1,24 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
+/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/10 19:30:21 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/30 20:07:13 by rsainas          ###   ########.fr       */
+/*   Created: 2023/04/10 19:28:20 by mabbadi           #+#    #+#             */
+/*   Updated: 2024/06/06 16:13:48 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int	ft_putstr_fd(char *s, int fd)
+int	ft_putchar_fd(char c, int fd)
 {
-	if (s)
-	{
-		if (write (fd, s, ft_strlen(s)) == -1)
-			return (-1);
-		return (0);
-	}
-	return (1);	
+	if (write (fd, &c, 1) == -1)
+		return (-1);
+	return (0);
 }

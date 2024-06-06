@@ -6,11 +6,11 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 16:16:49 by abaccari          #+#    #+#             */
-/*   Updated: 2023/10/13 15:19:10 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/06 18:48:08 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
 // Calcule le nombre de sous chaine
 static int	numwords(char const *s, char c)
@@ -50,6 +50,7 @@ static int	split_words(char **result, char const *s, char c, int word)
 					free(result[word]);
 				return (0);
 			}
+			re_bin(result[word], 0);
 			ft_strlcpy(result[word], (s + start_i), end_i - start_i + 2);
 			word++;
 		}
