@@ -6,11 +6,11 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 19:30:21 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/03/30 20:07:13 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 16:14:01 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
 int	ft_putstr_fd(char *s, int fd)
 {

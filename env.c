@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:00:26 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/23 14:56:03 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 22:49:59 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,18 @@
 t_env	*create_env_node(t_data *data, char *key, char *value)
 {
 	t_env	*new_env;
-
+	
 	new_env = malloc(sizeof(t_env));
 	if (!new_env)
-	{
-		ft_error(data, ERR_MALLOC_ENV, STDERR_FILENO, FREE_PAR);
-//		perror("Memory allocation failed");
-		exit(EXIT_FAILURE);
-	}
-	new_env->key = ft_strdup(key);
-	new_env->value = ft_strdup(value);
+		adv_error(data, ERR_MALLOC_ENV, STDERR_FILENO, FREE_ENV);
+	re_bin_prompt(new_env, 0);
+	new_env->key = re_bin_prompt(ft_strdup(key), 0);
+	new_env->value = re_bin_prompt(ft_strdup(value), 0);
 	if (!new_env->key || !new_env->value)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//seperate check needed
+	{
+		if (ft_putstr_fd(ERR_MALLOC_ENV, 1) < 0)
+			adv_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, FREE_ENV);
+	}
 	new_env->next = NULL;
 	return (new_env);
 }
@@ -55,34 +55,30 @@ void	add_to_end(t_env **head, t_env *new_node)
 	}
 }
 
-static void	split_and_add(t_data *data, char *env_var, t_env **head)
+static void	split_and_add(t_data *data, char *env_var)
 {
 	char	**str;
 	t_env	*new_node;
 
-	str = ft_split(env_var, '=');
-	if (!str)	
-		ft_error(data, ERR_MALLOC_ENV, STDERR_FILENO, FREE_0);
+	str = ft_adv_split(env_var, '=');
+	if (!str)
+		adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);	
 	if (str[0] && str[1])
 	{
 		new_node = create_env_node(data, str[0], str[1]);
-		add_to_end(head, new_node);
+		add_to_end(&data->env_list, new_node);
 	}
-	free_array(str);
 }
 
 t_env	*get_env_to_list(t_data *data, char **envp)
 {
-	t_env	*env_list;
 	int		i;
 
-	env_list = NULL;
 	i = 0;
 	while (envp[i])
 	{
-		split_and_add(data, envp[i], &env_list);
+		split_and_add(data, envp[i]);
 		i++;
 	}
-	data->env_list = env_list;
-	return (env_list);
+	return (data->env_list);
 }

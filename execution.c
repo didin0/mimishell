@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/27 13:44:32 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/08 15:02:37 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,9 @@
 
 static void	init_cmd_loop(t_data *data, char *word, int i, int j)
 {
-	data->cmd[i][j] = ft_strdup(word);
+	data->cmd[i][j] = re_bin(ft_strdup(word), 0);
 	if (!data->cmd[i][j])
-	{
-		while (--i >= 0)
-			free_array(data->cmd[i]);
-		if (i == -1)
-			free(data->cmd[0]);
-		free(data->cmd);
-		ft_error(data, ERR_MALLOC_EX, STDERR_FILENO, FREE_CMD_0);
-	}
+		adv_error(data, ERR_MALLOC_EX, STDERR_FILENO, FREE_M);	
 }
 
 /*
@@ -69,17 +62,13 @@ static void	init_cmd(t_data *data)
 
 static void	resume_parent(t_data *data, pid_t *pids, int i)
 {
-	if (pids[i] < 0)
-	{
-//		perror("fork");
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-		exit(EXIT_FAILURE);//TODO free
-	}
+	if (pids[i] < 0)//TODO how to free this?
+		adv_error(data, ERR_FORK, STDERR_FILENO, FREE_FORK);
 	if (data->cmd_count > 1)
 		update_cur_node(data, i);
 	if (data->lexer_list->next)
 	{
-		if (data->lexer_list->next->type == 400)
+		if (data->lexer_list->next->type == HERE_DOC)
 			g_child_pid = 2147483647;
 		else  
 			g_child_pid = pids[i];
@@ -116,12 +105,7 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 			close_unused_fds(data, i);
 			if (!exec_builtin_child(data, data->cmd[i], env_list))
 			{
-				free_3D_array(data->cmd);
-				free_lexer_list(data);
-				free_array(data->paths);
-				free_array(data->asked_paths);
-				free(pids);
-				free_int_array(data->pipefd);
+//				re_bin(NULL, 1);//TODO 060624 echo a
 				exit(EXIT_SUCCESS);
 			}
 			else
@@ -135,9 +119,7 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 		resume_parent(data, pids, i);
 		i++;
 	}
-//	free_array(paths);no help resolving leaks thus logical 0705 case echo a
 	parent_close_all_fds(data);
-//	free_array(paths);TODO needed but segfults.
 }
 
 /*
@@ -167,8 +149,7 @@ int	execution(t_data *data, t_env *env_list)
 
 	if (check_meaning(data) != 0)
 	{
-		add_history(data->line);
-		ft_error(data, ERR_MEANING, STDOUT_FILENO, FREE_MEANING);
+		adv_error(data, ERR_MEANING, STDOUT_FILENO, NO_EXIT);	
 		return (0);
 	}
 	init_cmd(data);
@@ -181,12 +162,7 @@ int	execution(t_data *data, t_env *env_list)
 		exec_child(env_list, data, data->pids);
 		stat_from_waitpid(data, data->pids);
 	}
-	g_child_pid = -1;
-	free_3D_array(data->cmd);
-	free_lexer_list(data);
-	if (data->paths)	
-		free_array(data->paths);
-	free(data->line);
-	free_array(data->asked_paths);
+	g_child_pid = -1;	
+//	re_bin(NULL, 1); //TODO 060624 echo a
 	return (0);
 }

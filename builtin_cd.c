@@ -6,13 +6,13 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 09:20:38 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/22 11:56:52 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 20:39:23 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*our_get_env(t_env *env_list, char *env)
+char	*our_get_env(t_env *env_list, char *env)
 {
 	t_env	*temp;
 
@@ -23,6 +23,8 @@ static char	*our_get_env(t_env *env_list, char *env)
 			break ;
 		temp = temp->next;
 	}
+	if (!temp)
+		return (NULL);
 	return (temp->value);
 }
 
@@ -41,10 +43,9 @@ static void	change_env(t_data *data, t_env *env_list, char *env, char *path)
 	{
 		if (!ft_strncmp(temp->key, env, ft_strlen(env)))
 		{
-			free(temp->value);
-			temp->value = ft_strdup(path);
+			temp->value = re_bin(ft_strdup(path), 0);
 			if (!temp->value)
-				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+				adv_error(data, ERR_MALLOC_BU_CD, STDERR_FILENO, FREE_M);	
 		}
 		temp = temp->next;
 	}
@@ -52,16 +53,15 @@ static void	change_env(t_data *data, t_env *env_list, char *env, char *path)
 
 static void	get_abs_path(t_data *data, t_env *env_list)
 {
-	char	abs_path[PATH_MAX];//TODO, what size is needed
+	char	abs_path[PATH_MAX];
 
 	change_env(data, env_list, "OLDPWD", our_get_env(env_list, "PWD"));
 	if (getcwd(abs_path, sizeof(abs_path)) != NULL)
 		change_env(data, env_list, "PWD", abs_path);
 	else
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO message cd: error retrieving currend directory
+		adv_error(data, ERR_CD_GET, STDOUT_FILENO, NO_EXIT);
 	if (data->pwd_flag == 1)
-		pwd_builtin(data, env_list);//todo need to print OLDPWD
+		pwd_builtin(data, env_list);
 	data->pwd_flag = 0;
 }
 
@@ -76,24 +76,22 @@ static void	expand_tilde(t_data *data, char **cmd, t_env *env_list)
 	size_t	new_len;
 
 	if (cmd[2])
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO message cd: too many arguments
+		adv_error(data, ERR_CD_MAX, STDOUT_FILENO, NO_EXIT);
 	else if (cmd[1][1] == '\0' || cmd[1][1] == '/'
 				|| !ft_strncmp(cmd[1], "~/.", 3))
 		{
 			home = our_get_env(env_list, "HOME");
 			new_path = malloc(ft_strlen(home) + ft_strlen(cmd[1]));
 			if (!new_path)
-				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
+				adv_error(data, ERR_MALLOC_BU_CD, STDERR_FILENO, FREE_M);	
+			re_bin(new_path, 0);
 			new_len = ft_strlen(home) + ft_strlen(cmd[1]);
 			ft_strlcpy(new_path, home, ft_strlen(home) + 1);
 			ft_strlcat(new_path, cmd[1] + 1, new_len);
 			if (chdir(new_path) == -1)
-				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//				ft_error(data);//TODO err STDERR "cd: $new_path no such file or dir"
+				adv_error(data, ERR_CD_ARG, STDERR_FILENO, EXIT);
 			free(new_path);
 			get_abs_path(data, env_list);
-			free_regular(data);
 		}
 }
 
@@ -107,29 +105,27 @@ static void	expand_tilde(t_data *data, char **cmd, t_env *env_list)
 
 void	cd_builtin(t_data *data, char **cmd, t_env *env_list)
 {
-	char	*home;
-
-	home = our_get_env(env_list, "HOME");
-	if (!home)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO
-	if (!cmd[1])
-		data->new_path = home;
+	if (!cmd[1] || !is_token_path(cmd[1]))
+		cd_also_path(data, cmd, env_list);	
 	else if (cmd[1][0] == '-')
 	{
-		if (cmd[1][1] != '\0')
-			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO
 		data->pwd_flag = 1;
 		data->new_path = our_get_env(env_list, "OLDPWD");
 	}
-	else if (cmd[1][0] == '~')
+	else if (cmd[1][0] == '-' || cmd[1][0] == '~' || cmd[2])
 	{
-		expand_tilde(data, cmd, env_list);
-		return ;
+		if (cmd[1][0] == '~')
+			expand_tilde(data, cmd, env_list);
+		else if (cmd[2])
+			adv_error(data, ERR_CD_MAX, STDERR_FILENO, NO_EXIT);
+	return ;
 	}
 	else
 		data->new_path = cmd[1];
 	if (chdir(data->new_path) == -1)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO err STDERR "cd: $new_path no such file or dir"
+	{
+		adv_error(data, ERR_CD_ARG, STDERR_FILENO, NO_EXIT);
+		return ;
+	}
 	get_abs_path(data, env_list);
-	free_regular(data);
 }

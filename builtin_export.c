@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 16:08:07 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/24 14:00:12 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 20:09:34 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,13 @@ static void	split_inc_term(t_data *data, char *env_var, t_env **head)
 	new_node = NULL;
 	str = ft_split(env_var, '=');
 	if (!str)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO ft_split malloc failure
+		adv_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_M);	
+	re_bin(str, 0);
 	if (str[0])
 	{
 		new_node = create_env_node(data, str[0], str[1]);
 		add_to_end(head, new_node);
 	}
-	free_array(str);
 }
 
 /*
@@ -50,11 +49,9 @@ static int	is_key_in_env(t_data *data, char **new_env, t_env *env_list)
 		if (!ft_strncmp(temp->key, new_env[0], ft_strlen(new_env[0]))
 			&& !ft_strncmp(temp->key, new_env[0], ft_strlen(temp->key)))
 		{
-			new_value = ft_strdup(new_env[1]);
+			new_value = re_bin(ft_strdup(new_env[1]), 0);
 			if (!new_value)
-				ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//				ft_error(data);//TODO ft_dup malloc failure
-			free(temp->value);
+				adv_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_M);	
 			temp->value = new_value;
 			return (1);
 		}
@@ -70,32 +67,10 @@ static int	is_key_in_env(t_data *data, char **new_env, t_env *env_list)
 
 static void	check_args(t_data *data, char **cmd, t_env *env_list)
 {
-//	int	i;
-//	int j;
 
 	if (!cmd[1])
 		env_builtin(data, env_list);
 }
-/*	else
-	{
-		i = 1;
-		j = 0;
-		while (cmd[i] && cmd[i][j] != '=')
-		{
-			j = 0;
-			while (cmd[i][j])
-			{
-				if (!ft_isalnum(cmd[i][j]))					
-					ft_error(data, ERR_EX_ARG, STDERR_FILENO, EX_ARG);
-				j++;
-			}
-			if (cmd[i][j] == '=')
-				return;
-			i++;
-		}
-	}
-//	return (1);
-}*/
 
 /*
 @glance			main while looks at each string in array.
@@ -121,16 +96,12 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 			j++;
 		}
 		if (cmd[i][j] != '=')
-			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//			ft_error(data);//TODO "export: CMD[i]: not a valid identifier"
-		data->new_env = ft_split(cmd[i], '=');//TODO ft_calloc fail
+			return (adv_error(data, ERR_EX_ARG, STDOUT_FILENO, NO_EXIT));	
+		data->new_env = re_bin(ft_split(cmd[i], '='), 0);
 		if (!data->new_env)	
-			ft_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_PIDS);//TODO
+			adv_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_M);	
 		if (!is_key_in_env(data, data->new_env, env_list))
 			split_inc_term(data, cmd[i], &env_list);
 		i++;
-		if (data->new_env)
-			free_array(data->new_env);
 	}
-	free_regular(data);
 }

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/05/24 10:12:54 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 17:28:32 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*ft_strremove(t_data *data, char *s, int start, int n)
 	int	i;
 
 	if (!s)
-		ft_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_PAR_RES_1);
+		adv_error(data, ERR_MALLOC_PAR_U, STDERR_FILENO, FREE_M);	
 	len = 0;
 	while (s[len])
 		len++;
@@ -72,7 +72,8 @@ char	*clean_quote(t_data *data, char *str)
 	j = 0;
 	result = malloc(ft_strlen(str) + 1);
 	if (!result)
-		ft_error(data, ERR_MALLOC_PAR_U, STDERR_FILENO, FREE_PAR_U);
+		adv_error(data, ERR_MALLOC_PAR_U, STDERR_FILENO, FREE_M);	
+	re_bin(result, 0);
 	while (str[i])
 	{
 		if ((str[i] == '\"' || str[i] == '\'') && !quote)
@@ -84,7 +85,6 @@ char	*clean_quote(t_data *data, char *str)
 		i++;
 	}
 	result[j] = '\0';
-	free(str);
 	return (result);
 }
 

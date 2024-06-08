@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/31 16:16:49 by abaccari          #+#    #+#             */
-/*   Updated: 2024/05/24 14:17:42 by mabbadi          ###   ########.fr       */
+/*   Created: 2024/03/09 16:16:49 by mabbadi           #+#    #+#             */
+/*   Updated: 2024/06/08 15:07:25 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,13 @@ static void	store_remaining(t_data *data, char *str, t_env *env_list)
 {
 	data->remaining = ft_strdup(str + ft_strlen(env_list->key));
 	if (!data->remaining)
-		ft_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_PAR_NEW);
+		adv_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_M);	
+	re_bin(data->remaining, 0);
 	data->result = malloc(ft_strlen(env_list->value)
 			+ ft_strlen(data->remaining) + 1);
 	if (!data->result)
-		ft_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_PAR_RE);
+		adv_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_M);	
+	re_bin(data->result, 0);
 }
 
 /*
@@ -35,6 +37,14 @@ static char	*expen(t_data *data, char *str, t_env *env_list)
 	if (ft_strlen(str) > 1)
 		str++;
 	size = key_size(str);
+	if (str[0] == '?')
+	{
+		data->result = ft_itoa(data->exit_status);
+		if (!data->result)
+			adv_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_M);	
+		return (data->result);
+	}
+	else
 	while (env_list)
 	{
 		if (!ft_strncmp(str, env_list->key, size)
@@ -45,12 +55,11 @@ static char	*expen(t_data *data, char *str, t_env *env_list)
 				+ 1);
 			ft_strlcat(data->result, data->remaining, ft_strlen(data->result)
 				+ ft_strlen(data->remaining) + 1);
-			free(data->remaining);
 			return (data->result);
 		}
 		env_list = env_list->next;
 	}
-	temp = ft_strdup(str);
+	temp = re_bin(ft_strdup(str), 0);
 	return (ft_strremove(data, temp, 0, size));
 }
 
@@ -58,7 +67,8 @@ static void	alloc_new(t_data *data, char **word, char *expanded, int before)
 {
 	data->new_str = malloc(ft_strlen(*word) + ft_strlen(expanded) + 1);
 	if (!data->new_str)
-		ft_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_PARSER);
+		adv_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_M);	
+	re_bin(data->new_str, 0);
 	ft_strlcpy(data->new_str, *word, before);
 	ft_strlcat(data->new_str, expanded, ft_strlen(data->new_str)
 		+ ft_strlen(expanded) + 1);
@@ -83,11 +93,7 @@ static void	parsing_loop(t_data *data, char **word, t_env *env_list)
 			before = str - *word + 1;
 			expanded = expen(data, str, env_list);
 			alloc_new(data, word, expanded, before);
-			free(expanded);
-			free(*word);
 			*word = data->new_str;
-			if (!*word)
-				ft_error(data, ERR_MALLOC_PAR, STDERR_FILENO, FREE_PAR_NEW);
 			str = *word + before -1;
 			while (*str + 1 == '$')
 				str++;
@@ -99,9 +105,10 @@ static void	parsing_loop(t_data *data, char **word, t_env *env_list)
 
 /*
 Iterates over the list and applies variable expansion for each
+@EXP_STATUS			in case first token in list is $?
 */
 
-t_lexer	*parsing(t_data *data, t_env *env_list)
+void	parsing(t_data *data, t_env *env_list)
 {
 	t_lexer	*lexer_list;
 
@@ -114,5 +121,4 @@ t_lexer	*parsing(t_data *data, t_env *env_list)
 			lexer_list->word = clean_quote(data, lexer_list->word);
 		lexer_list = lexer_list->next;
 	}
-	return (data->lexer_list);
 }

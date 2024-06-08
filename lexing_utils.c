@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:11:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/24 19:34:58 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/08 15:06:58 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,27 @@ static void	is_array_allocated(t_data *data, char **arr, int len)
 	int	i;
 	
 	i = 0;
-	while (i < len)
+	while (i++ < len - 1)
 	{
 		if (!arr[i])
-		{	
-			i = 0;
-			while (i < len)
-				free(arr[i++]);
-			free(arr);	
-			ft_error(data, ERR_MALLOC_LU, STDERR_FILENO, FREE_NAMES_P);
-		}
-		i++;
+			adv_error(data, ERR_MALLOC_LU, STDERR_FILENO, FREE_M);
 	}
+}
+
+/*
+@glance	categorize abs path /bin/ls & this rel ./a.out  as a command
+*/
+
+int	is_token_path(char *cmd)
+{
+	int i;
+	int	j;
+
+	i = 0;
+	j = 1;
+	if (cmd[i] == '/' || (cmd[i] == '.' && (cmd[j] == '.' || cmd[j] == '/')))
+			return (0);
+	return (1);
 }
 
 /*
@@ -38,19 +47,12 @@ static void	is_array_allocated(t_data *data, char **arr, int len)
 */
 
 int	is_cmd(t_data *data, t_lexer *token, t_env *env_list)
-{
-	
+{	
 	get_paths(data, env_list);
-	if (find_good_path(data, token->word))
-	{
-		if (data->paths)
-			free_array(data->paths);
-		if (data->final_path)	
-			// free(data->final_path);
+	if (!is_token_path(token->word))
 		return (0);
-	}
-	if (data->paths)
-		free_array(data->paths);
+	if (find_good_path(data, token->word))
+		return (0);
 	return (1);
 }
 
@@ -58,14 +60,15 @@ void	build_builtin_names(t_data *data)
 {
 	data->builtin_names = ft_calloc(8, sizeof(char *));
 	if (!data->builtin_names)
-		ft_error(data, ERR_MALLOC_LU, STDERR_FILENO, FREE_RESULT);
-	data->builtin_names[0] = ft_strdup("echo");
-	data->builtin_names[1] = ft_strdup("cd");
-	data->builtin_names[2] = ft_strdup("pwd");
-	data->builtin_names[3] = ft_strdup("export");
-	data->builtin_names[4] = ft_strdup("unset");
-	data->builtin_names[5] = ft_strdup("env");
-	data->builtin_names[6] = ft_strdup("exit");
+		adv_error(data, ERR_MALLOC_LU, STDERR_FILENO, FREE_M);	
+	re_bin(data->builtin_names, 0);
+	data->builtin_names[0] = re_bin(ft_strdup("echo"), 0);
+	data->builtin_names[1] = re_bin(ft_strdup("cd"), 0);
+	data->builtin_names[2] = re_bin(ft_strdup("pwd"), 0);
+	data->builtin_names[3] = re_bin(ft_strdup("export"), 0);
+	data->builtin_names[4] = re_bin(ft_strdup("unset"), 0);
+	data->builtin_names[5] = re_bin(ft_strdup("env"), 0);
+	data->builtin_names[6] = re_bin(ft_strdup("exit"), 0);
 	data->builtin_names[7] = NULL;
 	is_array_allocated(data, data->builtin_names, 7);
 }

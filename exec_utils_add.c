@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 03:20:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/24 12:42:41 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 18:19:49 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,18 +33,15 @@ void	allocate_cmd(t_data *data)
 	data->list_size = adv_list_size(data->lexer_list);
 	data->cmd = malloc((data->cmd_count + 1) * sizeof(char **));
 	if (!data->cmd)
-		ft_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_PAR_RES);
+		adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);	
 	i = 0;
+	re_bin(data->cmd, 0);
 	while (i < data->cmd_count)
 	{
 		data->cmd[i] = malloc((data->list_size + 1) * sizeof(char *));
 		if (!data->cmd[i])
-		{
-			while (--i >= 0)
-				free_array(data->cmd[i]);
-			free(data->cmd);
-			ft_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_PAR_RES);
-		}
+			adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);	
+		re_bin(data->cmd[i], 0);
 		i++;
 	}
 	data->cmd[data->cmd_count] = NULL;
@@ -60,16 +57,17 @@ void	create_pipes(t_data *data)
 
 	data->pipefd = malloc((data->pipe_count + 1) * sizeof(int *));
 	if (!data->pipefd)
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//		ft_error(data);//TODO msg Allocation fail, exit
+		adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_ENV);
+	re_bin(data->pipefd, 0);
 	j = 0;
 	while (j < data->pipe_count)
 	{
 		data->pipefd[j] = malloc(2 * sizeof(int));
 		if (!data->pipefd[j])
-			ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);
-//			ft_error(data);//TODO msg Allocation fail, exit
-		pipe(data->pipefd[j]);
+			adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_ENV);
+		re_bin(data->pipefd[j], 0);
+		if (pipe(data->pipefd[j]) == -1)
+			adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_ENV);
 		j++;
 	}
 	if (j > 0)
@@ -82,7 +80,8 @@ void	alloc_pids(t_data *data)
 {
 	data->pids = malloc(data->cmd_count * sizeof(pid_t));
 	if (!data->pids)
-		ft_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_CMD_1);
+		adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);	
+	re_bin(data->pids, 0);
 }
 
 int	adv_strncmp(const char *s1, const char *s2)

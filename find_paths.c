@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 15:32:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/27 13:06:52 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/08 15:06:06 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void	get_paths(t_data *data, t_env *env_list)
 		{
 			data->paths = ft_split(env_list->value, ':');
 			if (!data->paths)
-				ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_NAMES);
+				adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);	
+			re_bin(data->paths, 0);
 			break ;
 		}
 		env_list = env_list->next;
@@ -37,6 +38,7 @@ void	get_paths(t_data *data, t_env *env_list)
 @return(NULL)		path not valid.
 @var				if a static variable is assigned a NULL by ft_strjoin
 					this needs to freeing in ft_error().
+you can give abs path within the executive folder.
 */
 
 char	*find_good_path(t_data *data, char *cmd)
@@ -46,33 +48,32 @@ char	*find_good_path(t_data *data, char *cmd)
 	char *one_path;
 
 	i = 0;
-	if (access(cmd, F_OK) == 0)
-	{
-		data->final_path = cmd;
-		return (data->final_path);
-	}
-	(void)cmd;
+
+	data->final_path = NULL;
 	while (data->paths[i])
 	{
 		one_path = NULL;
 		slash_path = ft_strjoin("/", cmd);
 		if (!slash_path)
-			ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATHS);
-		one_path = ft_strjoin(data->paths[i], slash_path);
-		free(slash_path);
+			adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);	
+		re_bin(slash_path, 0);
+		if (!is_token_path(cmd))
+			one_path = strdup(cmd); 
+		else
+			one_path = ft_strjoin(data->paths[i], slash_path);
 		if (!one_path)
-			ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_SLASH);
+			adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);	
+		re_bin(one_path, 0);
 		if (access(one_path, F_OK) == 0)
 		{
 			data->final_path = NULL;
 			data->final_path = strdup(one_path);
-			free(one_path);
-			if (!data->final_path)
-				ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_ONE);
+			if (!data->final_path)	
+				adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);	
+			re_bin(data->final_path, 0);
 			return (data->final_path);
 		}
 		i++;
-		free(one_path);
 	}	
 	return (NULL);
 }
@@ -84,22 +85,22 @@ char	*find_good_path(t_data *data, char *cmd)
 
 void	organize_good_paths(t_data *data, t_env *env_list)
 {
-//	char	**asked_paths;
 	int		i;
 
 	data->asked_paths = ft_calloc(data->cmd_count + 1, sizeof(char *));
 	if (!data->asked_paths)
-		ft_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_PATHS);//TODO
+		adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);	
+	re_bin(data->asked_paths, 0);
 	i = 0;
-//	if (!data->paths)
-		get_paths(data, env_list);//TODO note in case of env, pwd
-	while (i < data->cmd_count)
+		get_paths(data, env_list);
+	while (i < data->cmd_count && data->lexer_list->type != EXP_STATUS)
 	{
 		find_good_path(data, data->cmd[i][0]);
 		data->asked_paths[i] = ft_strdup(data->final_path);
-		free(data->final_path);
+		if (!data->asked_paths[i])
+			adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);	
+		re_bin(data->asked_paths[i], 0);
 		i++;
 	}
 	data->asked_paths[i] = NULL;	
-//	return (asked_paths);
 }

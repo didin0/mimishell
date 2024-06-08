@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:15:45 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/27 13:43:16 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/08 15:07:35 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,29 @@ int	adv_list_size(t_lexer *list)
 	return (i);
 }
 
+/*
+@glance		re-assignes redirection tokens. uppon malloc failure, 
+			exits child process.
+*/
+
 static void	reassign_str(t_data *data, int i, int k, char *new_str)
 {
-	if (data->cmd[i][k])
-		free(data->cmd[i][k]);
-	data->cmd[i][k] = ft_strdup(new_str);
+	data->cmd[i][k] = re_bin(ft_strdup(new_str), 0);
 	if (!data->cmd[i][k])
-		ft_error(data, ERR_MALLOC, STDERR_FILENO, FREE_PAR);//TODO
-//	free(new_str);//TODO has no effect.
+		adv_error(data, ERR_MALLOC_RE_U, STDERR_FILENO, FREE_M);	
 }	
 
+static t_lexer	*clean_cmd_loop(t_lexer *node)
+{
+	if (((is_token(node->word, 0) && node->type != EXP_STATUS)
+	   && node->type != 31) && node->type != 32)
+		node = node->next->next;
+	if (((((node && is_token(node->word, 0)) && node->type != PIPE)
+		&& node->type != EXP_STATUS)
+	   && node->type != 31) && node->type != 32)
+		node = node->next->next;
+	return (node);	
+}
 
 /*OUT OF DATE
 @2nd if		in case there are several redirection within one cmd array
@@ -46,34 +59,17 @@ static void	reassign_str(t_data *data, int i, int k, char *new_str)
 static void	clean_cmd_from_redir(t_data *data, t_lexer *node, int i)
 {
 	int	k;
-	int l;
 
 	k = 0;
-	l = 0;
 	while (node && node->type != PIPE)
 	{
-		if (is_token(node->word, 0) && node->type != EXP_STATUS)
-			node = node->next->next;
-		if (((node && is_token(node->word, 0)) && node->type != PIPE)
-			&& node->type != EXP_STATUS)
-			node = node->next->next;
+		node = clean_cmd_loop(node);
 		if (!node)
 			break ;
-		if (node && node->type == EXP_STATUS)
-		{
-			data->cmd[i][k] = ft_itoa(data->exit_status);
-			node = node->next;
-			k++;
-		}
 		if (node && node->type != PIPE)
 			reassign_str(data, i, k, node->word);
-//		if (node)//TODO was for a special case. 
-//			reassign_str(data, i, k, node->word);
 		if (node->type == PIPE)
 		{
-			l = k;
-			while (data->cmd[i][l])
-				free(data->cmd[i][l++]);
 			data->cmd[i][k] = NULL;
 			i++;
 			k = 0;
@@ -82,9 +78,6 @@ static void	clean_cmd_from_redir(t_data *data, t_lexer *node, int i)
 			k++;
 		node = node->next;
 	}
-	l = k;//TODO new function
-	while (data->cmd[i][l])
-		free(data->cmd[i][l++]);
 	data->cmd[i][k] = NULL;
 }
 

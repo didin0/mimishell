@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/21 14:05:12 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/06 22:59:03 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,19 @@ static void	echo_stdout(t_data *data, char **cmd, int line_break)
 		if (line_break == 0 && option_flag == 0)
 			j = 2;
 		if (ft_putstr_fd(cmd[j], 1) < 0)
-			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
 		j++;
 		if (cmd[j])
 		{
 			if (ft_putchar_fd(' ', 1) < 0)
-			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+				adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
 		}
 		option_flag = 1;
 	}
 	if (line_break == 1)
 	{
 		if (ft_putchar_fd('\n', 1) < 0)
-			ft_error(data, ERR_WRITE_FAIL, STDOUT_FILENO, STDOUT);
+			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
 	}
 }
 
@@ -62,12 +62,12 @@ static void	echo_builtin(t_data *data, char **cmd)
 
 	line_break = 1;
 	j = 1;
-	if (cmd[1][0] == '-')
+	if (cmd[1] && cmd[1][0] == '-')
 	{
 		while (cmd[1][j] == 'n')
 			j++;
 	}
-	if (cmd[1][0] == '-' && cmd[1][j] == '\0')
+	if (cmd[1] && (cmd[1][0] == '-' && cmd[1][j] == '\0'))
 		line_break = 0;
 	echo_stdout(data, cmd, line_break);
 }
@@ -93,21 +93,14 @@ int	exec_builtin_parent(t_data *data, char **cmd, t_env *env_list)
 		exit_builtin(data, cmd);
 		return (0);
 	}
-	else if (!adv_strncmp(cmd[0], "$?"))
-	{
-		expand_status(data);
-		return (0);
-	}
 	return (1);
 }
 
 int	exec_builtin_child(t_data *data, char **cmd, t_env *env_list)
 {
-//	free(data->org_paths);
 	if (!adv_strncmp(cmd[0], "echo"))
 	{
 		echo_builtin(data, cmd);
-//		free_array(cmd);//TODO for all paths
 		return (0);
 	}
 	if (!adv_strncmp(cmd[0], "pwd"))

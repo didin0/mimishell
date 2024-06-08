@@ -35,6 +35,8 @@ export aa=100 bb=101, env, unset
 export aa=101 changing the value of an existing env.
 export aa=100 bb=101 , unset aa
 export all cases still reachables.
+export AA="echo ls" , export BB=AA , echo $BB
+
 cd ctrl-D
 cd -
 cd tilde
@@ -60,9 +62,31 @@ parser all mallocs again. norm
 exec_utils_add:41
 execution:19, function >25 lines.
 exec_utils_add:83
-
---BOOKMARK-- (error management, malloc failures execution, after that other error)
 export a leaks, error handling.
+builtin_export:127
+
+
+
+CRITICAL evv last value is not correct.
+Critical ls does not work. diff te_1 te_2 meaning missing?
+
+
+----BOOKMARK--- functionality
+/bin/lsfilaeadfasdf may be an issue Syscall param execve(filename) points to unaddressable byte(s)
+quotes closed error does not add to history.
+block command cat enter + cntr-C displays the readline twice. - ask someone!
+
+done readline fail leak check.
+done write fails leak check.
+
+--BOOKMARK_ERROR-- (error management, malloc failures execution, after that other error)
+CRITICAL / check again all malloc leaks for flag 6, 7, 8!!!
+
+func inprovment relative and abs path instead of a command.
+alter data->final_path in case token type ABS_PATH
+in case token starts with / then final path == token.
+error case cd Minishell/ in home
+
 
 Error rmanagment for write fails
 
@@ -70,6 +94,7 @@ FUNCTIONALITY
 $? not getting past the parser
 echo $?
 export a
+export AA="''" , echo $AA should display '' 
 
 find_paths.c61 access == 2
 
@@ -77,6 +102,9 @@ OPEN CASES
 echo $ --- one block still reachable, in case malloc fail parser.c:59 and 54
 echo $PWDa --- one block still reachable, in case strdup fail parser.c:54
 echo $PWDa$PWD --not behaving well
+echo a b -- block definetely lost in case strdup fail redir_utils.c:32 needs a function to free an array where cmd[0][0] is NULL and cmd[0][0] is a and cmd[0][2] is NULL
+NICE TO HAVE child process malloc failure would exit ie redir_utils.c:32
+
 
 HANDLE in ERROR handling PHASE
 export aa=100 bb100, missing = sign, part of error handling.
