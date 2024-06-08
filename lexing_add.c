@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexing_add.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
+/*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:02:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/22 21:08:08 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/27 11:09:11 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@ void	token_type(t_data *data, t_env *env_list)
 			else
 				temp->type = 7;
 		}
-		is_token_file(temp);
+		if (temp->type != 1)
+			is_token_file(temp);
 		if (temp->type == -1)
 			temp->type = 3;
 		temp = temp->next;

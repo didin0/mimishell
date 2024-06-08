@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   find_paths.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
+/*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 15:32:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/23 09:02:11 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/27 13:06:52 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,11 @@ char	*find_good_path(t_data *data, char *cmd)
 	char *one_path;
 
 	i = 0;
-
+	if (access(cmd, F_OK) == 0)
+	{
+		data->final_path = cmd;
+		return (data->final_path);
+	}
 	(void)cmd;
 	while (data->paths[i])
 	{

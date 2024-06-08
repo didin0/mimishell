@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexing_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
+/*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:11:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/05/22 20:27:47 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/05/24 19:34:58 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	is_cmd(t_data *data, t_lexer *token, t_env *env_list)
 		if (data->paths)
 			free_array(data->paths);
 		if (data->final_path)	
-			free(data->final_path);
+			// free(data->final_path);
 		return (0);
 	}
 	if (data->paths)
