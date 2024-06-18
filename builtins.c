@@ -70,6 +70,7 @@ static void	echo_builtin(t_data *data, char **cmd)
 	if (cmd[1] && (cmd[1][0] == '-' && cmd[1][j] == '\0'))
 		line_break = 0;
 	echo_stdout(data, cmd, line_break);
+	re_bin(NULL, 1);
 }
 
 /*

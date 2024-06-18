@@ -26,7 +26,7 @@ static void	split_inc_term(t_data *data, char *env_var, t_env **head)
 	str = ft_split(env_var, '=');
 	if (!str)
 		adv_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_M);	
-	re_bin(str, 0);
+	re_bin_prompt(str, 0);
 	if (str[0])
 	{
 		new_node = create_env_node(data, str[0], str[1]);
@@ -49,7 +49,7 @@ static int	is_key_in_env(t_data *data, char **new_env, t_env *env_list)
 		if (!ft_strncmp(temp->key, new_env[0], ft_strlen(new_env[0]))
 			&& !ft_strncmp(temp->key, new_env[0], ft_strlen(temp->key)))
 		{
-			new_value = re_bin(ft_strdup(new_env[1]), 0);
+			new_value = re_bin_prompt(ft_strdup(new_env[1]), 0);
 			if (!new_value)
 				adv_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_M);	
 			temp->value = new_value;
@@ -97,7 +97,7 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 		}
 		if (cmd[i][j] != '=')
 			return (adv_error(data, ERR_EX_ARG, STDOUT_FILENO, NO_EXIT));	
-		data->new_env = re_bin(ft_split(cmd[i], '='), 0);
+		data->new_env = re_bin_prompt(ft_split(cmd[i], '='), 0);
 		if (!data->new_env)	
 			adv_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_M);	
 		if (!is_key_in_env(data, data->new_env, env_list))

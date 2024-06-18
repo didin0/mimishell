@@ -51,7 +51,6 @@ void	str_to_list(t_data *data, t_stat *stat)
 		adv_error(data, ERR_MALLOC_L, STDERR_FILENO, FREE_M);	
 	re_bin(data->buff, 0);
 	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(data, data->buff));
-	re_bin(data->buff, 0);
 }
 
 /*

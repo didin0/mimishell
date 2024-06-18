@@ -198,12 +198,10 @@ typedef struct s_stat
 void	free_array(char **str);
 void	free_int_array(int **arr);
 void	free_3D_array(char ***str);
-//void	free_env_list(t_env *head);
 void	free_lexer_list(t_data *data);
 void	free_regular(t_data *data);
 void	init_data(t_data *data);
-//void	ft_error(t_data *data, const char *msg, int fd, int flag);
-void	ft_error_errno(t_data *data, char **cmd);
+void	ft_error_errno(char **cmd);
 	
 // List
 t_lexer	*ft_lstlex_new(t_data *data, void *word);
