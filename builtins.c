@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/06 22:59:03 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/21 16:22:15 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,24 +30,24 @@ static void	echo_stdout(t_data *data, char **cmd, int line_break)
 		if (line_break == 0 && option_flag == 0)
 			j = 2;
 		if (ft_putstr_fd(cmd[j], 1) < 0)
-			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
+			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
 		j++;
 		if (cmd[j])
 		{
 			if (ft_putchar_fd(' ', 1) < 0)
-				adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
+				adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
 		}
 		option_flag = 1;
 	}
 	if (line_break == 1)
 	{
 		if (ft_putchar_fd('\n', 1) < 0)
-			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
+			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
 	}
 }
 
 /*
-@glance			check if in the string arrray cmd the second pos is the 
+@glance			check if in the string arrray cmd the second pos is the
 				option -n
 @while and if	-n option is the first argument, check the last char
 				of the first argument strng.
@@ -57,8 +57,8 @@ static void	echo_stdout(t_data *data, char **cmd, int line_break)
 
 static void	echo_builtin(t_data *data, char **cmd)
 {
-	int		j;
-	int		line_break;
+	int	j;
+	int	line_break;
 
 	line_break = 1;
 	j = 1;
@@ -70,6 +70,7 @@ static void	echo_builtin(t_data *data, char **cmd)
 	if (cmd[1] && (cmd[1][0] == '-' && cmd[1][j] == '\0'))
 		line_break = 0;
 	echo_stdout(data, cmd, line_break);
+	re_bin(NULL, 1);
 }
 
 /*

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils_add.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
+/*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 03:20:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/06 18:19:49 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/21 16:23:05 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,26 +21,26 @@
 				middle layer is char ** that has block sixe of char * to the
 				amount of tokens until pipe.
 				deepest layer is a char *.
-@if !cmd[i]		in case allocation partially fails, free all previously alloc.	
+@if !cmd[i]		in case allocation partially fails, free all previously alloc.
 ???				in case of echo a I have 2 arrays allocated cmd_count+1
 @NULL			terminating 3D array, to array level
 */
 
 void	allocate_cmd(t_data *data)
 {
-	int		i;
+	int	i;
 
 	data->list_size = adv_list_size(data->lexer_list);
 	data->cmd = malloc((data->cmd_count + 1) * sizeof(char **));
 	if (!data->cmd)
-		adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);
 	i = 0;
 	re_bin(data->cmd, 0);
 	while (i < data->cmd_count)
 	{
 		data->cmd[i] = malloc((data->list_size + 1) * sizeof(char *));
 		if (!data->cmd[i])
-			adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);	
+			adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);
 		re_bin(data->cmd[i], 0);
 		i++;
 	}
@@ -80,14 +80,14 @@ void	alloc_pids(t_data *data)
 {
 	data->pids = malloc(data->cmd_count * sizeof(pid_t));
 	if (!data->pids)
-		adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);
 	re_bin(data->pids, 0);
 }
 
 int	adv_strncmp(const char *s1, const char *s2)
 {
-	if (!ft_strncmp(s1, s2, ft_strlen(s1))
-		&& !ft_strncmp(s1, s2, ft_strlen(s2)))
+	if (!ft_strncmp(s1, s2, ft_strlen(s1)) && !ft_strncmp(s1, s2,
+			ft_strlen(s2)))
 		return (0);
 	return (1);
 }

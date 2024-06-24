@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   child_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
+/*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 16:34:33 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/06 23:01:18 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/24 14:15:31 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@ void	redirect_close_fds(t_data *data, int i)
 /*
 Exmaple to illustrate the pattern of fd-s in a pipeline.
 
-Child		0		1	 	2		3		4
-pipefd[0]  r W	   R w	   r w	   r w 	   r w
-pipefd[1]  r w	   r W	   R w	   r w 	   r w
-pipefd[2]  r w	   r w	   r W	   R w 	   r w
-pipefd[3]  r w	   r w	   r w	   r W 	   R w
+Child		0		1			2		3		4
+pipefd[0]  r W		R w	   r w	   r w 	   r w
+pipefd[1]  r w		r W	   R w	   r w 	   r w
+pipefd[2]  r w		r w	   r W	   R w 	   r w
+pipefd[3]  r w		r w	   r w	   r W 	   R w
 
 So close all lowercase fd-s, duplicate and then close uppercase fd-s.
 */

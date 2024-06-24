@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 16:16:49 by abaccari          #+#    #+#             */
-/*   Updated: 2024/06/06 18:48:08 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/21 18:34:32 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,27 +32,25 @@ static int	numwords(char const *s, char c)
 // Split *s en sous chaine et return 1 or 0
 static int	split_words(char **result, char const *s, char c, int word)
 {
-	int		start_i;
-	int		end_i;
+	int	start_i;
+	int	end_i;
 
-	end_i = 0;
 	start_i = 0;
+	end_i = 0;
 	while (s[end_i])
 	{
-		if (s[end_i] == c || s[end_i] == 0)
-			start_i = end_i + 1;
-		if (s[end_i] != c && (s[end_i + 1] == c || s[end_i + 1] == 0))
+		if (s[end_i] != c && (end_i == 0 || s[end_i - 1] == c))
+			start_i = end_i;
+		if (s[end_i] != c && (s[end_i + 1] == c || s[end_i + 1] == '\0'))
 		{
-			result[word] = ft_calloc(sizeof(char), (end_i - start_i + 2));
+			result[word] = ft_calloc(end_i - start_i + 2, sizeof(char));
 			if (!result[word])
 			{
-				while (word--)
+				while (word-- > 0)
 					free(result[word]);
 				return (0);
 			}
-			re_bin(result[word], 0);
-			ft_strlcpy(result[word], (s + start_i), end_i - start_i + 2);
-			word++;
+			ft_strlcpy(result[word++], s + start_i, end_i - start_i + 2);
 		}
 		end_i++;
 	}

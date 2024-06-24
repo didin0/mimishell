@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   freeing_add.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
+/*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 09:36:21 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/06 12:40:46 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/24 14:28:15 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 void	free_regular(t_data *data)
-{	
+{
 	free(data->pids);
 	free_lexer_list(data);
-	free_3D_array(data->cmd);
+	free_3d_array(data->cmd);
 }
 
 static void	free_ptr(void *ptr)
@@ -25,8 +25,11 @@ static void	free_ptr(void *ptr)
 	ptr = NULL;
 }
 
-//delete a singly linked list entry
-static void	ft_lstdelone1(t_list *lst, void (*del)(void*))
+/*
+@glance		delete a list node
+*/
+
+static void	ft_lstdelone_bin(t_list *lst, void (*del)(void *))
 {
 	if (!lst || !del)
 		return ;
@@ -34,8 +37,11 @@ static void	ft_lstdelone1(t_list *lst, void (*del)(void*))
 	free(lst);
 }
 
-//create a singly linked list entry at the end
-static void	*ft_lstadd_back1(t_list **lst, t_list *new)
+/*
+@glance		append a node to the end of the list
+*/
+
+static void	*ft_lstadd_back_bin(t_list **lst, t_list *new)
 {
 	t_list	*t;
 
@@ -49,8 +55,11 @@ static void	*ft_lstadd_back1(t_list **lst, t_list *new)
 	return (new->content);
 }
 
-//create a singly linked list
-static t_list	*ft_lstnew1(void *content)
+/*
+@glance		create a list
+*/
+
+static t_list	*ft_lstnew_bin(void *content)
 {
 	t_list	*rtn;
 
@@ -62,8 +71,11 @@ static t_list	*ft_lstnew1(void *content)
 	return (rtn);
 }
 
-//perform a delete function on each entry in a singly linked list
-static void	ft_lstclear1(t_list **lst, void (*del)(void*))
+/*
+@glance		free a singly linked list
+*/
+
+static void	ft_lstclear_bin(t_list **lst, void (*del)(void *))
 {
 	t_list	*tmp;
 
@@ -72,9 +84,23 @@ static void	ft_lstclear1(t_list **lst, void (*del)(void*))
 	while (*lst)
 	{
 		tmp = (*lst)->next;
-		ft_lstdelone1(*lst, del);
+		ft_lstdelone_bin(*lst, del);
 		*lst = tmp;
 	}
+}
+/*
+@glance		list to keep pointers that have to accessible while prompt return
+			ie environmental variables env_list.
+*/
+
+void	*re_bin_prompt(void *ptr, bool clean)
+{
+	static t_list	*prompt;
+
+	if (clean)
+		return (ft_lstclear_bin(&prompt, free_ptr), NULL);
+	else
+		return (ft_lstadd_back_bin(&prompt, ft_lstnew_bin(ptr)), ptr);
 }
 
 /*
@@ -87,22 +113,8 @@ void	*re_bin(void *ptr, bool clean)
 	static t_list	*garbage;
 
 	if (clean)
-		return (ft_lstclear1(&garbage, free_ptr), NULL);
+		return (ft_lstclear_bin(&garbage, free_ptr), NULL);
 	else
-		return (ft_lstadd_back1(&garbage, ft_lstnew1(ptr)), ptr);
+		return (ft_lstadd_back_bin(&garbage, ft_lstnew_bin(ptr)), ptr);
 }
 
-/*
-@glance		list to keep pointers that have to accessible while prompt return
-			ie environmental variables env_list.
-*/
-
-void	*re_bin_prompt(void *ptr, bool clean)
-{
-	static t_list	*prompt;
-
-	if (clean)
-		return (ft_lstclear1(&prompt, free_ptr), NULL);
-	else
-		return (ft_lstadd_back1(&prompt, ft_lstnew1(ptr)), ptr);
-}

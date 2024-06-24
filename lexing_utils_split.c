@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexing_utils_split.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
+/*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 12:23:41 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/06 14:27:19 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/06/21 18:35:46 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,7 @@ int	create_node_space_term(t_data *data, t_stat *stat)
 		return (1);
 	}
 	str_to_list(data, stat);
-	while (data->line [stat->i + 1] == ' '
-		&& data->line[stat->i + 1] != '\0')
+	while (data->line[stat->i + 1] == ' ' && data->line[stat->i + 1] != '\0')
 		stat->i++;
 	stat->ibis = stat->i + 1;
 	if (data->line[stat->i + 1] == ' ')
@@ -73,25 +72,23 @@ int	create_node_space_term(t_data *data, t_stat *stat)
 
 int	create_node_quotes(t_data *data, t_stat *stat)
 {
-	char quote;
-	bool open_quote;
+	char	quote;
+	bool	open_quote;
 
 	quote = data->line[stat->i];
 	open_quote = false;
-
 	while (data->line[stat->i] != '\0')
 	{
 		if (data->line[stat->i] == quote)
 			open_quote = !open_quote;
 		else if (data->line[stat->i] == ' ' && !open_quote)
-			break;
+			break ;
 		stat->i++;
 	}
 	str_to_list(data, stat);
 	if (data->line[stat->i] == '\0')
 		return (1);
-	if (data->line[stat->i + 1] == '\0'
-		|| is_token(data->line, stat->i) != 0
+	if (data->line[stat->i + 1] == '\0' || is_token(data->line, stat->i) != 0
 		|| data->line[stat->i] == ' ')
 	{
 		stat->ibis = stat->i;

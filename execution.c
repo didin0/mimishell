@@ -6,19 +6,19 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/08 15:02:37 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/24 16:22:56 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
- pid_t	g_child_pid = -1;
+pid_t		g_child_pid = -1;
 
 static void	init_cmd_loop(t_data *data, char *word, int i, int j)
 {
 	data->cmd[i][j] = re_bin(ft_strdup(word), 0);
 	if (!data->cmd[i][j])
-		adv_error(data, ERR_MALLOC_EX, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_EX, STDERR_FILENO, FREE_M);
 }
 
 /*
@@ -62,18 +62,17 @@ static void	init_cmd(t_data *data)
 
 static void	resume_parent(t_data *data, pid_t *pids, int i)
 {
-	if (pids[i] < 0)//TODO how to free this?
-		adv_error(data, ERR_FORK, STDERR_FILENO, FREE_FORK);
+	if (pids[i] < 0)
+		adv_error(data, ERR_FORK, STDERR_FILENO, FREE_M);
 	if (data->cmd_count > 1)
 		update_cur_node(data, i);
 	if (data->lexer_list->next)
 	{
 		if (data->lexer_list->next->type == HERE_DOC)
 			g_child_pid = 2147483647;
-		else  
+		else
 			g_child_pid = pids[i];
 	}
-//printf("parent IN while @ child in exec g_pid %d - getpid %d -- pids[i] %d\n", g_child_pid, getpid(), pids[i]);
 }
 
 /*
@@ -90,7 +89,7 @@ static void	resume_parent(t_data *data, pid_t *pids, int i)
 
 void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 {
-	int		i;
+	int	i;
 
 	create_pipes(data);
 	organize_good_paths(data, env_list);
@@ -103,18 +102,11 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 			look_for_redirs(data, i);
 			redirect_close_fds(data, i);
 			close_unused_fds(data, i);
+			// chek env
 			if (!exec_builtin_child(data, data->cmd[i], env_list))
-			{
-//				re_bin(NULL, 1);//TODO 060624 echo a
 				exit(EXIT_SUCCESS);
-			}
-			else
-			{
-				signal(SIGQUIT, SIG_DFL);
-				signal(SIGINT, SIG_DFL);
-				if (execve(data->asked_paths[i], data->cmd[i], NULL) == -1)
-					ft_error_errno(data, data->cmd[i]);//TODO check
-			}
+			else if (execve(data->asked_paths[i], data->cmd[i], NULL) == -1)
+				ft_error_errno(data->cmd[i]);
 		}
 		resume_parent(data, pids, i);
 		i++;
@@ -124,8 +116,8 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 
 /*
 @design			3 main flows of execution:
-				1.builtin in paretn process like exit, export, unset,  cd, $? 
-				2. builtin in chilld process like echo, pwd, env 
+				1.builtin in paretn process like exit, export, unset,  cd, $?
+				2. builtin in chilld process like echo, pwd, env
 				3. command to exexcv(), child process, exits by itself
 					(data->lexer_list, ASK);
 
@@ -146,10 +138,9 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 
 int	execution(t_data *data, t_env *env_list)
 {
-
 	if (check_meaning(data) != 0)
 	{
-		adv_error(data, ERR_MEANING, STDOUT_FILENO, NO_EXIT);	
+		adv_error(data, ERR_MEANING, STDOUT_FILENO, NO_EXIT);
 		return (0);
 	}
 	init_cmd(data);
@@ -162,7 +153,6 @@ int	execution(t_data *data, t_env *env_list)
 		exec_child(env_list, data, data->pids);
 		stat_from_waitpid(data, data->pids);
 	}
-	g_child_pid = -1;	
-//	re_bin(NULL, 1); //TODO 060624 echo a
+	g_child_pid = -1;
 	return (0);
 }
