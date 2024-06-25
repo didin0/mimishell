@@ -25,7 +25,7 @@ static void	split_inc_term(t_data *data, char *env_var, t_env **head)
 	new_node = NULL;
 	str = ft_split(env_var, '=');
 	if (!str)
-		adv_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_M);
 	re_bin_prompt(str, 0);
 	if (str[0])
 	{
@@ -51,7 +51,7 @@ static int	is_key_in_env(t_data *data, char **new_env, t_env *env_list)
 		{
 			new_value = re_bin_prompt(ft_strdup(new_env[1]), 0);
 			if (!new_value)
-				adv_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_M);	
+				adv_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_M);
 			temp->value = new_value;
 			return (1);
 		}
@@ -67,7 +67,6 @@ static int	is_key_in_env(t_data *data, char **new_env, t_env *env_list)
 
 static void	check_args(t_data *data, char **cmd, t_env *env_list)
 {
-
 	if (!cmd[1])
 		env_builtin(data, env_list);
 }
@@ -96,10 +95,10 @@ void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 			j++;
 		}
 		if (cmd[i][j] != '=')
-			return (adv_error(data, ERR_EX_ARG, STDOUT_FILENO, NO_EXIT));	
+			return (adv_error(data, ERR_EX_ARG, STDOUT_FILENO, NO_EXIT));
 		data->new_env = re_bin_prompt(ft_split(cmd[i], '='), 0);
-		if (!data->new_env)	
-			adv_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_M);	
+		if (!data->new_env)
+			adv_error(data, ERR_MALLOC_BU_EX, STDERR_FILENO, FREE_M);
 		if (!is_key_in_env(data, data->new_env, env_list))
 			split_inc_term(data, cmd[i], &env_list);
 		i++;

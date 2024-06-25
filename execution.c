@@ -12,13 +12,13 @@
 
 #include "minishell.h"
 
- pid_t	g_child_pid = -1;
+pid_t	g_child_pid = -1;
 
 static void	init_cmd_loop(t_data *data, char *word, int i, int j)
 {
 	data->cmd[i][j] = re_bin(ft_strdup(word), 0);
 	if (!data->cmd[i][j])
-		adv_error(data, ERR_MALLOC_EX, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_EX, STDERR_FILENO, FREE_M);
 }
 
 /*
@@ -70,10 +70,9 @@ static void	resume_parent(t_data *data, pid_t *pids, int i)
 	{
 		if (data->lexer_list->next->type == HERE_DOC)
 			g_child_pid = 2147483647;
-		else  
+		else
 			g_child_pid = pids[i];
 	}
-//printf("parent IN while @ child in exec g_pid %d - getpid %d -- pids[i] %d\n", g_child_pid, getpid(), pids[i]);
 }
 
 /*
@@ -141,7 +140,7 @@ int	execution(t_data *data, t_env *env_list)
 {
 	if (check_meaning(data) != 0)
 	{
-		adv_error(data, ERR_MEANING, STDOUT_FILENO, NO_EXIT);	
+		adv_error(data, ERR_MEANING, STDOUT_FILENO, NO_EXIT);
 		return (0);
 	}
 	init_cmd(data);
@@ -154,6 +153,6 @@ int	execution(t_data *data, t_env *env_list)
 		exec_child(env_list, data, data->pids);
 		stat_from_waitpid(data, data->pids);
 	}
-	g_child_pid = -1;	
+	g_child_pid = -1;
 	return (0);
 }

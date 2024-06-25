@@ -33,14 +33,14 @@ void	allocate_cmd(t_data *data)
 	data->list_size = adv_list_size(data->lexer_list);
 	data->cmd = malloc((data->cmd_count + 1) * sizeof(char **));
 	if (!data->cmd)
-		adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);
 	i = 0;
 	re_bin(data->cmd, 0);
 	while (i < data->cmd_count)
 	{
 		data->cmd[i] = malloc((data->list_size + 1) * sizeof(char *));
 		if (!data->cmd[i])
-			adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);	
+			adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);
 		re_bin(data->cmd[i], 0);
 		i++;
 	}
@@ -80,7 +80,7 @@ void	alloc_pids(t_data *data)
 {
 	data->pids = malloc(data->cmd_count * sizeof(pid_t));
 	if (!data->pids)
-		adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_EX_UA, STDERR_FILENO, FREE_M);
 	re_bin(data->pids, 0);
 }
 

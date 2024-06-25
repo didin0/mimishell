@@ -26,9 +26,9 @@ void	pwd_builtin(t_data *data, t_env *env_list)
 		if (!ft_strncmp(temp->key, "PWD", ft_strlen(temp->key)))
 		{
 			if (ft_putstr_fd(temp->value, 1) < 0)
-				adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
+				adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
 			if (ft_putchar_fd('\n', 1) < 0)
-				adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
+				adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
 			break ;
 		}
 		temp = temp->next;
@@ -47,13 +47,13 @@ void	env_builtin(t_data *data, t_env *env_list)
 	while (temp)
 	{
 		if (ft_putstr_fd(temp->key, 1) < 0)
-			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
+			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
 		if (ft_putchar_fd('=', 1) < 0)
-			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
+			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
 		if (ft_putstr_fd(temp->value, 1) < 0)
-			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
+			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
 		if (ft_putchar_fd('\n', 1) < 0)
-			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
+			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
 		temp = temp->next;
 	}
 }

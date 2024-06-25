@@ -20,7 +20,7 @@
 t_env	*create_env_node(t_data *data, char *key, char *value)
 {
 	t_env	*new_env;
-	
+
 	new_env = malloc(sizeof(t_env));
 	if (!new_env)
 		adv_error(data, ERR_MALLOC_ENV, STDERR_FILENO, FREE_ENV);
@@ -62,7 +62,7 @@ static void	split_and_add(t_data *data, char *env_var)
 
 	str = ft_adv_split(env_var, '=');
 	if (!str)
-		adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_ENV, STDERR_FILENO, FREE_M);
 	if (str[0] && str[1])
 	{
 		new_node = create_env_node(data, str[0], str[1]);

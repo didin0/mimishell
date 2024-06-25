@@ -41,11 +41,11 @@ void	ft_lstlex_add_back(t_lexer **lst, t_lexer *new)
 
 t_lexer	*ft_lstlex_new(t_data *data, void *word)
 {
-	t_lexer *result;
+	t_lexer	*result;
 
 	result = (t_lexer *)ft_calloc(1, sizeof(t_lexer));
 	if (!result)
-		adv_error(data, ERR_MALLOC_LI, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_LI, STDERR_FILENO, FREE_M);
 	re_bin(result, 0);
 	result->word = word;
 	result->type = -1;

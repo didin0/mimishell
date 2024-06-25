@@ -20,7 +20,8 @@ void	show_list(t_lexer *list)
 	i = 0;
 	while (list)
 	{
-		printf("list [%d] type (%d) ft_strlen(list->word) %zu :%s\n", i, list->type, ft_strlen(list->word), list->word);
+		printf("list [%d] type (%d) ft_strlen(list->word) %zu :%s\n",
+			i, list->type, ft_strlen(list->word), list->word);
 		list = list->next;
 		i++;
 	}
@@ -41,8 +42,8 @@ void	show_env_list(t_env *list)
 
 void	show_cmd(char ***cmd, t_data *data)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 	int	cmd_count;
 
 	cmd_count = count_token_type(data, BUILTIN, COMMAND);
@@ -66,10 +67,10 @@ static int	start_lexing(t_data *data)
 	if (!adv_strncmp(data->line, ""))
 	{
 		re_bin(NULL, 1);
-			return (1);
+		return (1);
 	}
 	if (is_quote_closed(data->line, '"') != 0
-			|| is_quote_closed(data->line, '\'') != 0)
+		|| is_quote_closed(data->line, '\'') != 0)
 	{
 		adv_error(data, ERR_QUOTE_CLOSE, STDOUT_FILENO, NO_EXIT);
 		return (1);
@@ -96,7 +97,7 @@ int	main(int argc, char **argv, char **envp)
 	t_data	data;
 	t_env	*env_list;
 
-	(void)argc;	
+	(void)argc;
 	(void)argv;
 	init_data(&data);
 	env_list = get_env_to_list(&data, envp);
@@ -107,11 +108,10 @@ int	main(int argc, char **argv, char **envp)
 		re_bin(data.line, 0);
 		add_history(data.line);
 		if (start_lexing(&data))
-			continue;
+			continue ;
 		token_type(&data, env_list);
 		parsing(&data, env_list);
-//		show_cmd(data.cmd, &data);
-		execution(&data, env_list);	
+		execution(&data, env_list);
 	}
 	free(data.line);
 	return (0);

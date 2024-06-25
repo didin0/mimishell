@@ -12,8 +12,8 @@
 
 #include "minishell.h"
 
-void init_data(t_data *data)
-{		
+void	init_data(t_data *data)
+{
 	data->env_list = NULL;
 	data->exit_status = 0;
 	data->pwd_flag = 0;

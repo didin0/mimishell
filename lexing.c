@@ -48,7 +48,7 @@ void	str_to_list(t_data *data, t_stat *stat)
 	if (data->line)
 		data->buff = ft_substr(data->line, stat->ibis, stat->i - stat->ibis);
 	if (!data->buff)
-		adv_error(data, ERR_MALLOC_L, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_L, STDERR_FILENO, FREE_M);
 	re_bin(data->buff, 0);
 	ft_lstlex_add_back(&data->lexer_list, ft_lstlex_new(data, data->buff));
 }

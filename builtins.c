@@ -30,19 +30,19 @@ static void	echo_stdout(t_data *data, char **cmd, int line_break)
 		if (line_break == 0 && option_flag == 0)
 			j = 2;
 		if (ft_putstr_fd(cmd[j], 1) < 0)
-			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
+			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
 		j++;
 		if (cmd[j])
 		{
 			if (ft_putchar_fd(' ', 1) < 0)
-				adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
+				adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
 		}
 		option_flag = 1;
 	}
 	if (line_break == 1)
 	{
 		if (ft_putchar_fd('\n', 1) < 0)
-			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);	
+			adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
 	}
 }
 
@@ -107,11 +107,13 @@ int	exec_builtin_child(t_data *data, char **cmd, t_env *env_list)
 	if (!adv_strncmp(cmd[0], "pwd"))
 	{
 		pwd_builtin(data, env_list);
+		re_bin(NULL, 1);
 		return (0);
 	}
 	if (!adv_strncmp(cmd[0], "env"))
 	{
 		env_builtin(data, env_list);
+		re_bin(NULL, 1);
 		return (0);
 	}
 	return (1);

@@ -34,19 +34,19 @@ static void	reassign_str(t_data *data, int i, int k, char *new_str)
 {
 	data->cmd[i][k] = re_bin(ft_strdup(new_str), 0);
 	if (!data->cmd[i][k])
-		adv_error(data, ERR_MALLOC_RE_U, STDERR_FILENO, FREE_M);	
-}	
+		adv_error(data, ERR_MALLOC_RE_U, STDERR_FILENO, FREE_M);
+}
 
 static t_lexer	*clean_cmd_loop(t_lexer *node)
 {
 	if (((is_token(node->word, 0) && node->type != EXP_STATUS)
-	   && node->type != 31) && node->type != 32)
+			&& node->type != 31) && node->type != 32)
 		node = node->next->next;
 	if (((((node && is_token(node->word, 0)) && node->type != PIPE)
-		&& node->type != EXP_STATUS)
-	   && node->type != 31) && node->type != 32)
+				&& node->type != EXP_STATUS)
+			&& node->type != 31) && node->type != 32)
 		node = node->next->next;
-	return (node);	
+	return (node);
 }
 
 /*OUT OF DATE

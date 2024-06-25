@@ -22,7 +22,7 @@ char	*ft_strremove(t_data *data, char *s, int start, int n)
 	int	i;
 
 	if (!s)
-		adv_error(data, ERR_MALLOC_PAR_U, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_PAR_U, STDERR_FILENO, FREE_M);
 	len = 0;
 	while (s[len])
 		len++;
@@ -72,7 +72,7 @@ char	*clean_quote(t_data *data, char *str)
 	j = 0;
 	result = malloc(ft_strlen(str) + 1);
 	if (!result)
-		adv_error(data, ERR_MALLOC_PAR_U, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_PAR_U, STDERR_FILENO, FREE_M);
 	re_bin(result, 0);
 	while (str[i])
 	{

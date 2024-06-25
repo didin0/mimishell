@@ -73,18 +73,17 @@ int	create_node_space_term(t_data *data, t_stat *stat)
 
 int	create_node_quotes(t_data *data, t_stat *stat)
 {
-	char quote;
-	bool open_quote;
+	char	quote;
+	bool	open_quote;
 
 	quote = data->line[stat->i];
 	open_quote = false;
-
 	while (data->line[stat->i] != '\0')
 	{
 		if (data->line[stat->i] == quote)
 			open_quote = !open_quote;
 		else if (data->line[stat->i] == ' ' && !open_quote)
-			break;
+			break ;
 		stat->i++;
 	}
 	str_to_list(data, stat);

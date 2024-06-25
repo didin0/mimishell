@@ -13,9 +13,9 @@
 #include "minishell.h"
 
 static void	is_array_allocated(t_data *data, char **arr, int len)
-{	
+{
 	int	i;
-	
+
 	i = 0;
 	while (i++ < len - 1)
 	{
@@ -30,13 +30,13 @@ static void	is_array_allocated(t_data *data, char **arr, int len)
 
 int	is_token_path(char *cmd)
 {
-	int i;
+	int	i;
 	int	j;
 
 	i = 0;
 	j = 1;
 	if (cmd[i] == '/' || (cmd[i] == '.' && (cmd[j] == '.' || cmd[j] == '/')))
-			return (0);
+		return (0);
 	return (1);
 }
 
@@ -47,7 +47,7 @@ int	is_token_path(char *cmd)
 */
 
 int	is_cmd(t_data *data, t_lexer *token, t_env *env_list)
-{	
+{
 	get_paths(data, env_list);
 	if (!is_token_path(token->word))
 		return (0);
@@ -60,7 +60,7 @@ void	build_builtin_names(t_data *data)
 {
 	data->builtin_names = ft_calloc(8, sizeof(char *));
 	if (!data->builtin_names)
-		adv_error(data, ERR_MALLOC_LU, STDERR_FILENO, FREE_M);	
+		adv_error(data, ERR_MALLOC_LU, STDERR_FILENO, FREE_M);
 	re_bin(data->builtin_names, 0);
 	data->builtin_names[0] = re_bin(ft_strdup("echo"), 0);
 	data->builtin_names[1] = re_bin(ft_strdup("cd"), 0);

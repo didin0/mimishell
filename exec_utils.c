@@ -84,12 +84,12 @@ void	stat_from_waitpid(t_data *data, pid_t *pids)
 	int	i;
 	int	status;
 
-	status = 0;	
+	status = 0;
 	i = 0;
 	while (i < data->cmd_count)
 	{
 		if (waitpid(pids[i], &status, WUNTRACED) == -1)
-			adv_error(data, ERR_WAIT, STDERR_FILENO, FREE_M);//TODO 180624
+			adv_error(data, ERR_WAIT, STDERR_FILENO, FREE_M);
 		i++;
 	}
 	if (WIFEXITED(status))

@@ -12,13 +12,6 @@
 
 #include "minishell.h"
 
-void	free_regular(t_data *data)
-{	
-	free(data->pids);
-	free_lexer_list(data);
-	free_3D_array(data->cmd);
-}
-
 static void	free_ptr(void *ptr)
 {
 	free(ptr);
@@ -90,8 +83,8 @@ static void	ft_lstclear_bin(t_list **lst, void (*del)(void*))
 }
 
 /*
-@glance		list to keep pointers that have to be cleaned at exit or prompt return
-			ie command tripple array cmd.
+@glance		list to keep pointers that have to be cleaned at exit or
+			prompt return ie command tripple array cmd.
 */
 
 void	*re_bin(void *ptr, bool clean)
