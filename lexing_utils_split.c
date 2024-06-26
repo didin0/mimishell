@@ -89,8 +89,7 @@ int	create_node_quotes(t_data *data, t_stat *stat)
 	str_to_list(data, stat);
 	if (data->line[stat->i] == '\0')
 		return (1);
-	if (data->line[stat->i + 1] == '\0'
-		|| is_token(data->line, stat->i) != 0
+	if (data->line[stat->i + 1] == '\0' || is_token(data->line, stat->i) != 0
 		|| data->line[stat->i] == ' ')
 	{
 		stat->ibis = stat->i;

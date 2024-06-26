@@ -12,24 +12,6 @@
 
 #include "minishell.h"
 
-static void	free_ptr(void *ptr)
-{
-	free(ptr);
-	ptr = NULL;
-}
-
-/*
-@glance		delete a list node
-*/
-
-static void	ft_lstdelone_bin(t_list *lst, void (*del)(void*))
-{
-	if (!lst || !del)
-		return ;
-	del(lst->content);
-	free(lst);
-}
-
 /*
 @glance		append a node to the end of the list
 */

@@ -148,6 +148,8 @@ typedef struct s_stat
 // Utils
 void	init_data(t_data *data);
 void	ft_error_errno(char **cmd);
+void	free_ptr(void *ptr);
+void	ft_lstdelone_bin(t_list *lst, void (*del)(void*));
 
 // List
 t_lexer	*ft_lstlex_new(t_data *data, void *word);
@@ -200,6 +202,7 @@ int		is_builtin(t_data *data, char *word);
 
 // Parser
 void	parsing(t_data *data, t_env *env_list);
+char	*expen(t_data *data, char *str, t_env *env_list);
 char	**ft_new_split(char const *s, char c);
 int		check_sq(char *str);
 char	*clean_quote(t_data *data, char *str);
@@ -210,6 +213,7 @@ int		key_size(char *str);
 
 void	look_for_redirs(t_data *data, int i);
 void	redir_fd(t_data *data, t_lexer *node);
+void	clean_cmd_from_redir(t_data *data, t_lexer *node, int i);
 void	create_empty_file(char *name);
 void	here_doc_in(t_data *data, t_lexer *node);
 int		check_heredoc_meaning(t_lexer *node);
