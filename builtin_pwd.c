@@ -6,11 +6,23 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 07:38:24 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/21 15:56:06 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/26 16:14:58 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void get_pwd(t_data *data)
+{
+	char *dir;
+
+	dir = getcwd(NULL, 0);
+	if (ft_putstr_fd(dir, 1) < 0)
+		adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
+	if (ft_putchar_fd('\n', 1) < 0)
+		adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
+	free(dir);
+}
 
 /*
 @glance		loop env list nodes and write when match

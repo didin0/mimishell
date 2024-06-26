@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 11:32:00 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/24 14:15:11 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/05/21 13:13:44 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@
 @ft_memset		set signas struct memory to '\0', avoid garbadge
 @sa.sa			point signal handler function
 @sa.sa_flags	pause everithing when signal recieived and restart after
-@sigemptyset	takes an empty list on signals, no additional signals can
+@sigemptyset	takes an empty list on signals, no additional signals can 
 				interfere handler.
-@if	SIGINT		in case SIGINT signal received, do what is instructed
-				in sa struct. check sigaction call failure,
+@if	SIGINT		in case SIGINT signal received, do what is instructed 
+				in sa struct. check sigaction call failure, 
 				ignore signal in interactive mode.
-@SIG_IGN		reassign the handler for SIGQUIT ctrl-\ to SIG_IGN. Changing sa
-				afterward and applying it to SIGQUIT configures SIGQUIT
+@SIG_IGN		reassign the handler for SIGQUIT ctrl-\ to SIG_IGN. Changing sa 
+				afterward and applying it to SIGQUIT configures SIGQUIT 
 				independently of SIGINT.
 @if SIGQUIT		in case SIGQUIT signal received,
 				check sigaction call failure, ignore signal in interactive mode
@@ -52,17 +52,17 @@ void	init_signals(t_data *data)
 }
 
 /*
-@glance				prepare Minishell for the next readline() call,
-					act upon SIGINT. readline() handles SIGINT internally,
-					so need to manage the promt with rl_() functions.
-@global variable	to differenciate promt line cleanup ie rl_redisplay
+@glance				prepare Minishell for the next readline() call, 
+					act upon SIGINT. readline() handles SIGINT internally, 
+					so need to manage the promt with rl_() functions. 
+@global variable	to differenciate promt line cleanup ie rl_redisplay 
 					is coditional for interactive shell mode only.
 @if					non-interactive mode behavior
 @else				interactive mode behavior
 @rl_replace_line	clear current input line.
 @rl_on_new_line		tell readline() I am on a new line.
 @rl_redisplay		request readline to redisplay the prompt.
-@write				not fail protected, signal handler speed
+@write				not fail protected, signal handler speed 
 					and atomic-ness overweighs that.
 */
 

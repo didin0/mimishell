@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexing_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:11:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/21 18:35:58 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/06 16:24:40 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	build_builtin_names(t_data *data)
 
 int	is_builtin(t_data *data, char *word)
 {
-	int	i;
+	int		i;
 
 	i = 0;
 	while (i < 7)

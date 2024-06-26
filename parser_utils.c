@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 14:39:15 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/21 15:52:36 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/06 17:28:32 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,21 +98,6 @@ int	check_sq(char *str)
 		if (str[i] == '\'')
 			return (1);
 		i++;
-	}
-	return (0);
-}
-
-int	expen_helper(t_data *data, char *str, t_env *env_list, int size)
-{
-	if (!ft_strncmp(str, env_list->key, size) && !ft_strncmp(str, env_list->key,
-			ft_strlen(env_list->key)))
-	{
-		store_remaining(data, str, env_list);
-		ft_strlcpy(data->result, env_list->value, ft_strlen(env_list->value)
-			+ 1);
-		ft_strlcat(data->result, data->remaining, ft_strlen(data->result)
-			+ ft_strlen(data->remaining) + 1);
-		return (1);
 	}
 	return (0);
 }

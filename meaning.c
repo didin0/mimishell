@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:36:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/21 18:37:05 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/26 15:23:23 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,21 @@
 @glance		check for the case the PATH env is unset
 */
 
-int	check_path(t_data *data)
+int check_in_env(t_data *data, char *str)
 {
-	t_env	*temp;
+	t_env *temp;
 
 	temp = data->env_list;
 	while (temp)
 	{
-		if (!adv_strncmp(temp->key, "PATH"))
+		if (!adv_strncmp(temp->key, str))
 			return (0);
 		temp = temp->next;
 	}
-	adv_error(data, ERR_PATH, STDOUT_FILENO, NO_EXIT);
+	if (!adv_strncmp(str, "PATH"))
+		adv_error(data, ERR_PATH, STDOUT_FILENO, NO_EXIT);
+	else if (!adv_strncmp(str, "HOME"))
+		adv_error(data, ERR_CD_HOME, STDOUT_FILENO, NO_EXIT);
 	return (1);
 }
 
@@ -35,9 +38,9 @@ int	check_path(t_data *data)
 @glance		for the cases that do not include a command or builtin
 */
 
-int	check_meaning(t_data *data)
+int check_meaning(t_data *data)
 {
-	t_lexer	*node;
+	t_lexer *node;
 
 	node = data->lexer_list;
 	data->cmd_count = count_token_type(data, BUILTIN, COMMAND);
@@ -48,11 +51,9 @@ int	check_meaning(t_data *data)
 			data->cmd_count = 1;
 		if (node->type == BUILTIN && !adv_strncmp(node->word, "cd"))
 			data->cmd_count = 1;
-		else if (node->next && (node->type == COMMAND
-				&& node->next->type == HERE_DOC))
+		else if (node->next && (node->type == COMMAND && node->next->type == HERE_DOC))
 		{
-			if (node->next->next && (node->next->next->type == COMMAND
-					|| node->next->next->type == BUILTIN))
+			if (node->next->next && (node->next->next->type == COMMAND || node->next->next->type == BUILTIN))
 				data->cmd_count = data->cmd_count - 1;
 			else if (node->next->next)
 				data->cmd_count = data->cmd_count;
@@ -63,7 +64,7 @@ int	check_meaning(t_data *data)
 	return (0);
 }
 
-int	check_heredoc_meaning(t_lexer *node)
+int check_heredoc_meaning(t_lexer *node)
 {
 	if (node->next)
 		if (node->next->type != OTHER)

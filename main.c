@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/21 18:36:36 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/26 13:36:01 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	show_list(t_lexer *list)
 	i = 0;
 	while (list)
 	{
-		printf("list [%d] type (%d) ft_strlen(list->word) %zu :%s\n", i,
-			list->type, ft_strlen(list->word), list->word);
+		printf("list [%d] type (%d) ft_strlen(list->word) %zu :%s\n",
+			i, list->type, ft_strlen(list->word), list->word);
 		list = list->next;
 		i++;
 	}
@@ -69,13 +69,13 @@ static int	start_lexing(t_data *data)
 		re_bin(NULL, 1);
 		return (1);
 	}
-	if (is_quote_closed(data->line, '"') != 0 || is_quote_closed(data->line,
-			'\'') != 0)
+	if (is_quote_closed(data->line, '"') != 0
+		|| is_quote_closed(data->line, '\'') != 0)
 	{
 		adv_error(data, ERR_QUOTE_CLOSE, STDOUT_FILENO, NO_EXIT);
 		return (1);
 	}
-	if (check_path(data))
+	if (check_in_env(data, "PATH"))
 		return (1);
 	if (lexing(data))
 	{

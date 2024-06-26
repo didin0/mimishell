@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:00:26 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/21 16:22:50 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/06 22:49:59 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static void	split_and_add(t_data *data, char *env_var)
 
 	str = ft_adv_split(env_var, '=');
 	if (!str)
-		adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);
+		adv_error(data, ERR_MALLOC_ENV, STDERR_FILENO, FREE_M);
 	if (str[0] && str[1])
 	{
 		new_node = create_env_node(data, str[0], str[1]);
@@ -72,7 +72,7 @@ static void	split_and_add(t_data *data, char *env_var)
 
 t_env	*get_env_to_list(t_data *data, char **envp)
 {
-	int	i;
+	int		i;
 
 	i = 0;
 	while (envp[i])

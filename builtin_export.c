@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 16:08:07 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/21 15:55:58 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/06 20:09:34 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,8 @@ static void	check_args(t_data *data, char **cmd, t_env *env_list)
 
 void	export_builtin(t_data *data, char **cmd, t_env *env_list)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
 
 	check_args(data, cmd, env_list);
 	i = 1;

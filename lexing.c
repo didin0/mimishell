@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 17:00:39 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/21 18:36:07 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/06 23:33:26 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,20 +56,20 @@ void	str_to_list(t_data *data, t_stat *stat)
 /*
 @glance			loop leading space, loop each char in line.
 				append tokens to a list.
-@var			ibis is the first unporcessed character and i the last
-				char of a word.
+@var			ibis is the first unporcessed character and i the last 
+ 				char of a word.
 @is_token		token here is a redirection or a pipe,
 				store substring to buffer.
 @ft_lstlex_		append node with buffer string to the list
 @elseif ' '		space inidcates next token, add to list, deal wiht line end.
-@elseif '"'		makes list node from quoted token.
-				first and second quote found,
+@elseif '"'		makes list node from quoted token. 
+				first and second quote found, 
 				update i to the second quote char.
 */
 
 static void	splitting_lexer(t_data *data, t_stat *stat)
 {
-	int	ret;
+	int		ret;
 
 	ret = 0;
 	while (data->line && data->line[stat->i] == ' ')

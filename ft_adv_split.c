@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 16:16:49 by abaccari          #+#    #+#             */
-/*   Updated: 2024/06/21 18:30:45 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/05 21:30:24 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,26 +51,32 @@ static char	*alloc_substr(const char *s, int start, int end)
 // Split *s en sous chaine et return 1 or 0
 static int	split_words(char **result, char const *s, char c, int word)
 {
-	int	start_i;
-	int	end_i;
+	int		start_i;
+	int		end_i;
+	int		flag;
 
-	start_i = 0;
 	end_i = 0;
+	start_i = 0;
+	flag = 0;
 	while (s[end_i])
 	{
-		if (s[end_i] != c && (end_i == 0 || s[end_i - 1] == c))
-			start_i = end_i;
-		if (s[end_i] != c && (s[end_i + 1] == c || s[end_i + 1] == '\0'))
+		if ((s[end_i] == c || s[end_i] == 0) && flag == 0)
+			start_i = end_i + 1;
+		if (((s[end_i + 1] == c || s[end_i + 1] == 0) && flag == 0)
+			&& s[end_i] != c)
 		{
 			result[word] = alloc_substr(s, start_i, end_i);
 			if (!result[word])
 				return (0);
 			word++;
+			flag = 1;
+			start_i = end_i + 2;
 		}
+		else if (s[end_i + 1] == 0 && flag == 1)
+			result[word] = alloc_substr(s, start_i, end_i);
 		end_i++;
 	}
-	result[word] = 0;
-	return (1);
+	return (word++, result[word] = 0, 1);
 }
 
 char	**ft_adv_split(char const *s, char c)

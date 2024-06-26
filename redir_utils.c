@@ -3,17 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   redir_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:15:45 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/21 18:47:23 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/06 21:54:35 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	adv_list_size(t_lexer *list)
+{
+	int	i;
+
+	i = 0;
+	while (list)
+	{
+		list = list->next;
+		i++;
+	}
+	return (i);
+}
+
 /*
-@glance		re-assignes redirection tokens. uppon malloc failure,
+@glance		re-assignes redirection tokens. uppon malloc failure, 
 			exits child process.
 */
 
@@ -30,15 +43,15 @@ static t_lexer	*clean_cmd_loop(t_lexer *node)
 			&& node->type != 31) && node->type != 32)
 		node = node->next->next;
 	if (((((node && is_token(node->word, 0)) && node->type != PIPE)
-				&& node->type != EXP_STATUS) && node->type != 31)
-		&& node->type != 32)
+				&& node->type != EXP_STATUS)
+			&& node->type != 31) && node->type != 32)
 		node = node->next->next;
 	return (node);
 }
 
 /*OUT OF DATE
 @2nd if		in case there are several redirection within one cmd array
-@3rd if		expand the exit status for
+@3rd if		expand the exit status for 
 @NULL		set the last pointer in cmd pointer array to NULL for
 			execve() and safe looping.
 */
@@ -72,7 +85,7 @@ static void	clean_cmd_from_redir(t_data *data, t_lexer *node, int i)
 @2nd if		in case there is a pipeline, the cur node is not the first node
  */
 
-void	change_cmd(t_data *data, int i)
+static void	change_cmd(t_data *data, int i)
 {
 	t_lexer	*node;
 	int		j;
@@ -94,7 +107,7 @@ void	change_cmd(t_data *data, int i)
 	clean_cmd_from_redir(data, node, i);
 }
 
-void	array_contains_redir(t_data *data)
+static void	array_contains_redir(t_data *data)
 {
 	t_lexer	*node;
 
@@ -112,4 +125,14 @@ void	array_contains_redir(t_data *data)
 		}
 		node = node->next;
 	}
+}
+
+/*
+@glance		look for redirection tokens, adjust the cmd
+*/
+
+void	look_for_redirs(t_data *data, int i)
+{
+	array_contains_redir(data);
+	change_cmd(data, i);
 }

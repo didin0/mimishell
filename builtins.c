@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:08:42 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/21 16:22:15 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/26 16:16:18 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void	echo_stdout(t_data *data, char **cmd, int line_break)
 }
 
 /*
-@glance			check if in the string arrray cmd the second pos is the
+@glance			check if in the string arrray cmd the second pos is the 
 				option -n
 @while and if	-n option is the first argument, check the last char
 				of the first argument strng.
@@ -57,8 +57,8 @@ static void	echo_stdout(t_data *data, char **cmd, int line_break)
 
 static void	echo_builtin(t_data *data, char **cmd)
 {
-	int	j;
-	int	line_break;
+	int		j;
+	int		line_break;
 
 	line_break = 1;
 	j = 1;
@@ -106,12 +106,15 @@ int	exec_builtin_child(t_data *data, char **cmd, t_env *env_list)
 	}
 	if (!adv_strncmp(cmd[0], "pwd"))
 	{
-		pwd_builtin(data, env_list);
+		get_pwd(data);
+		//pwd_builtin(data, env_list);
+		re_bin(NULL, 1);
 		return (0);
 	}
 	if (!adv_strncmp(cmd[0], "env"))
 	{
 		env_builtin(data, env_list);
+		re_bin(NULL, 1);
 		return (0);
 	}
 	return (1);

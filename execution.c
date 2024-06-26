@@ -6,13 +6,13 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/24 16:22:56 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/06 23:45:18 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-pid_t		g_child_pid = -1;
+pid_t	g_child_pid = -1;
 
 static void	init_cmd_loop(t_data *data, char *word, int i, int j)
 {
@@ -89,7 +89,7 @@ static void	resume_parent(t_data *data, pid_t *pids, int i)
 
 void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 {
-	int	i;
+	int		i;
 
 	create_pipes(data);
 	organize_good_paths(data, env_list);
@@ -102,11 +102,11 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 			look_for_redirs(data, i);
 			redirect_close_fds(data, i);
 			close_unused_fds(data, i);
-			// chek env
 			if (!exec_builtin_child(data, data->cmd[i], env_list))
 				exit(EXIT_SUCCESS);
-			else if (execve(data->asked_paths[i], data->cmd[i], NULL) == -1)
-				ft_error_errno(data->cmd[i]);
+			else
+				if (execve(data->asked_paths[i], data->cmd[i], NULL) == -1)
+					ft_error_errno(data->cmd[i]);
 		}
 		resume_parent(data, pids, i);
 		i++;
@@ -116,8 +116,8 @@ void	exec_child(t_env *env_list, t_data *data, pid_t *pids)
 
 /*
 @design			3 main flows of execution:
-				1.builtin in paretn process like exit, export, unset,  cd, $?
-				2. builtin in chilld process like echo, pwd, env
+				1.builtin in paretn process like exit, export, unset,  cd, $? 
+				2. builtin in chilld process like echo, pwd, env 
 				3. command to exexcv(), child process, exits by itself
 					(data->lexer_list, ASK);
 

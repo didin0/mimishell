@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 19:28:20 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/21 18:30:49 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/06 16:13:48 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_putchar_fd(char c, int fd)
 {
-	if (write(fd, &c, 1) == -1)
+	if (write (fd, &c, 1) == -1)
 		return (-1);
 	return (0);
 }

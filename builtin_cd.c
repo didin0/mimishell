@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 09:20:38 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/24 16:36:17 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/26 15:56:33 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ void	cd_builtin(t_data *data, char **cmd, t_env *env_list)
 {
 	if (!cmd[1] || !is_token_path(cmd[1]))
 	{
+		if (check_in_env(data, "HOME"))
+			return;
 		cd_also_path(data, cmd, env_list);
 	}
 	else if (cmd[1][0] == '-')
@@ -118,7 +120,11 @@ void	cd_builtin(t_data *data, char **cmd, t_env *env_list)
 	else if (cmd[1][0] == '-' || cmd[1][0] == '~' || cmd[2])
 	{	//check if env 
 		if (cmd[1][0] == '~')
+		{
+			if (check_in_env(data, "HOME"))
+				return;
 			expand_tilde(data, cmd, env_list);
+		}
 		else if (cmd[2])
 			adv_error(data, ERR_CD_MAX, STDERR_FILENO, NO_EXIT);
 		return ;

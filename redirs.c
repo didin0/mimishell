@@ -3,37 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   redirs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:04:51 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/24 14:10:51 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/06 22:44:43 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*
-@glance		look for redirection tokens, adjust the cmd
-*/
-
-void	look_for_redirs(t_data *data, int i)
-{
-	array_contains_redir(data);
-	change_cmd(data, i);
-}
-
-int	adv_list_size(t_lexer *list)
-{
-	int	i;
-
-	i = 0;
-	while (list)
-	{
-		list = list->next;
-		i++;
-	}
-	return (i);
-}
 
 /*
 @glance		open files, redirect output/input, this is called in child process
@@ -45,13 +22,15 @@ void	redir_fd(t_data *data, t_lexer *node)
 {
 	int		fd;
 	t_lexer	*temp;
+	int flags = O_WRONLY | O_CREAT | O_APPEND;
+    int rights = S_IRUSR | S_IWUSR;
 
 	fd = -1;
 	temp = node;
 	if (temp->type == REDIR_OUT)
-		fd = open(temp->next->word, OPEN_FLAGS | O_TRUNC, OPEN_RIGHTS);
+		fd = open(temp->next->word, flags | O_TRUNC, rights);
 	else if (temp->type == REDIR_OUT_APP)
-		fd = open(temp->next->word, OPEN_FLAGS | O_APPEND, OPEN_RIGHTS);
+		fd = open(temp->next->word, flags | O_APPEND, rights);
 	else if (temp->type == REDIR_IN)
 		fd = open(temp->next->word, O_RDONLY);
 	if (fd == -1)
@@ -73,7 +52,7 @@ void	redir_fd(t_data *data, t_lexer *node)
 @open	previous open enables to use the fd only for writing.
  */
 
-static void	redir_temp_file_fd(t_data *data, int fd)
+static	void	redir_temp_file_fd(t_data *data, int fd)
 {
 	fd = -1;
 	fd = open("here_doc_temp", O_RDONLY);
