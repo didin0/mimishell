@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 09:20:38 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/26 15:56:33 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/26 16:47:16 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ void	cd_builtin(t_data *data, char **cmd, t_env *env_list)
 	if (chdir(data->new_path) == -1)
 	{
 		adv_error(data, ERR_CD_ARG, STDERR_FILENO, NO_EXIT);
+		data->exit_status = 1;
 		return ;
 	}
 	get_abs_path(data, env_list);
