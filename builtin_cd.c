@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 09:20:38 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/26 16:47:16 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/26 16:57:49 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ void	cd_builtin(t_data *data, char **cmd, t_env *env_list)
 	if (!cmd[1] || !is_token_path(cmd[1]))
 	{
 		if (check_in_env(data, "HOME"))
-			return;
+			return ;
 		cd_also_path(data, cmd, env_list);
 	}
 	else if (cmd[1][0] == '-')
@@ -118,11 +118,11 @@ void	cd_builtin(t_data *data, char **cmd, t_env *env_list)
 		data->new_path = our_get_env(env_list, "OLDPWD");
 	}
 	else if (cmd[1][0] == '-' || cmd[1][0] == '~' || cmd[2])
-	{	//check if env 
+	{ // check if env
 		if (cmd[1][0] == '~')
 		{
 			if (check_in_env(data, "HOME"))
-				return;
+				return ;
 			expand_tilde(data, cmd, env_list);
 		}
 		else if (cmd[2])

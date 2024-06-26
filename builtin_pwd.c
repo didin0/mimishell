@@ -6,15 +6,15 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 07:38:24 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/26 16:14:58 by mabbadi          ###   ########.fr       */
+/*   Updated: 2024/06/26 16:58:02 by mabbadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void get_pwd(t_data *data)
+void	get_pwd(t_data *data)
 {
-	char *dir;
+	char	*dir;
 
 	dir = getcwd(NULL, 0);
 	if (ft_putstr_fd(dir, 1) < 0)
