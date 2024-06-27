@@ -33,6 +33,28 @@ void	get_paths(t_data *data, t_env *env_list)
 	}
 }
 
+static char	*join_one(t_data *data, char *one_path, char *slash_path, int i)
+{
+	one_path = ft_strjoin(data->paths[i], slash_path);
+	if (!one_path)
+		adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);
+	return (one_path);
+}
+
+static int	is_path_accessible(char *one_path, t_data *data)
+{
+	if (access(one_path, F_OK) == 0)
+	{
+		data->final_path = NULL;
+		data->final_path = strdup(one_path);
+		if (!data->final_path)
+			adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);
+		re_bin(data->final_path, 0);
+		return (1);
+	}
+	return (0);
+}
+
 /*
 @glance				loop all env PATH paths with lexer list words
 @return(NULL)		path not valid.
@@ -59,19 +81,10 @@ char	*find_good_path(t_data *data, char *cmd)
 		if (!is_token_path(cmd))
 			one_path = strdup(cmd);
 		else
-			one_path = ft_strjoin(data->paths[i], slash_path);
-		if (!one_path)
-			adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);
+			one_path = join_one(data, one_path, slash_path, i);
 		re_bin(one_path, 0);
-		if (access(one_path, F_OK) == 0)
-		{
-			data->final_path = NULL;
-			data->final_path = strdup(one_path);
-			if (!data->final_path)
-				adv_error(data, ERR_MALLOC_PATH, STDERR_FILENO, FREE_M);
-			re_bin(data->final_path, 0);
+		if (is_path_accessible(one_path, data))
 			return (data->final_path);
-		}
 		i++;
 	}
 	data->final_path = cmd;

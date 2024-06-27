@@ -16,7 +16,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include "../minishell.h"
 
 typedef struct s_list
 {

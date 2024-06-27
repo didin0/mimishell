@@ -56,8 +56,7 @@ static int	split_words(char **result, char const *s, char c, int word)
 		}
 		end_i++;
 	}
-	result[word] = 0;
-	return (1);
+	return (result[word] = 0, 1);
 }
 
 char	**ft_split(char const *s, char c)

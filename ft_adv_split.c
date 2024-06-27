@@ -52,29 +52,28 @@ static char	*alloc_substr(const char *s, int start, int end)
 static int	split_words(char **result, char const *s, char c, int word)
 {
 	int		start_i;
-	int		end_i;
+	int		end;
 	int		flag;
 
-	end_i = 0;
+	end = 0;
 	start_i = 0;
 	flag = 0;
-	while (s[end_i])
+	while (s[end])
 	{
-		if ((s[end_i] == c || s[end_i] == 0) && flag == 0)
-			start_i = end_i + 1;
-		if (((s[end_i + 1] == c || s[end_i + 1] == 0) && flag == 0)
-			&& s[end_i] != c)
+		if ((s[end] == c || s[end] == 0) && flag == 0)
+			start_i = end + 1;
+		if (((s[end + 1] == c || s[end + 1] == 0) && flag == 0) && s[end] != c)
 		{
-			result[word] = alloc_substr(s, start_i, end_i);
+			result[word] = alloc_substr(s, start_i, end);
 			if (!result[word])
 				return (0);
 			word++;
 			flag = 1;
-			start_i = end_i + 2;
+			start_i = end + 2;
 		}
-		else if (s[end_i + 1] == 0 && flag == 1)
-			result[word] = alloc_substr(s, start_i, end_i);
-		end_i++;
+		else if (s[end + 1] == 0 && flag == 1)
+			result[word] = alloc_substr(s, start_i, end);
+		end++;
 	}
 	return (word++, result[word] = 0, 1);
 }

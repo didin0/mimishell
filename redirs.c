@@ -12,6 +12,19 @@
 
 #include "minishell.h"
 
+static int	redir_fd_out_app(t_lexer *temp, int fd)
+{
+	if (temp->type == REDIR_OUT)
+		fd = open(temp->next->word, O_WRONLY | O_CREAT | O_APPEND | O_TRUNC,
+				S_IRUSR | S_IWUSR);
+	else if (temp->type == REDIR_OUT_APP)
+		fd = open(temp->next->word, O_WRONLY | O_CREAT | O_APPEND | O_APPEND,
+				S_IRUSR | S_IWUSR);
+	else if (temp->type == REDIR_IN)
+		fd = open(temp->next->word, O_RDONLY);
+	return (fd);
+}
+
 /*
 @glance		open files, redirect output/input, this is called in child process
 			so all redirections are reset after child collected by waitpid().
@@ -22,17 +35,10 @@ void	redir_fd(t_data *data, t_lexer *node)
 {
 	int		fd;
 	t_lexer	*temp;
-	int flags = O_WRONLY | O_CREAT | O_APPEND;
-    int rights = S_IRUSR | S_IWUSR;
 
 	fd = -1;
 	temp = node;
-	if (temp->type == REDIR_OUT)
-		fd = open(temp->next->word, flags | O_TRUNC, rights);
-	else if (temp->type == REDIR_OUT_APP)
-		fd = open(temp->next->word, flags | O_APPEND, rights);
-	else if (temp->type == REDIR_IN)
-		fd = open(temp->next->word, O_RDONLY);
+	fd = redir_fd_out_app(temp, fd);
 	if (fd == -1)
 		adv_error(data, ERR_OPEN, STDERR_FILENO, FREE_M);
 	else if (temp->type == REDIR_IN)
@@ -66,6 +72,23 @@ static	void	redir_temp_file_fd(t_data *data, int fd)
 		adv_error(data, ERR_OPEN, STDERR_FILENO, FREE_M);
 }
 
+static void	here_doc_loop(char *here_line, t_data *data, char *del, int fd)
+{
+	while (1)
+	{
+		here_line = readline("\033[37m> \033[m ");
+		if (!here_line)
+		{
+			if (ft_putchar_fd('\n', 1) < 0)
+				adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
+			break ;
+		}
+		if (!adv_strncmp(here_line, del))
+			break ;
+		write(fd, here_line, ft_strlen(here_line));
+		write(fd, "\n", 1);
+	}
+}
 /*
 @glance			store delimiter string. open a temp file and loop to store lines
 				from user prompt.
@@ -88,19 +111,6 @@ void	here_doc_in(t_data *data, t_lexer *node)
 	fd = open("here_doc_temp", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (fd == -1)
 		adv_error(data, ERR_OPEN, STDERR_FILENO, FREE_M);
-	while (1)
-	{
-		here_line = readline("\033[37m> \033[m ");
-		if (!here_line)
-		{
-			if (ft_putchar_fd('\n', 1) < 0)
-				adv_error(data, ERR_WRITE_FAIL, STDERR_FILENO, FREE_M);
-			break ;
-		}
-		if (!adv_strncmp(here_line, delimiter))
-			break ;
-		write(fd, here_line, ft_strlen(here_line));
-		write(fd, "\n", 1);
-	}
+	here_doc_loop(here_line, data, delimiter, fd);
 	redir_temp_file_fd(data, fd);
 }
