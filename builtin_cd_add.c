@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/23 06:58:09 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/23 06:58:15 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/07/01 15:08:03 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,4 +23,20 @@ void	cd_also_path(t_data *data, char **cmd, t_env *env_list)
 		data->new_path = home;
 	else if (!is_token_path(cmd[1]))
 		data->new_path = cmd[1];
+}
+
+char	*our_get_env(t_env *env_list, char *env)
+{
+	t_env	*temp;
+
+	temp = env_list;
+	while (temp)
+	{
+		if (!ft_strncmp(temp->key, env, ft_strlen(env)))
+			break ;
+		temp = temp->next;
+	}
+	if (!temp)
+		return (NULL);
+	return (temp->value);
 }

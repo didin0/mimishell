@@ -6,7 +6,7 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:36:22 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/06 13:12:03 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/07/01 13:50:05 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,21 @@
 @glance		check for the case the PATH env is unset
 */
 
-int	check_path(t_data *data)
+int	check_in_env(t_data *data, char *str)
 {
 	t_env	*temp;
 
 	temp = data->env_list;
 	while (temp)
 	{
-		if (!adv_strncmp(temp->key, "PATH"))
+		if (!adv_strncmp(temp->key, str))
 			return (0);
 		temp = temp->next;
 	}
-	adv_error(data, ERR_PATH, STDOUT_FILENO, NO_EXIT);
+	if (!adv_strncmp(str, "PATH"))
+		adv_error(data, ERR_PATH, STDOUT_FILENO, NO_EXIT);
+	else if (!adv_strncmp(str, "HOME"))
+		adv_error(data, ERR_CD_HOME, STDOUT_FILENO, NO_EXIT);
 	return (1);
 }
 

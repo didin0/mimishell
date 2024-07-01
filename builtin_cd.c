@@ -6,27 +6,11 @@
 /*   By: rsainas <rsainas@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 09:20:38 by rsainas           #+#    #+#             */
-/*   Updated: 2024/06/06 20:39:23 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/07/01 14:57:17 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char	*our_get_env(t_env *env_list, char *env)
-{
-	t_env	*temp;
-
-	temp = env_list;
-	while (temp)
-	{
-		if (!ft_strncmp(temp->key, env, ft_strlen(env)))
-			break ;
-		temp = temp->next;
-	}
-	if (!temp)
-		return (NULL);
-	return (temp->value);
-}
 
 /*
 @ft_strdup		elliminates shared memory, when func concecutivelly called.
@@ -94,6 +78,18 @@ static void	expand_tilde(t_data *data, char **cmd, t_env *env_list)
 	}
 }
 
+int	cd_helper(t_data *data, t_env *env_list)
+{
+	if (chdir(data->new_path) == -1)
+	{
+		adv_error(data, ERR_CD_ARG, STDERR_FILENO, NO_EXIT);
+		data->exit_status = 1;
+		return (1);
+	}
+	get_abs_path(data, env_list);
+	return (0);
+}
+
 /*
 @glance			cd - and cd ~ case, change dir, update env OLDPWD and PWD
 @pwd_flag		'cd -' has a behaviour to stdout the env PWD.
@@ -106,25 +102,27 @@ void	cd_builtin(t_data *data, char **cmd, t_env *env_list)
 {
 	if (!cmd[1] || !is_token_path(cmd[1]))
 		cd_also_path(data, cmd, env_list);
-	else if (cmd[1][0] == '-')
+	else if (cmd[1][0] == '-' && cmd[1][1] == '\0')
 	{
 		data->pwd_flag = 1;
 		data->new_path = our_get_env(env_list, "OLDPWD");
 	}
-	else if (cmd[1][0] == '-' || cmd[1][0] == '~' || cmd[2])
+	else if (cmd[1][0] == '~' || cmd[2])
 	{
 		if (cmd[1][0] == '~')
+		{
+			if (check_in_env(data, "HOME"))
+				return ;
 			expand_tilde(data, cmd, env_list);
+		}
 		else if (cmd[2])
+		{
 			adv_error(data, ERR_CD_MAX, STDERR_FILENO, NO_EXIT);
-		return ;
+			return ;
+		}
 	}
 	else
 		data->new_path = cmd[1];
-	if (chdir(data->new_path) == -1)
-	{
-		adv_error(data, ERR_CD_ARG, STDERR_FILENO, NO_EXIT);
+	if (cd_helper(data, env_list))
 		return ;
-	}
-	get_abs_path(data, env_list);
 }

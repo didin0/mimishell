@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 16:36:10 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/06 23:48:37 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/07/01 13:50:20 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ t_env	*get_env_to_list(t_data *data, char **envp);
 void	get_paths(t_data *data, t_env *env_list);
 t_env	*create_env_node(t_data *data, char *key, char *value);
 void	add_to_end(t_env **head, t_env *new_node);
-int		check_path(t_data *data);
+int		check_in_env(t_data *data, char *str);
 
 // Exec
 int		check_meaning(t_data *data);

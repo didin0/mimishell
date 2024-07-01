@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 11:45:50 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/06 23:45:18 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/07/01 15:05:10 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ int	execution(t_data *data, t_env *env_list)
 {
 	if (check_meaning(data) != 0)
 	{
+		data->exit_status = 127;
 		adv_error(data, ERR_MEANING, STDOUT_FILENO, NO_EXIT);
 		return (0);
 	}

@@ -6,7 +6,7 @@
 /*   By: mabbadi <mabbadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 16:02:30 by mabbadi           #+#    #+#             */
-/*   Updated: 2024/06/06 16:05:08 by rsainas          ###   ########.fr       */
+/*   Updated: 2024/07/01 13:46:13 by rsainas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ static int	start_lexing(t_data *data)
 		adv_error(data, ERR_QUOTE_CLOSE, STDOUT_FILENO, NO_EXIT);
 		return (1);
 	}
-	if (check_path(data))
+	if (check_in_env(data, "PATH"))
 		return (1);
 	if (lexing(data))
 	{
